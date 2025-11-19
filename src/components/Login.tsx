@@ -150,7 +150,7 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
 
             {/* Forgot Password */}
             <div className="text-right">
-              <button type="button" className="text-[#C5A9FF] hover:text-[#B098EE] transition-colors">
+              <button type="button" className="cursor-pointer text-[#C5A9FF] hover:text-[#B098EE] transition-colors">
                 Forgot password?
               </button>
             </div>
@@ -189,7 +189,7 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
           <div className="text-center">
             <p className="text-[#8A8AA8]">
               New to VibeLoop?{" "}
-              <button type="button" onClick={onSwitchToSignup} className="text-[#C5A9FF] hover:text-[#B098EE] transition-colors">
+              <button type="button" onClick={onSwitchToSignup} className="cursor-pointer text-[#C5A9FF] hover:text-[#B098EE] transition-colors">
                 Create an account
               </button>
             </p>

@@ -218,8 +218,8 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               </motion.div>
 
               <div className="text-center mb-8">
-                <h2 className="mb-3 text-[#4A4A6A]">Let's get to know you</h2>
-                <p className="text-[#8A8AA8]">Share what feels comfortable — you can always change this later</p>
+                <h2 className="mb-1 text-[#4A4A6A] text-4xl font-bold text-3xl font-bold">Let's get to know you</h2>
+                <p className="text-[#8A8AA8] italic">Share what feels comfortable&mdash; you can always change this later</p>
               </div>
 
               {/* Name Input */}
@@ -230,7 +230,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                   placeholder="Your name or nickname..."
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="px-6 py-6 rounded-full bg-white/80 border-2 border-[#C5A9FF]/30 focus:border-[#C5A9FF]/60 text-[#4A4A6A] placeholder:text-[#B8B8CC] text-center"
+                  className="cursor-text px-6 py-6 rounded-3xl bg-white/80 border-2 border-[#C5A9FF]/30 focus:border-[#C5A9FF]/60 text-[#4A4A6A] placeholder:text-[#B8B8CC] text-center"
                   autoFocus
                 />
               </div>
@@ -245,7 +245,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                       <motion.button
                         key={range.id}
                         onClick={() => setAgeRange(range.id)}
-                        className="p-5 rounded-3xl border-2 transition-all duration-300"
+                        className="cursor-pointer text-left px-6 py-6 rounded-3xl border-2 transition-all duration-300"
                         style={{
                           borderColor: isSelected ? "#C5A9FFAA" : "#E0E8F5",
                           backgroundColor: isSelected ? "#C5A9FF20" : "rgba(255,255,255,0.8)",
@@ -265,7 +265,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               <div className="flex gap-3 justify-center">
                 <Button
                   onClick={() => setStep("welcome")}
-                  className="px-8 py-5 rounded-full border-2 transition-all duration-300"
+                  className="cursor-pointer px-8 py-5 rounded-full border-2 transition-all duration-300"
                   style={{
                     borderColor: "#C5A9FF60",
                     backgroundColor: "transparent",
@@ -276,7 +276,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 </Button>
                 <Button
                   onClick={() => setStep("intentions")}
-                  className="px-12 py-5 rounded-full border-0 transition-all duration-500 hover:scale-105"
+                  className="cursor-pointer px-12 py-5 rounded-full border-0 transition-all duration-500 hover:scale-105"
                   style={{
                     background: "linear-gradient(135deg, #C5A9FFEE, #A9C7FFAA)",
                     color: "#FFFFFF",
@@ -289,7 +289,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
               <button
                 onClick={() => setStep("intentions")}
-                className="mt-6 text-sm text-[#B8B8CC] hover:text-[#8A8AA8] transition-colors underline w-full text-center"
+                className="cursor-pointer mt-6 text-sm text-[#B8B8CC] hover:text-[#8A8AA8] transition-colors underline w-full text-center"
               >
                 Skip for now
               </button>
@@ -322,9 +322,11 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 <Compass className="w-10 h-10 text-[#A9C7FF]" />
               </motion.div>
 
+              <div className="spacing h-48"></div>
+
               <div className="text-center mb-8">
-                <h2 className="mb-3 text-[#4A4A6A]">What brings you here?</h2>
-                <p className="text-[#8A8AA8]">Help us understand your intentions and how you like to express yourself</p>
+                <h2 className="mb-1 text-[#4A4A6A] text-4xl font-bold">What brings you here?</h2>
+                <p className="text-[#8A8AA8] italic">Help us understand your intentions and how you like to express yourself</p>
               </div>
 
               {/* Seeking Options */}
@@ -337,7 +339,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                       <motion.button
                         key={option.id}
                         onClick={() => toggleSeeking(option.id)}
-                        className="p-4 rounded-3xl border-2 transition-all duration-300 text-left"
+                        className="cursor-pointer px-6 py-6 rounded-3xl border-2 transition-all duration-300 text-left"
                         style={{
                           borderColor: isSelected ? option.color + "AA" : option.color + "30",
                           backgroundColor: isSelected ? option.color + "20" : "rgba(255,255,255,0.8)",
@@ -364,7 +366,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                       <motion.button
                         key={style.id}
                         onClick={() => setExpressionStyle(style.id)}
-                        className="w-full p-4 rounded-3xl border-2 transition-all duration-300 text-left"
+                        className="cursor-pointer w-full p-4 rounded-3xl border-2 transition-all duration-300 text-left"
                         style={{
                           borderColor: isSelected ? "#C5A9FFAA" : "#E0E8F5",
                           backgroundColor: isSelected ? "#C5A9FF20" : "rgba(255,255,255,0.8)",
@@ -389,7 +391,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               <div className="flex gap-3 justify-center">
                 <Button
                   onClick={() => setStep("personal")}
-                  className="px-8 py-5 rounded-full border-2 transition-all duration-300"
+                  className="cursor-pointer px-8 py-5 rounded-full border-2 transition-all duration-300"
                   style={{
                     borderColor: "#C5A9FF60",
                     backgroundColor: "transparent",
@@ -400,7 +402,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 </Button>
                 <Button
                   onClick={() => setStep("mood")}
-                  className="px-12 py-5 rounded-full border-0 transition-all duration-500 hover:scale-105"
+                  className="cursor-pointer px-12 py-5 rounded-full border-0 transition-all duration-500 hover:scale-105"
                   style={{
                     background: "linear-gradient(135deg, #C5A9FFEE, #A9C7FFAA)",
                     color: "#FFFFFF",
@@ -413,7 +415,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
 
               <button
                 onClick={() => setStep("mood")}
-                className="mt-6 text-sm text-[#B8B8CC] hover:text-[#8A8AA8] transition-colors underline w-full text-center"
+                className="cursor-pointer mt-6 text-sm text-[#B8B8CC] hover:text-[#8A8AA8] transition-colors underline w-full text-center"
               >
                 Skip for now
               </button>
@@ -433,7 +435,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
           >
             <div className="max-w-lg w-full">
               <motion.div
-                className="w-20 h-20 rounded-full mb-8 flex items-center justify-center mx-auto"
+                className="cursor-pointer w-20 h-20 rounded-full mb-8 flex items-center justify-center mx-auto"
                 style={{
                   background: "linear-gradient(135deg, #C5A9FF40, #FFD4A940)",
                   boxShadow: "0 0 40px rgba(197, 169, 255, 0.3)",
@@ -446,9 +448,11 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 <Sparkles className="w-10 h-10 text-[#C5A9FF]" />
               </motion.div>
 
+              <div className="spacing h-40"></div>
+
               <div className="text-center mb-8">
-                <h2 className="mb-3 text-[#4A4A6A]">How are you feeling right now?</h2>
-                <p className="text-[#8A8AA8]">Your mood helps us show you the right vibes</p>
+                <h2 className="mb-1 text-[#4A4A6A] text-4xl font-bold text-3xl font-bold">How are you feeling right now?</h2>
+                <p className="text-[#8A8AA8] italic">Your mood helps us show you the right vibes</p>
               </div>
 
               {/* Mood Grid */}
@@ -459,7 +463,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                     <motion.button
                       key={mood.id}
                       onClick={() => setSelectedMood(mood.id)}
-                      className="p-5 rounded-3xl border-2 transition-all duration-300 text-left"
+                      className="cursor-pointer p-5 rounded-3xl border-2 transition-all duration-300 text-left"
                       style={{
                         borderColor: isSelected ? mood.color + "AA" : mood.color + "30",
                         backgroundColor: isSelected ? mood.color + "20" : "rgba(255,255,255,0.8)",
@@ -482,7 +486,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               <div className="flex gap-3 justify-center">
                 <Button
                   onClick={() => setStep("intentions")}
-                  className="px-8 py-5 rounded-full border-2 transition-all duration-300"
+                  className="cursor-pointer px-8 py-5 rounded-full border-2 transition-all duration-300"
                   style={{
                     borderColor: "#C5A9FF60",
                     backgroundColor: "transparent",
@@ -494,7 +498,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
                 <Button
                   onClick={handleComplete}
                   disabled={!selectedMood}
-                  className="px-12 py-5 rounded-full border-0 transition-all duration-500 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="cursor-pointer px-12 py-5 rounded-full border-0 transition-all duration-500 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
                   style={{
                     background: selectedMood ? "linear-gradient(135deg, #C5A9FFEE, #A9C7FFAA)" : "linear-gradient(135deg, #D0D0E0, #C0C0D0)",
                     color: "#FFFFFF",
