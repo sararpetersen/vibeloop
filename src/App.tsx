@@ -164,6 +164,89 @@ export default function App() {
     }
   }, [darkMode]);
 
+  // Listen for app-wide navigation events (allow components to dispatch events)
+  useEffect(() => {
+    const openDreamcatcher = () => setCurrentScreen("dreamcatcher");
+    const openLoops = () => setCurrentScreen("loops");
+    const openMoodPrefs = () => {
+      setShowSettings(true);
+      // small delay to ensure Settings mounted
+      setTimeout(() => {
+        try {
+          window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs"));
+        } catch (e) {}
+      }, 80);
+    };
+    const openFeed = () => setCurrentScreen("feed");
+
+    window.addEventListener("vibeloop:open_dreamcatcher", openDreamcatcher as EventListener);
+    window.addEventListener("vibeloop:open_loops", openLoops as EventListener);
+    window.addEventListener("vibeloop:open_mood_prefs", openMoodPrefs as EventListener);
+    window.addEventListener("vibeloop:open_feed", openFeed as EventListener);
+
+    return () => {
+      window.removeEventListener("vibeloop:open_dreamcatcher", openDreamcatcher as EventListener);
+      window.removeEventListener("vibeloop:open_loops", openLoops as EventListener);
+      window.removeEventListener("vibeloop:open_mood_prefs", openMoodPrefs as EventListener);
+      window.removeEventListener("vibeloop:open_feed", openFeed as EventListener);
+    };
+  }, []);
+
+  // Listen for global data changes (localStorage writes from other components)
+  useEffect(() => {
+    const handler = () => {
+      try {
+        // reload simple settings
+        const rawSettings = localStorage.getItem("vibeloop_settings");
+        if (rawSettings) {
+          const settings = JSON.parse(rawSettings);
+          if (typeof settings.darkMode === "boolean") setDarkMode(settings.darkMode);
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      try {
+        const rawFollowing = localStorage.getItem("vibeloop_following");
+        if (rawFollowing) setFollowingList(JSON.parse(rawFollowing));
+      } catch (e) {
+        // ignore
+      }
+
+      try {
+        const rawJoined = localStorage.getItem("vibeloop_joined_loops");
+        if (rawJoined) {
+          const parsed = JSON.parse(rawJoined);
+          if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "object") {
+            setJoinedLoops(parsed);
+          } else if (Array.isArray(parsed)) {
+            // if stored as ids, map to minimal objects
+            setJoinedLoops(parsed.map((id: number) => ({ id, name: `Loop ${id}`, color: "#C5A9FF" })));
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+
+      try {
+        const rawSaved = localStorage.getItem("vibeloop_saved_dreams");
+        if (rawSaved) {
+          const parsed = JSON.parse(rawSaved);
+          if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "object") {
+            setSavedDreamOrbs(parsed.map((p: any) => p.id));
+          } else if (Array.isArray(parsed)) {
+            setSavedDreamOrbs(parsed as number[]);
+          }
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    window.addEventListener("vibeloop:data_changed", handler as EventListener);
+    return () => window.removeEventListener("vibeloop:data_changed", handler as EventListener);
+  }, []);
+
   const handleLogin = (email: string, password: string) => {
     // In a real app, this would validate credentials
     // For now, we'll check if user has onboarding data

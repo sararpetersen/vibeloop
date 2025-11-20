@@ -177,7 +177,7 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
         {filteredVibes.length === 0 && (
           <div className="px-6 pt-8 text-center text-sm text-[#8A8AA8]">
             <div className="max-w-xl mx-auto p-6 rounded-2xl bg-white/60 border-2 border-white/30">
-              <h3 className="text-[#4A4A6A] text-lg font-semibold">Welcome — it looks like you're new here</h3>
+              <h3 className="text-[#4A4A6A] text-xl font-bold">Welcome — it looks like you're new here</h3>
               <p className="mt-2">Your feed will show vibes from people you follow and dreams you save.</p>
               <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
                 <Button
@@ -206,8 +206,9 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
                 <Button
                   variant="ghost"
                   onClick={() => {
-                    setCurrentScreen?.("settings");
-                    window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs"));
+                    try {
+                      window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs"));
+                    } catch (e) {}
                   }}
                 >
                   Set your mood palette

@@ -250,51 +250,53 @@ export function Profile({
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {savedDreamObjects.map((dream, index) => (
-                    <motion.div
-                      key={dream.id}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.06 }}
-                      className="p-4 rounded-2xl border-2 flex items-center gap-3"
-                      style={{ borderColor: dream.moodColor + "30", backgroundColor: dream.moodColor + "10" }}
-                    >
-                      <div
-                        className="w-12 h-12 rounded-full flex items-center justify-center"
-                        style={{ background: `radial-gradient(circle, ${dream.moodColor}FF, ${dream.moodColor}60)` }}
+                    <motion.div key={dream.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06 }}>
+                      <Card
+                        className="p-4 rounded-2xl border-2 flex items-center gap-3"
+                        style={{ borderColor: dream.moodColor + "30", backgroundColor: dream.moodColor + "10" }}
                       >
-                        <span className="text-white font-semibold">{dream.mood.charAt(0)}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm text-[#4A4A6A] line-clamp-2">{dream.text}</div>
-                        <div className="text-xs text-[#8A8AA8] mt-1">{dream.timestamp}</div>
-                      </div>
-                      <div className="flex flex-col items-end gap-2">
-                        <button
-                          onClick={() => {
-                            try {
-                              // remove saved id
-                              const raw = localStorage.getItem("vibeloop_saved_dreams");
-                              if (!raw) return;
-                              const parsed = JSON.parse(raw) as number[];
-                              const next = parsed.filter((id) => id !== dream.id);
-                              localStorage.setItem("vibeloop_saved_dreams", JSON.stringify(next));
-                              window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
-                            } catch (e) {}
-                          }}
-                          className="text-xs text-[#C5A9FF]"
+                        <div
+                          className="w-12 h-12 rounded-full flex items-center justify-center"
+                          style={{ background: `radial-gradient(circle, ${dream.moodColor}FF, ${dream.moodColor}60)` }}
                         >
-                          Remove
-                        </button>
-                        <button
-                          onClick={() => {
-                            // open in feed or navigate - simple behaviour: go to feed (not handled here)
-                            window.dispatchEvent(new CustomEvent("vibeloop:open_feed"));
-                          }}
-                          className="text-xs text-[#6A6A88]"
-                        >
-                          View
-                        </button>
-                      </div>
+                          <span className="text-white font-semibold">{dream.mood.charAt(0)}</span>
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm text-[#4A4A6A] line-clamp-2">{dream.text}</div>
+                          <div className="text-xs text-[#8A8AA8] mt-1">{dream.timestamp}</div>
+                        </div>
+
+                        <div className="flex flex-col items-end gap-2">
+                          <button
+                            onClick={() => {
+                              try {
+                                const raw = localStorage.getItem("vibeloop_saved_dreams");
+                                if (!raw) return;
+                                const parsed = JSON.parse(raw) as number[];
+                                const next = parsed.filter((id) => id !== dream.id);
+                                localStorage.setItem("vibeloop_saved_dreams", JSON.stringify(next));
+                                window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+                              } catch (e) {}
+                            }}
+                            className="text-xs text-[#C5A9FF]"
+                          >
+                            Remove
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (setCurrentScreen) setCurrentScreen("feed");
+                              else
+                                try {
+                                  window.dispatchEvent(new CustomEvent("vibeloop:open_feed"));
+                                } catch (e) {}
+                            }}
+                            className="text-xs text-[#6A6A88]"
+                          >
+                            View
+                          </button>
+                        </div>
+                      </Card>
                     </motion.div>
                   ))}
                 </div>
@@ -357,19 +359,10 @@ export function Profile({
               >
                 <Card
                   className="p-4 rounded-2xl border-2 flex items-center gap-3 cursor-pointer hover:scale-[1.02] transition-transform backdrop-blur-sm"
-                  style={{
-                    borderColor: loop.color + "40",
-                    backgroundColor: "rgba(255,255,255,0.8)",
-                  }}
+                  style={{ borderColor: loop.color + "40", backgroundColor: "rgba(255,255,255,0.8)" }}
                 >
-                  <div
-                    className="w-3 h-3 rounded-full"
-                    style={{
-                      backgroundColor: loop.color,
-                      boxShadow: `0 0 12px ${loop.color}80`,
-                    }}
-                  />
-                  <span className="text-[#6A6A88]">{loop.name}</span>
+                  <div className="w-3 h-3 rounded-full" style={{ backgroundColor: loop.color, boxShadow: `0 0 12px ${loop.color}80` }} />
+                  <span className="text-[#6A6A88] truncate">{loop.name}</span>
                   <div className="ml-auto">
                     <button onClick={() => leaveLoop(loop.id)} className="text-xs text-red-400 hover:text-red-500">
                       Leave

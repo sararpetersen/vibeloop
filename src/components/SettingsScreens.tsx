@@ -327,13 +327,64 @@ export function BlockedUsers({ onBack }: ScreenProps) {
 
 // Mood Preferences Screen
 export function MoodPreferences({ onBack }: ScreenProps) {
-  const [favoriteMoods, setFavoriteMoods] = useState(["Dreamy", "Chill", "Creative"]);
+  const [favoriteMoods, setFavoriteMoods] = useState<string[]>(["Dreamy", "Chill", "Creative"]);
+
+  // Load existing mood preferences from vibeloop_settings or legacy vibeloop_mood_prefs
+  useEffect(() => {
+    try {
+      const settingsRaw = localStorage.getItem("vibeloop_settings");
+      if (settingsRaw) {
+        const parsed = JSON.parse(settingsRaw);
+        if (parsed && Array.isArray(parsed.moodPreferences)) {
+          setFavoriteMoods(parsed.moodPreferences);
+          return;
+        }
+      }
+
+      const legacy = localStorage.getItem("vibeloop_mood_prefs");
+      if (legacy) {
+        const parsedLegacy = JSON.parse(legacy);
+        if (Array.isArray(parsedLegacy)) {
+          setFavoriteMoods(parsedLegacy);
+          return;
+        }
+      }
+    } catch (e) {
+      // ignore parse errors
+    }
+  }, []);
 
   const toggleMood = (moodName: string) => {
-    if (favoriteMoods.includes(moodName)) {
-      setFavoriteMoods(favoriteMoods.filter((m) => m !== moodName));
-    } else {
-      setFavoriteMoods([...favoriteMoods, moodName]);
+    setFavoriteMoods((prev) => (prev.includes(moodName) ? prev.filter((m) => m !== moodName) : [...prev, moodName]));
+  };
+
+  const handleSave = () => {
+    try {
+      // Merge into vibeloop_settings
+      const raw = localStorage.getItem("vibeloop_settings");
+      let settings = raw ? JSON.parse(raw) : {};
+      if (!settings || typeof settings !== "object") settings = {};
+      settings.moodPreferences = favoriteMoods;
+      localStorage.setItem("vibeloop_settings", JSON.stringify(settings));
+
+      // Also write legacy key for compatibility
+      localStorage.setItem("vibeloop_mood_prefs", JSON.stringify(favoriteMoods));
+
+      // Notify app of change
+      try {
+        window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+      } catch (e) {
+        // ignore
+      }
+    } catch (e) {
+      // ignore storage errors
+    }
+
+    // Return to previous screen
+    try {
+      onBack();
+    } catch (e) {
+      // ignore
     }
   };
 
@@ -376,6 +427,7 @@ export function MoodPreferences({ onBack }: ScreenProps) {
         </div>
 
         <Button
+          onClick={handleSave}
           className="w-full py-6 text-white"
           style={{
             background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",

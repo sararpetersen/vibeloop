@@ -417,50 +417,57 @@ export function VibeWaves({
               {risingLoops.map((loop, index) => (
                 <motion.div key={loop.id} initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.1 }}>
                   <Card
-                    className="p-4 rounded-3xl border-2 hover:scale-[1.01] transition-transform cursor-pointer"
-                    style={{
-                      borderColor: loop.color + "40",
-                      backgroundColor: "#FFFFFF",
-                    }}
+                    className="p-4 rounded-2xl border-2 hover:scale-[1.01] transition-transform cursor-pointer"
+                    style={{ borderColor: loop.color + "30", backgroundColor: "#FFFFFF" }}
                   >
-                    <div className="flex items-center justify-between">
-                      <div className="flex-1">
-                        <h4 className="text-[#4A4A6A] mb-1">{loop.name}</h4>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Badge
-                            className="px-2 py-0.5 text-xs rounded-full border-0"
-                            style={{
-                              backgroundColor: loop.color + "30",
-                              color: "#6A6A88",
-                            }}
-                          >
-                            {loop.vibe}
-                          </Badge>
-                          <span className="text-xs text-[#B8B8CC]">{loop.activity}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-[#B8B8CC]">
-                          <MapPin className="w-3 h-3" />
-                          <span>{loop.location}</span>
+                    <div className="flex items-center gap-4">
+                      <div className="flex-shrink-0">
+                        <div
+                          className="w-14 h-14 rounded-2xl flex items-center justify-center text-white font-semibold"
+                          style={{ backgroundColor: loop.color, boxShadow: `0 6px 18px ${loop.color}16` }}
+                        >
+                          {loop.name.charAt(0)}
                         </div>
                       </div>
-                      <div className="text-right flex flex-col items-end gap-2">
-                        <div
-                          className="px-3 py-1 rounded-full text-xs"
-                          style={{
-                            backgroundColor: loop.color + "20",
-                            color: "#6A6A88",
-                          }}
-                        >
-                          +{loop.newMembers} new
+
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="min-w-0">
+                            <h4 className="text-[#4A4A6A] mb-1 truncate">{loop.name}</h4>
+                            <p className="text-sm text-[#8A8AA8] line-clamp-2">{loop.activity}</p>
+                            <div className="flex items-center gap-2 text-xs text-[#B8B8CC] mt-1">
+                              <MapPin className="w-3.5 h-3.5 text-[#B8B8CC]" />
+                              <span className="truncate">{loop.location}</span>
+                            </div>
+                          </div>
+
+                          <div className="text-right">
+                            <div className="text-sm text-[#6A6A88]">+{loop.newMembers}</div>
+                            <div className="text-xs text-[#B8B8CC]">new</div>
+                          </div>
                         </div>
-                        <button
-                          onClick={() => (isJoined(loop.id) ? leaveLoopLocal(loop.id) : joinLoopLocal(loop))}
-                          className={`px-3 py-1 rounded-full text-xs ${
-                            isJoined(loop.id) ? "bg-red-50 text-red-500" : "bg-[#C5A9FF20] text-[#6A6A88]"
-                          }`}
-                        >
-                          {isJoined(loop.id) ? "Leave" : "Join"}
-                        </button>
+
+                        <div className="mt-3 flex items-center justify-between">
+                          <div className="flex flex-wrap gap-1.5">
+                            <Badge
+                              className="px-2 py-0.5 text-xs rounded-full border-0"
+                              style={{ backgroundColor: loop.color + "20", color: "#6A6A88" }}
+                            >
+                              {loop.vibe}
+                            </Badge>
+                          </div>
+
+                          <div>
+                            <button
+                              onClick={() => (isJoined(loop.id) ? leaveLoopLocal(loop.id) : joinLoopLocal(loop))}
+                              className={`px-3 py-2 rounded-full text-sm ${
+                                isJoined(loop.id) ? "bg-red-50 text-red-500" : "bg-[#C5A9FF20] text-[#6A6A88]"
+                              }`}
+                            >
+                              {isJoined(loop.id) ? "Leave" : "Join"}
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </Card>

@@ -98,6 +98,33 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
     }
   }, []);
 
+  // Update settings state when other components write settings to localStorage
+  useEffect(() => {
+    const handler = () => {
+      try {
+        const raw = localStorage.getItem("vibeloop_settings");
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        if (typeof data.notifications === "boolean") setNotifications(data.notifications);
+        if (typeof data.vibeReminders === "boolean") setVibeReminders(data.vibeReminders);
+        if (typeof data.showMoodHistory === "boolean") setShowMoodHistory(data.showMoodHistory);
+        if (typeof data.privateProfile === "boolean") setPrivateProfile(data.privateProfile);
+        if (typeof data.darkMode === "boolean") setDarkMode(data.darkMode);
+        if (typeof data.language === "string") setLanguage(data.language);
+        try {
+          onSettingsChange?.(data as any);
+        } catch (e) {
+          // ignore
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    window.addEventListener("vibeloop:data_changed", handler as EventListener);
+    return () => window.removeEventListener("vibeloop:data_changed", handler as EventListener);
+  }, [onSettingsChange]);
+
   // Load profile preview (name + avatar)
   useEffect(() => {
     try {
@@ -305,7 +332,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
               style={{ background: "radial-gradient(circle, #C5A9FF, transparent)" }}
             />
 
-            <button onClick={() => setCurrentScreen("editProfile")} className="w-full text-left flex items-center gap-4 relative">
+            <div className="w-full text-left flex items-center gap-4 relative">
               <div
                 className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg overflow-hidden"
                 style={{
@@ -323,7 +350,25 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
                 <h3 className="text-[#4A4A6A]">{displayName}</h3>
                 <p className="text-[#8A8AA8]">@dreamweaver</p>
               </div>
-            </button>
+              <div className="flex flex-col items-end gap-2">
+                <button onClick={() => setCurrentScreen("editProfile")} className="text-sm text-[#6A6A88] px-3 py-1 rounded-md bg-white/30">
+                  Edit Profile
+                </button>
+                <button
+                  onClick={() => {
+                    // Clear mood palette keys and open mood preferences
+                    try {
+                      localStorage.removeItem("vibeloop_mood_palette");
+                      localStorage.removeItem("vibeloop_mood_prefs");
+                    } catch (e) {}
+                    setCurrentScreen("moodPreferences");
+                  }}
+                  className="text-xs text-[#C5A9FF] hover:text-[#A9C7FF]"
+                >
+                  Reset Mood Palette
+                </button>
+              </div>
+            </div>
           </Card>
         </motion.div>
 
