@@ -1,32 +1,10 @@
-import { motion } from 'motion/react';
-import { Card } from './ui/card';
-import { Switch } from './ui/switch';
-import { Separator } from './ui/separator';
-import {
-  ChevronRight,
-  Bell,
-  Lock,
-  Moon,
-  Globe,
-  Heart,
-  HelpCircle,
-  LogOut,
-  User,
-  Eye,
-  Shield,
-  Sparkles,
-  Palette,
-  X,
-  Languages,
-} from 'lucide-react';
-import { useState } from 'react';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
+import { motion } from "motion/react";
+import { Card } from "./ui/card";
+import { Switch } from "./ui/switch";
+import { Separator } from "./ui/separator";
+import { ChevronRight, Bell, Lock, Moon, Globe, Heart, HelpCircle, LogOut, User, Eye, Shield, Sparkles, Palette, X, Languages } from "lucide-react";
+import { useState } from "react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import {
   EditProfile,
   PrivacySettings,
@@ -38,7 +16,7 @@ import {
   SecuritySettings,
   DataPrivacySettings,
   LoopRadiusSettings,
-} from './SettingsScreens';
+} from "./SettingsScreens";
 
 interface SettingsProps {
   userName: string;
@@ -46,16 +24,16 @@ interface SettingsProps {
 }
 
 type SettingsScreen =
-  | 'main'
-  | 'editProfile'
-  | 'privacy'
-  | 'security'
-  | 'blockedUsers'
-  | 'dataPrivacy'
-  | 'moodPreferences'
-  | 'loopRadius'
-  | 'help'
-  | 'feedback';
+  | "main"
+  | "editProfile"
+  | "privacy"
+  | "security"
+  | "blockedUsers"
+  | "dataPrivacy"
+  | "moodPreferences"
+  | "loopRadius"
+  | "help"
+  | "feedback";
 
 export function Settings({ userName, onClose }: SettingsProps) {
   const [notifications, setNotifications] = useState(true);
@@ -63,22 +41,22 @@ export function Settings({ userName, onClose }: SettingsProps) {
   const [showMoodHistory, setShowMoodHistory] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [language, setLanguage] = useState('en');
-  const [currentScreen, setCurrentScreen] = useState<SettingsScreen>('main');
+  const [language, setLanguage] = useState("en");
+  const [currentScreen, setCurrentScreen] = useState<SettingsScreen>("main");
 
   const handleNavigate = (label: string) => {
     const screenMap: Record<string, SettingsScreen> = {
-      'Edit Profile': 'editProfile',
-      'Privacy': 'privacy',
-      'Security': 'security',
-      'Blocked Users': 'blockedUsers',
-      'Data & Privacy': 'dataPrivacy',
-      'Mood Preferences': 'moodPreferences',
-      'Local Loop Radius': 'loopRadius',
-      'Help & FAQs': 'help',
-      'Send Feedback': 'feedback',
+      "Edit Profile": "editProfile",
+      Privacy: "privacy",
+      Security: "security",
+      "Blocked Users": "blockedUsers",
+      "Data & Privacy": "dataPrivacy",
+      "Mood Preferences": "moodPreferences",
+      "Local Loop Radius": "loopRadius",
+      "Help & FAQs": "help",
+      "Send Feedback": "feedback",
     };
-    
+
     const screen = screenMap[label];
     if (screen) {
       setCurrentScreen(screen);
@@ -86,120 +64,120 @@ export function Settings({ userName, onClose }: SettingsProps) {
   };
 
   // Render sub-screens
-  if (currentScreen === 'editProfile') {
-    return <EditProfile onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "editProfile") {
+    return <EditProfile onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
-  if (currentScreen === 'privacy') {
-    return <PrivacySettings onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "privacy") {
+    return <PrivacySettings onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
-  if (currentScreen === 'blockedUsers') {
-    return <BlockedUsers onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "blockedUsers") {
+    return <BlockedUsers onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
-  if (currentScreen === 'moodPreferences') {
-    return <MoodPreferences onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "moodPreferences") {
+    return <MoodPreferences onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
-  if (currentScreen === 'security') {
-    return <SecuritySettings onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "security") {
+    return <SecuritySettings onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
-  if (currentScreen === 'dataPrivacy') {
-    return <DataPrivacySettings onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "dataPrivacy") {
+    return <DataPrivacySettings onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
-  if (currentScreen === 'loopRadius') {
-    return <LoopRadiusSettings onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "loopRadius") {
+    return <LoopRadiusSettings onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
-  if (currentScreen === 'help') {
-    return <HelpFAQs onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "help") {
+    return <HelpFAQs onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
-  if (currentScreen === 'feedback') {
-    return <SendFeedback onBack={() => setCurrentScreen('main')} userName={userName} />;
+  if (currentScreen === "feedback") {
+    return <SendFeedback onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
 
   const languages = [
-    { value: 'en', label: 'English' },
-    { value: 'es', label: 'Español' },
-    { value: 'fr', label: 'Français' },
-    { value: 'de', label: 'Deutsch' },
-    { value: 'it', label: 'Italiano' },
-    { value: 'pt', label: 'Português' },
-    { value: 'ja', label: '日本語' },
-    { value: 'ko', label: '한국어' },
-    { value: 'zh', label: '中文' },
-    { value: 'ar', label: 'العربية' },
+    { value: "en", label: "English" },
+    { value: "es", label: "Español" },
+    { value: "fr", label: "Français" },
+    { value: "de", label: "Deutsch" },
+    { value: "it", label: "Italiano" },
+    { value: "pt", label: "Português" },
+    { value: "ja", label: "日本語" },
+    { value: "ko", label: "한국어" },
+    { value: "zh", label: "中文" },
+    { value: "ar", label: "العربية" },
   ];
 
   const settingSections = [
     {
-      title: 'Account',
+      title: "Account",
       items: [
-        { icon: User, label: 'Edit Profile', action: true },
-        { icon: Eye, label: 'Privacy', action: true },
-        { icon: Shield, label: 'Security', action: true },
+        { icon: User, label: "Edit Profile", action: true },
+        { icon: Eye, label: "Privacy", action: true },
+        { icon: Shield, label: "Security", action: true },
       ],
     },
     {
-      title: 'Preferences',
+      title: "Preferences",
       items: [
         {
           icon: Bell,
-          label: 'Notifications',
+          label: "Notifications",
           toggle: true,
           value: notifications,
           onChange: setNotifications,
         },
         {
           icon: Sparkles,
-          label: 'Daily Vibe Reminders',
+          label: "Daily Vibe Reminders",
           toggle: true,
           value: vibeReminders,
           onChange: setVibeReminders,
         },
         {
           icon: Heart,
-          label: 'Show Mood History',
+          label: "Show Mood History",
           toggle: true,
           value: showMoodHistory,
           onChange: setShowMoodHistory,
         },
         {
           icon: Moon,
-          label: 'Dark Mode',
+          label: "Dark Mode",
           toggle: true,
           value: darkMode,
           onChange: setDarkMode,
         },
         {
           icon: Languages,
-          label: 'Language',
+          label: "Language",
           selector: true,
         },
       ],
     },
     {
-      title: 'Vibe Settings',
+      title: "Vibe Settings",
       items: [
-        { icon: Palette, label: 'Mood Preferences', action: true },
-        { icon: Globe, label: 'Local Loop Radius', action: true },
+        { icon: Palette, label: "Mood Preferences", action: true },
+        { icon: Globe, label: "Local Loop Radius", action: true },
       ],
     },
     {
-      title: 'Privacy',
+      title: "Privacy",
       items: [
         {
           icon: Lock,
-          label: 'Private Profile',
+          label: "Private Profile",
           toggle: true,
           value: privateProfile,
           onChange: setPrivateProfile,
         },
-        { icon: Eye, label: 'Blocked Users', action: true },
-        { icon: Shield, label: 'Data & Privacy', action: true },
+        { icon: Eye, label: "Blocked Users", action: true },
+        { icon: Shield, label: "Data & Privacy", action: true },
       ],
     },
     {
-      title: 'Support',
+      title: "Support",
       items: [
-        { icon: HelpCircle, label: 'Help & FAQs', action: true },
-        { icon: Heart, label: 'Send Feedback', action: true },
+        { icon: HelpCircle, label: "Help & FAQs", action: true },
+        { icon: Heart, label: "Send Feedback", action: true },
       ],
     },
   ];
@@ -232,24 +210,20 @@ export function Settings({ userName, onClose }: SettingsProps) {
         </div>
 
         {/* User Info Card */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.1 }}
-        >
+        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
           <Card className="mb-6 p-4 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl overflow-hidden relative">
             {/* Ambient glow */}
             <div
               className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-30"
-              style={{ background: 'radial-gradient(circle, #C5A9FF, transparent)' }}
+              style={{ background: "radial-gradient(circle, #C5A9FF, transparent)" }}
             />
-            
+
             <div className="flex items-center gap-4 relative">
               <div
                 className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
                 style={{
-                  background: 'linear-gradient(135deg, #C5A9FF40, #A9C7FF40)',
-                  boxShadow: '0 0 20px #C5A9FF30',
+                  background: "linear-gradient(135deg, #C5A9FF40, #A9C7FF40)",
+                  boxShadow: "0 0 20px #C5A9FF30",
                 }}
               >
                 <span className="text-[#6A6A88]">You</span>
@@ -287,13 +261,13 @@ export function Settings({ userName, onClose }: SettingsProps) {
                           <div
                             className="p-2 rounded-xl transition-all duration-300"
                             style={{
-                              backgroundColor: '#C5A9FF15',
+                              backgroundColor: "#C5A9FF15",
                             }}
                           >
                             <Icon
                               className="w-5 h-5 transition-all duration-300"
                               style={{
-                                color: '#C5A9FF',
+                                color: "#C5A9FF",
                               }}
                             />
                           </div>
@@ -301,11 +275,7 @@ export function Settings({ userName, onClose }: SettingsProps) {
                         </div>
 
                         {item.onChange && (
-                          <Switch
-                            checked={item.value || false}
-                            onCheckedChange={item.onChange}
-                            className="data-[state=checked]:bg-[#C5A9FF]"
-                          />
+                          <Switch checked={item.value || false} onCheckedChange={item.onChange} className="data-[state=checked]:bg-[#C5A9FF]" />
                         )}
                       </motion.div>
                     ) : item.selector ? (
@@ -317,13 +287,13 @@ export function Settings({ userName, onClose }: SettingsProps) {
                           <div
                             className="p-2 rounded-xl transition-all duration-300"
                             style={{
-                              backgroundColor: '#C5A9FF15',
+                              backgroundColor: "#C5A9FF15",
                             }}
                           >
                             <Icon
                               className="w-5 h-5 transition-all duration-300"
                               style={{
-                                color: '#C5A9FF',
+                                color: "#C5A9FF",
                               }}
                             />
                           </div>
@@ -353,13 +323,13 @@ export function Settings({ userName, onClose }: SettingsProps) {
                           <div
                             className="p-2 rounded-xl transition-all duration-300"
                             style={{
-                              backgroundColor: '#C5A9FF15',
+                              backgroundColor: "#C5A9FF15",
                             }}
                           >
                             <Icon
                               className="w-5 h-5 transition-all duration-300"
                               style={{
-                                color: '#C5A9FF',
+                                color: "#C5A9FF",
                               }}
                             />
                           </div>
@@ -371,9 +341,7 @@ export function Settings({ userName, onClose }: SettingsProps) {
                         )}
                       </motion.button>
                     )}
-                    {itemIndex < section.items.length - 1 && (
-                      <Separator className="bg-white/40" />
-                    )}
+                    {itemIndex < section.items.length - 1 && <Separator className="bg-white/40" />}
                   </div>
                 );
               })}
@@ -382,20 +350,13 @@ export function Settings({ userName, onClose }: SettingsProps) {
         ))}
 
         {/* Logout Button */}
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          className="mb-8"
-        >
+        <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="mb-8">
           <motion.button
             whileTap={{ scale: 0.98 }}
             className="w-full p-4 rounded-2xl flex items-center justify-center gap-3 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl group transition-all duration-300 hover:bg-red-50/60 hover:border-red-100"
           >
             <LogOut className="w-5 h-5 text-red-400 group-hover:text-red-500 transition-colors" />
-            <span className="text-red-400 group-hover:text-red-500 transition-colors">
-              Log Out
-            </span>
+            <span className="text-red-400 group-hover:text-red-500 transition-colors">Log Out</span>
           </motion.button>
         </motion.div>
 
@@ -410,7 +371,7 @@ export function Settings({ userName, onClose }: SettingsProps) {
       <div className="fixed inset-0 pointer-events-none -z-10 overflow-hidden">
         <motion.div
           className="absolute top-20 right-10 w-40 h-40 rounded-full blur-3xl opacity-20"
-          style={{ background: 'radial-gradient(circle, #A9C7FF, transparent)' }}
+          style={{ background: "radial-gradient(circle, #A9C7FF, transparent)" }}
           animate={{
             y: [0, 30, 0],
             x: [0, 20, 0],
@@ -418,12 +379,12 @@ export function Settings({ userName, onClose }: SettingsProps) {
           transition={{
             duration: 12,
             repeat: Infinity,
-            ease: 'easeInOut',
+            ease: "easeInOut",
           }}
         />
         <motion.div
           className="absolute bottom-40 left-10 w-40 h-40 rounded-full blur-3xl opacity-20"
-          style={{ background: 'radial-gradient(circle, #C5A9FF, transparent)' }}
+          style={{ background: "radial-gradient(circle, #C5A9FF, transparent)" }}
           animate={{
             y: [0, -30, 0],
             x: [0, -20, 0],
@@ -431,7 +392,7 @@ export function Settings({ userName, onClose }: SettingsProps) {
           transition={{
             duration: 15,
             repeat: Infinity,
-            ease: 'easeInOut',
+            ease: "easeInOut",
           }}
         />
       </div>

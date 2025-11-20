@@ -6,7 +6,7 @@ import { Textarea } from "./ui/textarea";
 import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
 import { ChevronLeft, Camera, Trash2, ChevronDown, ChevronUp, Send, Star, Check } from "lucide-react";
-import { useState } from "react";
+import { useState, useRef, useEffect, type ChangeEvent } from "react";
 import { MOODS } from "./moods";
 import { Badge } from "./ui/badge";
 
@@ -16,10 +16,90 @@ interface ScreenProps {
 }
 
 // Edit Profile Screen
+// Edit Profile Screen
 export function EditProfile({ onBack, userName }: ScreenProps) {
   const [name, setName] = useState(userName);
   const [username, setUsername] = useState("@dreamweaver");
   const [bio, setBio] = useState("Living in dreams, expressing in vibes 🌙✨");
+
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
+
+  // Load saved profile (if any) on open
+  useEffect(() => {
+    const savedProfile = localStorage.getItem("vibeloop_profile");
+    if (savedProfile) {
+      try {
+        const data = JSON.parse(savedProfile);
+        if (data.name) setName(data.name);
+        if (data.username) setUsername(data.username);
+        if (data.bio) setBio(data.bio);
+      } catch {
+        // ignore parsing errors
+      }
+    }
+
+    const savedAvatar = localStorage.getItem("vibeloop_profile_avatar");
+    if (savedAvatar) {
+      setAvatarUrl(savedAvatar);
+    }
+  }, [userName]);
+
+  const handleAddPhotoClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handlePhotoChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setAvatarUrl(reader.result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSave = () => {
+    setIsSaving(true);
+
+    // Save profile data
+    localStorage.setItem(
+      "vibeloop_profile",
+      JSON.stringify({
+        name,
+        username,
+        bio,
+      })
+    );
+
+    // Save avatar if set
+    if (avatarUrl) {
+      localStorage.setItem("vibeloop_profile_avatar", avatarUrl);
+    }
+
+    // Optional: also update onboarding data so the name matches on reload
+    const onboarding = localStorage.getItem("vibeloop_onboarded");
+    if (onboarding) {
+      try {
+        const data = JSON.parse(onboarding);
+        data.userName = name;
+        localStorage.setItem("vibeloop_onboarded", JSON.stringify(data));
+      } catch {
+        // ignore
+      }
+    }
+
+    setTimeout(() => {
+      setIsSaving(false);
+      setSaveMessage("Changes saved ✨");
+      setTimeout(() => setSaveMessage(null), 2000);
+    }, 400);
+  };
 
   return (
     <motion.div
@@ -40,23 +120,30 @@ export function EditProfile({ onBack, userName }: ScreenProps) {
         {/* Profile Picture */}
         <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
           <div className="flex items-center gap-4">
-            <div
-              className="w-20 h-20 rounded-full flex items-center justify-center shadow-lg relative group cursor-pointer"
+            <button
+              type="button"
+              onClick={handleAddPhotoClick}
+              className="w-20 h-20 rounded-full flex items-center justify-center shadow-lg relative group cursor-pointer overflow-hidden"
               style={{
                 background: "linear-gradient(135deg, #C5A9FF40, #A9C7FF40)",
                 boxShadow: "0 0 20px #C5A9FF30",
               }}
             >
-              <span className="text-[#6A6A88]">You</span>
+              {avatarUrl ? <img src={avatarUrl} alt="Profile" className="w-full h-full object-cover" /> : <span className="text-[#6A6A88]">You</span>}
+
               <div className="absolute inset-0 bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <Camera className="w-6 h-6 text-white" />
               </div>
-            </div>
+            </button>
+
             <div className="flex-1">
               <h3 className="text-[#4A4A6A]">Profile Photo</h3>
               <p className="text-[#8A8AA8] text-sm">Click to change</p>
             </div>
           </div>
+
+          {/* Hidden file input */}
+          <input type="file" accept="image/*" ref={fileInputRef} onChange={handlePhotoChange} className="hidden" />
         </Card>
 
         {/* Form Fields */}
@@ -86,14 +173,18 @@ export function EditProfile({ onBack, userName }: ScreenProps) {
         </Card>
 
         <Button
-          className="w-full py-6 text-white mb-6"
+          className="w-full py-6 text-white mb-2"
           style={{
             background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
             boxShadow: "0 0 20px #C5A9FF50",
           }}
+          onClick={handleSave}
+          disabled={isSaving}
         >
-          Save Changes
+          {isSaving ? "Saving..." : "Save Changes"}
         </Button>
+
+        {saveMessage && <p className="text-center text-xs text-[#8A8AA8] mb-6">{saveMessage}</p>}
       </div>
     </motion.div>
   );
