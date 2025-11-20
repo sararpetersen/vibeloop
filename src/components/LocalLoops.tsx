@@ -4,26 +4,8 @@ import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "./ui/tabs";
-import {
-  Search,
-  Moon,
-  Sparkles,
-  Coffee,
-  Palette,
-  Heart,
-  Star,
-  Plus,
-  MapPin,
-  Calendar,
-  Users as UsersIcon,
-  MessageCircle,
-} from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Search, Moon, Sparkles, Coffee, Palette, Heart, Star, Plus, MapPin, Calendar, Users as UsersIcon, MessageCircle } from "lucide-react";
 import { getMoodColor, MOODS } from "./moods";
 import { LoopChat } from "./LoopChat";
 import { LoopDetail } from "./LoopDetail";
@@ -39,12 +21,25 @@ const getCommunitySize = (members: number): string => {
 // Use all 15 moods for filters
 const vibeFilters = ["All", ...MOODS.map((m) => m.name)];
 
-const loops = [
+type Loop = {
+  id: number;
+  name: string;
+  description: string;
+  location: string;
+  members: number;
+  activeMembersToday: number;
+  vibe: string;
+  icon: any;
+  color: string;
+  founded: string;
+  activities: string[];
+};
+
+const initialLoops: Loop[] = [
   {
     id: 1,
     name: "The Creative Collective",
-    description:
-      "For people who make stuff - art, writing, music, whatever",
+    description: "For people who make stuff - art, writing, music, whatever",
     location: "Copenhagen, Denmark",
     members: 847,
     activeMembersToday: 124,
@@ -52,11 +47,7 @@ const loops = [
     icon: Palette,
     color: "#D4A9FF",
     founded: "Founded Nov 2024",
-    activities: [
-      "Art Sessions",
-      "Open Mic",
-      "Creative Workshops",
-    ],
+    activities: ["Art Sessions", "Open Mic", "Creative Workshops"],
   },
   {
     id: 2,
@@ -74,8 +65,7 @@ const loops = [
   {
     id: 3,
     name: "Dream Journal Club",
-    description:
-      "Talk about your weird dreams and what they might mean",
+    description: "Talk about your weird dreams and what they might mean",
     location: "Copenhagen, Denmark",
     members: 612,
     activeMembersToday: 89,
@@ -83,17 +73,12 @@ const loops = [
     icon: Sparkles,
     color: "#C5A9FF",
     founded: "Founded Aug 2024",
-    activities: [
-      "Dream Journaling",
-      "Meditation",
-      "Creative Writing",
-    ],
+    activities: ["Dream Journaling", "Meditation", "Creative Writing"],
   },
   {
     id: 4,
     name: "Book & Coffee Meetups",
-    description:
-      "Chill at cafes, read, think, talk if you feel like it",
+    description: "Chill at cafes, read, think, talk if you feel like it",
     location: "Nørrebro, Copenhagen",
     members: 523,
     activeMembersToday: 67,
@@ -101,17 +86,12 @@ const loops = [
     icon: Coffee,
     color: "#E0C9D9",
     founded: "Founded Jul 2024",
-    activities: [
-      "Cafe Meetups",
-      "Book Clubs",
-      "Silent Reading",
-    ],
+    activities: ["Cafe Meetups", "Book Clubs", "Silent Reading"],
   },
   {
     id: 5,
     name: "Astronomy Club",
-    description:
-      "Space nerds and people who think about the big stuff",
+    description: "Space nerds and people who think about the big stuff",
     location: "Amager, Copenhagen",
     members: 356,
     activeMembersToday: 42,
@@ -119,17 +99,12 @@ const loops = [
     icon: Star,
     color: "#C5A9FF",
     founded: "Founded Oct 2024",
-    activities: [
-      "Astronomy Nights",
-      "Philosophy Talks",
-      "Music Sharing",
-    ],
+    activities: ["Astronomy Nights", "Philosophy Talks", "Music Sharing"],
   },
   {
     id: 6,
     name: "The Support Circle",
-    description:
-      "Safe space to talk about feelings without judgment",
+    description: "Safe space to talk about feelings without judgment",
     location: "Vesterbro, Copenhagen",
     members: 478,
     activeMembersToday: 53,
@@ -137,20 +112,30 @@ const loops = [
     icon: Heart,
     color: "#E0C9D9",
     founded: "Founded Jun 2024",
-    activities: [
-      "Support Circles",
-      "Gentle Movement",
-      "Art Therapy",
-    ],
+    activities: ["Support Circles", "Gentle Movement", "Art Therapy"],
   },
 ];
 
-const events = [
+type EventItem = {
+  id: number;
+  name: string;
+  description: string;
+  location: string;
+  date: string;
+  attendees: number;
+  maxAttendees: number;
+  vibe: string;
+  distance: string;
+  duration: string;
+  host: string;
+  whatToBring: string[];
+};
+
+const initialEvents: EventItem[] = [
   {
     id: 1,
     name: "Quiet Tea Night",
-    description:
-      "Come sit in peaceful silence, sip tea, and just exist",
+    description: "Come sit in peaceful silence, sip tea, and just exist",
     location: "Fælledparken",
     date: "Tonight, 8:00 PM",
     attendees: 12,
@@ -164,8 +149,7 @@ const events = [
   {
     id: 2,
     name: "Art & Coffee Session",
-    description:
-      "Slow art session with ambient music and warm drinks",
+    description: "Slow art session with ambient music and warm drinks",
     location: "Kulturhuset Ballerup",
     date: "Tomorrow, 6:00 PM",
     attendees: 8,
@@ -179,8 +163,7 @@ const events = [
   {
     id: 3,
     name: "Midnight Walk",
-    description:
-      "Wander through quiet streets and share your dreams",
+    description: "Wander through quiet streets and share your dreams",
     location: "Starting at Ballerup Station",
     date: "Friday, 11:30 PM",
     attendees: 15,
@@ -189,11 +172,7 @@ const events = [
     distance: "3.8 km away",
     duration: "90 minutes",
     host: "Mei Wong",
-    whatToBring: [
-      "Comfortable shoes",
-      "Dream journal",
-      "Flashlight",
-    ],
+    whatToBring: ["Comfortable shoes", "Dream journal", "Flashlight"],
   },
   {
     id: 4,
@@ -212,8 +191,7 @@ const events = [
   {
     id: 5,
     name: "Journaling Session",
-    description:
-      "Journal together in cozy silence, share if you want",
+    description: "Journal together in cozy silence, share if you want",
     location: "Assistens Kirkegård",
     date: "Sunday, 3:00 PM",
     attendees: 6,
@@ -227,8 +205,7 @@ const events = [
   {
     id: 6,
     name: "Stargazing Night",
-    description:
-      "Look up at the cosmos and share what you feel",
+    description: "Look up at the cosmos and share what you feel",
     location: "Dyrehaven",
     date: "Next Wed, 9:00 PM",
     attendees: 11,
@@ -241,7 +218,20 @@ const events = [
   },
 ];
 
-export function LocalLoops() {
+// note: state hooks must be inside components — we'll initialize them in the component
+
+export function LocalLoops({
+  setCurrentScreen,
+  joinLoop,
+  leaveLoop,
+  joinedLoopsProp,
+}: {
+  setCurrentScreen?: (s: string) => void;
+  joinLoop?: (loop: { id: number; name: string; color: string }) => void;
+  leaveLoop?: (id: number) => void;
+  joinedLoopsProp?: { id: number; name: string; color: string }[];
+}) {
+  const [loopsData, setLoopsData] = useState<Loop[]>(initialLoops);
   const [selectedVibe, setSelectedVibe] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeTab, setActiveTab] = useState("communities");
@@ -252,39 +242,77 @@ export function LocalLoops() {
     type: "community" | "event";
   } | null>(null);
   const [loopDetailOpen, setLoopDetailOpen] = useState(false);
-  const [selectedLoop, setSelectedLoop] = useState<
-    (typeof loops)[0] | null
-  >(null);
+  const [selectedLoop, setSelectedLoop] = useState<Loop | null>(null);
   const [eventDetailOpen, setEventDetailOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<
-    (typeof events)[0] | null
-  >(null);
+  const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
 
-  const filteredLoops = loops.filter((loop) => {
-    const matchesVibe =
-      selectedVibe === "All" || loop.vibe === selectedVibe;
+  // events state
+  const [eventsData, setEventsData] = useState<EventItem[]>(initialEvents);
+
+  const filteredLoops = loopsData.filter((loop) => {
+    const matchesVibe = selectedVibe === "All" || loop.vibe === selectedVibe;
     const matchesSearch =
-      loop.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      loop.description
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      loop.name.toLowerCase().includes(searchQuery.toLowerCase()) || loop.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesVibe && matchesSearch;
   });
 
-  const filteredEvents = events.filter((event) => {
-    const matchesVibe =
-      selectedVibe === "All" || event.vibe === selectedVibe;
+  const filteredEvents = eventsData.filter((event) => {
+    const matchesVibe = selectedVibe === "All" || event.vibe === selectedVibe;
     const matchesSearch =
-      event.name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      event.description
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase());
+      event.name.toLowerCase().includes(searchQuery.toLowerCase()) || event.description.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesVibe && matchesSearch;
   });
+
+  // Joined loops persistence helpers
+  const getJoinedFromStorage = (): number[] => {
+    try {
+      const raw = localStorage.getItem("vibeloop_joined_loops");
+      const parsed = raw ? JSON.parse(raw) : [];
+      // parsed may be array of objects or ids
+      if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "object") {
+        return parsed.map((p: any) => p.id);
+      }
+      return parsed as number[];
+    } catch (e) {
+      return [];
+    }
+  };
+
+  const joinLoopLocal = (loop: Partial<Loop> & { id: number; name: string; color: string }) => {
+    try {
+      const raw = localStorage.getItem("vibeloop_joined_loops");
+      const parsed = raw ? JSON.parse(raw) : [];
+      const exists = (parsed || []).find((p: any) => p.id === loop.id);
+      if (!exists) {
+        const next = [{ id: loop.id, name: loop.name, color: loop.color }, ...(parsed || [])];
+        localStorage.setItem("vibeloop_joined_loops", JSON.stringify(next));
+        window.dispatchEvent(new Event("vibeloop:joined_loops_changed"));
+      }
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const leaveLoopLocal = (id: number) => {
+    try {
+      const raw = localStorage.getItem("vibeloop_joined_loops");
+      const parsed = raw ? JSON.parse(raw) : [];
+      const next = (parsed || []).filter((p: any) => p.id !== id);
+      localStorage.setItem("vibeloop_joined_loops", JSON.stringify(next));
+      window.dispatchEvent(new Event("vibeloop:joined_loops_changed"));
+    } catch (e) {
+      // ignore
+    }
+  };
+
+  const isJoined = (id: number) => {
+    try {
+      if (joinedLoopsProp) return joinedLoopsProp.some((l) => l.id === id);
+      return getJoinedFromStorage().includes(id);
+    } catch (e) {
+      return false;
+    }
+  };
 
   return (
     <motion.div
@@ -296,12 +324,8 @@ export function LocalLoops() {
     >
       {/* Header */}
       <div className="sticky top-0 bg-[#F6F8FB]/80 backdrop-blur-md z-10 px-6 pt-8 pb-4">
-        <h2 className="mb-2 text-[#4A4A6A] text-xl md:text-3xl font-bold">
-          Local Loops
-        </h2>
-        <p className="text-sm text-[#8A8AA8] mb-4">
-          Nearby communities and vibe-based gatherings
-        </p>
+        <h2 className="mb-2 text-[#4A4A6A] text-xl md:text-3xl font-bold">Local Loops</h2>
+        <p className="text-sm text-[#8A8AA8] mb-4">Nearby communities and vibe-based gatherings</p>
 
         {/* Search Bar */}
         <div className="relative mb-4">
@@ -318,8 +342,7 @@ export function LocalLoops() {
         {/* Vibe Filters */}
         <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar mb-4">
           {vibeFilters.map((vibe) => {
-            const moodColor =
-              vibe === "All" ? "#C5A9FF" : getMoodColor(vibe);
+            const moodColor = vibe === "All" ? "#C5A9FF" : getMoodColor(vibe);
             return (
               <motion.div
                 key={vibe}
@@ -332,15 +355,10 @@ export function LocalLoops() {
                 <Badge
                   onClick={() => setSelectedVibe(vibe)}
                   className={`cursor-pointer px-4 py-2 rounded-full transition-all duration-300 border-2 whitespace-nowrap ${
-                    selectedVibe === vibe
-                      ? "border-opacity-100 shadow-lg"
-                      : "border-opacity-0 bg-white/60"
+                    selectedVibe === vibe ? "border-opacity-100 shadow-lg" : "border-opacity-0 bg-white/60"
                   }`}
                   style={{
-                    backgroundColor:
-                      selectedVibe === vibe
-                        ? moodColor + "40"
-                        : "rgba(255,255,255,0.6)",
+                    backgroundColor: selectedVibe === vibe ? moodColor + "40" : "rgba(255,255,255,0.6)",
                     borderColor: moodColor,
                     color: "#4A4A6A",
                   }}
@@ -353,11 +371,7 @@ export function LocalLoops() {
         </div>
 
         {/* Tabs */}
-        <Tabs
-          value={activeTab}
-          onValueChange={setActiveTab}
-          className="w-full"
-        >
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="w-full bg-white/80 rounded-full p-1">
             <TabsTrigger
               value="communities"
@@ -379,10 +393,7 @@ export function LocalLoops() {
       <div className="px-6 mt-4">
         <Tabs value={activeTab} className="w-full">
           {/* Communities Tab */}
-          <TabsContent
-            value="communities"
-            className="mt-0 space-y-4"
-          >
+          <TabsContent value="communities" className="mt-0 space-y-4">
             {filteredLoops.map((loop, index) => {
               const IconComponent = loop.icon;
               return (
@@ -423,71 +434,71 @@ export function LocalLoops() {
                           boxShadow: `0 0 20px ${loop.color}20`,
                         }}
                       >
-                        <IconComponent
-                          className="w-7 h-7"
-                          style={{ color: loop.color }}
-                        />
+                        <IconComponent className="w-7 h-7" style={{ color: loop.color }} />
                       </div>
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="mb-1 text-[#4A4A6A]">
-                          {loop.name}
-                        </h3>
-                        <p className="text-sm text-[#8A8AA8] mb-2 line-clamp-2">
-                          {loop.description}
-                        </p>
+                        <h3 className="mb-1 text-[#4A4A6A]">{loop.name}</h3>
+                        <p className="text-sm text-[#8A8AA8] mb-2 line-clamp-2">{loop.description}</p>
                         <div className="flex items-center gap-2 text-sm text-[#8A8AA8] mb-2">
                           <MapPin className="w-3.5 h-3.5 text-[#B8B8CC]" />
                           <span>{loop.location}</span>
                         </div>
                         <div className="flex items-center gap-3 text-sm mb-2">
-                          <span className="text-[#B8B8CC] italic">
-                            {getCommunitySize(loop.members)}
-                          </span>
-                          <span className="text-[#E0E0EA]">
-                            •
-                          </span>
-                          <span className="text-[#B8B8CC] text-xs">
-                            {loop.activeMembersToday} active
-                            today
-                          </span>
+                          <span className="text-[#B8B8CC] italic">{getCommunitySize(loop.members)}</span>
+                          <span className="text-[#E0E0EA]">•</span>
+                          <span className="text-[#B8B8CC] text-xs">{loop.activeMembersToday} active today</span>
                         </div>
 
                         {/* Activities */}
                         <div className="flex flex-wrap gap-1.5 mb-3">
-                          {loop.activities.map(
-                            (activity, idx) => (
-                              <Badge
-                                key={idx}
-                                className="px-2 py-0.5 text-xs rounded-full border-0"
-                                style={{
-                                  backgroundColor:
-                                    loop.color + "20",
-                                  color: "#6A6A88",
-                                }}
-                              >
-                                {activity}
-                              </Badge>
-                            ),
-                          )}
+                          {loop.activities.map((activity, idx) => (
+                            <Badge
+                              key={idx}
+                              className="px-2 py-0.5 text-xs rounded-full border-0"
+                              style={{
+                                backgroundColor: loop.color + "20",
+                                color: "#6A6A88",
+                              }}
+                            >
+                              {activity}
+                            </Badge>
+                          ))}
                         </div>
 
                         <div className="flex items-center gap-2 text-xs text-[#B8B8CC] italic">
                           <span>{loop.founded}</span>
-                          <span className="text-[#E0E0EA]">
-                            •
-                          </span>
+                          <span className="text-[#E0E0EA]">•</span>
                           <Badge
                             className="px-2 py-0.5 text-xs rounded-full border-0"
                             style={{
-                              backgroundColor:
-                                loop.color + "30",
+                              backgroundColor: loop.color + "30",
                               color: "#6A6A88",
                             }}
                           >
                             {loop.vibe}
                           </Badge>
+                        </div>
+
+                        <div className="mt-3">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isJoined(loop.id)) {
+                                if (leaveLoop) leaveLoop(loop.id);
+                                else leaveLoopLocal(loop.id);
+                              } else {
+                                if (joinLoop) joinLoop({ id: loop.id, name: loop.name, color: loop.color });
+                                else joinLoopLocal(loop);
+                              }
+                            }}
+                            className={`px-3 py-2 rounded-full text-sm ${
+                              isJoined(loop.id) ? "bg-red-50 text-red-500" : "bg-[#C5A9FF20] text-[#6A6A88]"
+                            }`}
+                          >
+                            {isJoined(loop.id) ? "Leave" : "Join"}
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -512,6 +523,25 @@ export function LocalLoops() {
                   backgroundColor: "rgba(197, 169, 255, 0.1)",
                   color: "#6A6A88",
                 }}
+                onClick={() => {
+                  const name = window.prompt("New loop name");
+                  if (name) {
+                    const newLoop: Loop = {
+                      id: Date.now(),
+                      name,
+                      description: "A new loop created locally",
+                      location: "Nearby",
+                      members: 1,
+                      activeMembersToday: 0,
+                      vibe: "Creative",
+                      icon: Palette,
+                      color: "#A9C7FF",
+                      founded: "Now",
+                      activities: [],
+                    };
+                    setLoopsData((prev) => [newLoop, ...prev]);
+                  }
+                }}
               >
                 <Plus className="w-5 h-5 mr-2" />
                 Create new loop
@@ -520,16 +550,11 @@ export function LocalLoops() {
           </TabsContent>
 
           {/* Events Tab */}
-          <TabsContent
-            value="events"
-            className="mt-0 space-y-4"
-          >
+          <TabsContent value="events" className="mt-0 space-y-4">
             {filteredEvents.map((event, index) => {
               const eventColor = getMoodColor(event.vibe);
-              const spotsLeft =
-                event.maxAttendees - event.attendees;
-              const isAlmostFull =
-                spotsLeft <= 5 && spotsLeft > 0;
+              const spotsLeft = event.maxAttendees - event.attendees;
+              const isAlmostFull = spotsLeft <= 5 && spotsLeft > 0;
               const isFull = spotsLeft <= 0;
 
               return (
@@ -565,12 +590,8 @@ export function LocalLoops() {
                       {/* Header */}
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <h3 className="mb-1 text-[#4A4A6A]">
-                            {event.name}
-                          </h3>
-                          <p className="text-sm text-[#8A8AA8] mb-3">
-                            {event.description}
-                          </p>
+                          <h3 className="mb-1 text-[#4A4A6A]">{event.name}</h3>
+                          <p className="text-sm text-[#8A8AA8] mb-3">{event.description}</p>
                         </div>
                         <Badge
                           className="ml-2 px-3 py-1 rounded-full border-0 whitespace-nowrap"
@@ -588,49 +609,34 @@ export function LocalLoops() {
                         <div className="flex items-center gap-2 text-sm text-[#6A6A88]">
                           <Calendar className="w-4 h-4 text-[#B8B8CC]" />
                           <span>{event.date}</span>
-                          <span className="text-[#D0D0E0]">
-                            •
-                          </span>
-                          <span className="text-[#B8B8CC]">
-                            {event.duration}
-                          </span>
+                          <span className="text-[#D0D0E0]">•</span>
+                          <span className="text-[#B8B8CC]">{event.duration}</span>
                         </div>
                         <div className="flex items-center gap-2 text-sm text-[#6A6A88]">
                           <MapPin className="w-4 h-4 text-[#B8B8CC]" />
                           <span>{event.location}</span>
-                          <span className="text-[#D0D0E0]">
-                            •
-                          </span>
-                          <span className="text-[#B8B8CC]">
-                            {event.distance}
-                          </span>
+                          <span className="text-[#D0D0E0]">•</span>
+                          <span className="text-[#B8B8CC]">{event.distance}</span>
                         </div>
-                        <div className="text-xs text-[#B8B8CC] italic">
-                          Hosted by {event.host}
-                        </div>
+                        <div className="text-xs text-[#B8B8CC] italic">Hosted by {event.host}</div>
                       </div>
 
                       {/* What to Bring */}
                       <div className="mb-4">
-                        <p className="text-xs text-[#8A8AA8] mb-2">
-                          What to bring:
-                        </p>
+                        <p className="text-xs text-[#8A8AA8] mb-2">What to bring:</p>
                         <div className="flex flex-wrap gap-1.5">
-                          {event.whatToBring.map(
-                            (item, idx) => (
-                              <Badge
-                                key={idx}
-                                className="px-2 py-0.5 text-xs rounded-full border-0"
-                                style={{
-                                  backgroundColor:
-                                    eventColor + "20",
-                                  color: "#6A6A88",
-                                }}
-                              >
-                                {item}
-                              </Badge>
-                            ),
-                          )}
+                          {event.whatToBring.map((item, idx) => (
+                            <Badge
+                              key={idx}
+                              className="px-2 py-0.5 text-xs rounded-full border-0"
+                              style={{
+                                backgroundColor: eventColor + "20",
+                                color: "#6A6A88",
+                              }}
+                            >
+                              {item}
+                            </Badge>
+                          ))}
                         </div>
                       </div>
 
@@ -639,34 +645,20 @@ export function LocalLoops() {
                         <div className="flex items-center gap-1.5 text-sm text-[#8A8AA8] mb-3">
                           <UsersIcon className="w-4 h-4 text-[#B8B8CC]" />
                           <span className="italic">
-                            {event.attendees}{" "}
-                            {event.attendees === 1
-                              ? "soul"
-                              : "souls"}{" "}
-                            gathering
+                            {event.attendees} {event.attendees === 1 ? "soul" : "souls"} gathering
                           </span>
                           {isAlmostFull && (
                             <>
-                              <span className="text-[#D0D0E0] mx-1">
-                                •
-                              </span>
+                              <span className="text-[#D0D0E0] mx-1">•</span>
                               <span className="text-[#B8B8CC] text-xs">
-                                {spotsLeft}{" "}
-                                {spotsLeft === 1
-                                  ? "spot"
-                                  : "spots"}{" "}
-                                left
+                                {spotsLeft} {spotsLeft === 1 ? "spot" : "spots"} left
                               </span>
                             </>
                           )}
                           {isFull && (
                             <>
-                              <span className="text-[#D0D0E0] mx-1">
-                                •
-                              </span>
-                              <span className="text-[#B8B8CC] text-xs">
-                                gathering full
-                              </span>
+                              <span className="text-[#D0D0E0] mx-1">•</span>
+                              <span className="text-[#B8B8CC] text-xs">gathering full</span>
                             </>
                           )}
                         </div>
@@ -678,8 +670,7 @@ export function LocalLoops() {
                               className="h-full rounded-full transition-all duration-500"
                               style={{
                                 width: `${(event.attendees / event.maxAttendees) * 100}%`,
-                                backgroundColor:
-                                  eventColor + "60",
+                                backgroundColor: eventColor + "60",
                                 boxShadow: `0 0 6px ${eventColor}20`,
                               }}
                             />
@@ -689,9 +680,21 @@ export function LocalLoops() {
 
                       {/* Tap to see details hint */}
                       <div className="text-center pt-2">
-                        <span className="text-xs text-[#B8B8CC] italic">
-                          Tap to see details
-                        </span>
+                        <div className="flex items-center justify-center gap-3">
+                          <span className="text-xs text-[#B8B8CC] italic">Tap to see details</span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isJoined(event.id)) leaveLoopLocal(event.id);
+                              else joinLoopLocal({ id: event.id, name: event.name, color: eventColor });
+                            }}
+                            className={`px-3 py-1 rounded-full text-xs ${
+                              isJoined(event.id) ? "bg-red-50 text-red-500" : "bg-[#C5A9FF20] text-[#6A6A88]"
+                            }`}
+                          >
+                            {isJoined(event.id) ? "Leave" : "Join"}
+                          </button>
+                        </div>
                       </div>
                     </div>
                   </Card>
@@ -714,6 +717,26 @@ export function LocalLoops() {
                   borderColor: "#C5A9FF60",
                   backgroundColor: "rgba(197, 169, 255, 0.1)",
                   color: "#6A6A88",
+                }}
+                onClick={() => {
+                  const name = window.prompt("New event name");
+                  if (name) {
+                    const newEvent: EventItem = {
+                      id: Date.now(),
+                      name,
+                      description: "A locally created event",
+                      location: "Nearby",
+                      date: "TBA",
+                      attendees: 0,
+                      maxAttendees: 20,
+                      vibe: "Creative",
+                      distance: "0.0 km away",
+                      duration: "1 hour",
+                      host: "You",
+                      whatToBring: [],
+                    };
+                    setEventsData((prev) => [newEvent, ...prev]);
+                  }
                 }}
               >
                 <Plus className="w-5 h-5 mr-2" />

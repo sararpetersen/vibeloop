@@ -144,8 +144,93 @@ const moodTwins: MoodTwin[] = [
   },
 ];
 
-export function VibeWaves() {
+export function VibeWaves({
+  toggleFollow,
+  joinedLoopsProp,
+  joinLoop,
+  leaveLoop,
+}: {
+  toggleFollow?: (name: string) => void;
+  joinedLoopsProp?: { id: number; name: string; color: string }[];
+  joinLoop?: (loop: { id: number; name: string; color: string }) => void;
+  leaveLoop?: (id: number) => void;
+}) {
   const [activeTab, setActiveTab] = useState("weather");
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [posts, setPosts] = useState<TrendingPost[]>(trendingPosts);
+
+  // Joined loops helpers (small duplicate of LocalLoops logic)
+  const getJoinedFromStorage = (): number[] => {
+    try {
+      const raw = localStorage.getItem("vibeloop_joined_loops");
+      const parsed = raw ? JSON.parse(raw) : [];
+      if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "object") {
+        return parsed.map((p: any) => p.id);
+      }
+      return parsed as number[];
+    } catch (e) {
+      return [];
+    }
+  };
+  const joinLoopLocal = (loop: TrendingLoop) => {
+    try {
+      if (joinLoop) return joinLoop({ id: loop.id, name: loop.name, color: loop.color });
+      const raw = localStorage.getItem("vibeloop_joined_loops");
+      const parsed = raw ? JSON.parse(raw) : [];
+      const exists = (parsed || []).find((p: any) => p.id === loop.id);
+      if (!exists) {
+        const next = [{ id: loop.id, name: loop.name, color: loop.color }, ...(parsed || [])];
+        localStorage.setItem("vibeloop_joined_loops", JSON.stringify(next));
+        window.dispatchEvent(new Event("vibeloop:joined_loops_changed"));
+      }
+    } catch (e) {
+      // ignore
+    }
+  };
+  const leaveLoopLocal = (id: number) => {
+    try {
+      if (leaveLoop) return leaveLoop(id);
+      const raw = localStorage.getItem("vibeloop_joined_loops");
+      const parsed = raw ? JSON.parse(raw) : [];
+      const next = (parsed || []).filter((p: any) => p.id !== id);
+      localStorage.setItem("vibeloop_joined_loops", JSON.stringify(next));
+      window.dispatchEvent(new Event("vibeloop:joined_loops_changed"));
+    } catch (e) {
+      // ignore
+    }
+  };
+  const isJoined = (id: number) => getJoinedFromStorage().includes(id);
+
+  // Following helpers for Mood Twins / connecting
+  const getFollowing = (): string[] => {
+    try {
+      const raw = localStorage.getItem("vibeloop_following");
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  };
+
+  const toggleFollowLocal = (name: string) => {
+    if (toggleFollow) return toggleFollow(name);
+    try {
+      const raw = localStorage.getItem("vibeloop_following");
+      const parsed = raw ? JSON.parse(raw) : [];
+      const exists = (parsed || []).includes(name);
+      let next: string[] = [];
+      if (exists) {
+        next = (parsed || []).filter((n: string) => n !== name);
+      } else {
+        next = [name, ...(parsed || [])];
+      }
+      localStorage.setItem("vibeloop_following", JSON.stringify(next));
+      try {
+        window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+      } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
+  };
 
   return (
     <div className="h-screen pb-24 md:pb-8 overflow-y-auto" style={{ backgroundColor: "#F6F8FB" }}>
@@ -154,6 +239,11 @@ export function VibeWaves() {
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <h1 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-xl md:text-3xl font-bold">Vibe Waves</h1>
           <p className="text-sm text-[#8A8AA8]">feel the pulse of the collective mood</p>
+          <div className="mt-3">
+            <button onClick={() => setIsPlaying((p) => !p)} className="px-3 py-2 rounded-full bg-white/80 border">
+              {isPlaying ? "Pause" : "Play"}
+            </button>
+          </div>
         </motion.div>
       </div>
 
@@ -263,13 +353,17 @@ export function VibeWaves() {
               Resonating Right Now
             </h3>
             <div className="space-y-4">
-              {trendingPosts.map((post, index) => (
+              {posts.map((post, index) => (
                 <motion.div key={post.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
                   <Card
                     className="p-5 rounded-3xl border-2 hover:scale-[1.01] transition-transform cursor-pointer"
                     style={{
                       borderColor: post.color + "40",
                       backgroundColor: "#FFFFFF",
+                    }}
+                    onClick={() => {
+                      // simple interaction: increase resonance locally
+                      setPosts((prev) => prev.map((p) => (p.id === post.id ? { ...p, resonance: p.resonance + 1 } : p)));
                     }}
                   >
                     <div className="flex items-start gap-3 mb-3">
@@ -349,7 +443,7 @@ export function VibeWaves() {
                           <span>{loop.location}</span>
                         </div>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right flex flex-col items-end gap-2">
                         <div
                           className="px-3 py-1 rounded-full text-xs"
                           style={{
@@ -359,6 +453,14 @@ export function VibeWaves() {
                         >
                           +{loop.newMembers} new
                         </div>
+                        <button
+                          onClick={() => (isJoined(loop.id) ? leaveLoopLocal(loop.id) : joinLoopLocal(loop))}
+                          className={`px-3 py-1 rounded-full text-xs ${
+                            isJoined(loop.id) ? "bg-red-50 text-red-500" : "bg-[#C5A9FF20] text-[#6A6A88]"
+                          }`}
+                        >
+                          {isJoined(loop.id) ? "Leave" : "Join"}
+                        </button>
                       </div>
                     </div>
                   </Card>
@@ -455,8 +557,12 @@ export function VibeWaves() {
                         background: `linear-gradient(135deg, ${twin.color}40, ${twin.color}20)`,
                         color: "#6A6A88",
                       }}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFollowLocal(twin.name);
+                      }}
                     >
-                      Connect
+                      {getFollowing().includes(twin.name) ? "Connected" : "Connect"}
                     </Button>
                   </Card>
                 </motion.div>

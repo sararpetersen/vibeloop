@@ -3,7 +3,7 @@ import { Card } from "./ui/card";
 import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
 import { ChevronRight, Bell, Lock, Moon, Globe, Heart, HelpCircle, LogOut, User, Eye, Shield, Sparkles, Palette, X, Languages } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import {
   EditProfile,
@@ -17,10 +17,22 @@ import {
   DataPrivacySettings,
   LoopRadiusSettings,
 } from "./SettingsScreens";
+import { resetUserData } from "../utils/resetUser";
 
 interface SettingsProps {
   userName: string;
   onClose?: () => void;
+}
+interface SettingsPropsExtended extends SettingsProps {
+  onUpdateUser?: (profile: { name: string; username: string; bio?: string; avatarUrl?: string | null }) => void;
+  onSettingsChange?: (payload: {
+    notifications: boolean;
+    vibeReminders: boolean;
+    showMoodHistory: boolean;
+    privateProfile: boolean;
+    darkMode: boolean;
+    language: string;
+  }) => void;
 }
 
 type SettingsScreen =
@@ -35,7 +47,10 @@ type SettingsScreen =
   | "help"
   | "feedback";
 
-export function Settings({ userName, onClose }: SettingsProps) {
+export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) {
+  const onUpdateUser = rest.onUpdateUser;
+  const onSettingsChange = rest.onSettingsChange;
+
   const [notifications, setNotifications] = useState(true);
   const [vibeReminders, setVibeReminders] = useState(true);
   const [showMoodHistory, setShowMoodHistory] = useState(true);
@@ -43,6 +58,8 @@ export function Settings({ userName, onClose }: SettingsProps) {
   const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState("en");
   const [currentScreen, setCurrentScreen] = useState<SettingsScreen>("main");
+  const [displayName, setDisplayName] = useState(userName);
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
 
   const handleNavigate = (label: string) => {
     const screenMap: Record<string, SettingsScreen> = {
@@ -63,9 +80,79 @@ export function Settings({ userName, onClose }: SettingsProps) {
     }
   };
 
+  // Load persisted simple settings
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("vibeloop_settings");
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (typeof data.notifications === "boolean") setNotifications(data.notifications);
+        if (typeof data.vibeReminders === "boolean") setVibeReminders(data.vibeReminders);
+        if (typeof data.showMoodHistory === "boolean") setShowMoodHistory(data.showMoodHistory);
+        if (typeof data.privateProfile === "boolean") setPrivateProfile(data.privateProfile);
+        if (typeof data.darkMode === "boolean") setDarkMode(data.darkMode);
+        if (typeof data.language === "string") setLanguage(data.language);
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, []);
+
+  // Load profile preview (name + avatar)
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem("vibeloop_profile");
+      if (raw) {
+        const p = JSON.parse(raw);
+        if (p.name) setDisplayName(p.name);
+      }
+    } catch (e) {
+      // ignore
+    }
+    try {
+      const a = localStorage.getItem("vibeloop_profile_avatar");
+      if (a) setAvatarUrl(a);
+    } catch (e) {}
+  }, []);
+
+  // Listen for global open mood prefs event (from feed empty-state)
+  useEffect(() => {
+    const h = () => setCurrentScreen("moodPreferences");
+    window.addEventListener("vibeloop:open_mood_prefs", h as EventListener);
+    return () => window.removeEventListener("vibeloop:open_mood_prefs", h as EventListener);
+  }, []);
+
+  // Persist settings whenever they change
+  useEffect(() => {
+    try {
+      const payload = { notifications, vibeReminders, showMoodHistory, privateProfile, darkMode, language };
+      localStorage.setItem("vibeloop_settings", JSON.stringify(payload));
+      try {
+        onSettingsChange?.(payload);
+      } catch (e) {
+        // ignore
+      }
+    } catch (e) {
+      // ignore
+    }
+  }, [notifications, vibeReminders, showMoodHistory, privateProfile, darkMode, language]);
+
   // Render sub-screens
   if (currentScreen === "editProfile") {
-    return <EditProfile onBack={() => setCurrentScreen("main")} userName={userName} />;
+    return (
+      <EditProfile
+        onBack={() => setCurrentScreen("main")}
+        userName={userName}
+        onProfileSave={(profile) => {
+          try {
+            onUpdateUser?.(profile);
+          } catch (e) {
+            // ignore
+          }
+          setCurrentScreen("main");
+        }}
+      />
+    );
   }
   if (currentScreen === "privacy") {
     return <PrivacySettings onBack={() => setCurrentScreen("main")} userName={userName} />;
@@ -218,22 +305,25 @@ export function Settings({ userName, onClose }: SettingsProps) {
               style={{ background: "radial-gradient(circle, #C5A9FF, transparent)" }}
             />
 
-            <div className="flex items-center gap-4 relative">
+            <button onClick={() => setCurrentScreen("editProfile")} className="w-full text-left flex items-center gap-4 relative">
               <div
-                className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg"
+                className="w-16 h-16 rounded-full flex items-center justify-center shadow-lg overflow-hidden"
                 style={{
                   background: "linear-gradient(135deg, #C5A9FF40, #A9C7FF40)",
                   boxShadow: "0 0 20px #C5A9FF30",
                 }}
               >
-                <span className="text-[#6A6A88]">You</span>
+                {avatarUrl ? (
+                  <img src={avatarUrl} alt="avatar" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-[#6A6A88]">You</span>
+                )}
               </div>
               <div className="flex-1">
-                <h3 className="text-[#4A4A6A]">{userName}</h3>
+                <h3 className="text-[#4A4A6A]">{displayName}</h3>
                 <p className="text-[#8A8AA8]">@dreamweaver</p>
               </div>
-              <ChevronRight className="w-5 h-5 text-[#B8B8CC]" />
-            </div>
+            </button>
           </Card>
         </motion.div>
 
@@ -349,15 +439,40 @@ export function Settings({ userName, onClose }: SettingsProps) {
           </motion.div>
         ))}
 
-        {/* Logout Button */}
+        {/* Logout / Reset Buttons */}
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.4 }} className="mb-8">
-          <motion.button
-            whileTap={{ scale: 0.98 }}
-            className="w-full p-4 rounded-2xl flex items-center justify-center gap-3 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl group transition-all duration-300 hover:bg-red-50/60 hover:border-red-100"
-          >
-            <LogOut className="w-5 h-5 text-red-400 group-hover:text-red-500 transition-colors" />
-            <span className="text-red-400 group-hover:text-red-500 transition-colors">Log Out</span>
-          </motion.button>
+          <div className="grid grid-cols-1 gap-3">
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              className="w-full p-4 rounded-2xl flex items-center justify-center gap-3 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl group transition-all duration-300 hover:bg-red-50/60 hover:border-red-100"
+              onClick={() => {
+                try {
+                  localStorage.removeItem("vibeloop_profile");
+                  localStorage.removeItem("vibeloop_profile_avatar");
+                  localStorage.removeItem("vibeloop_user");
+                  window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+                } catch (e) {}
+                window.location.reload();
+              }}
+            >
+              <LogOut className="w-5 h-5 text-red-400 group-hover:text-red-500 transition-colors" />
+              <span className="text-red-400 group-hover:text-red-500 transition-colors">Log Out</span>
+            </motion.button>
+
+            <motion.button
+              whileTap={{ scale: 0.98 }}
+              className="w-full p-4 rounded-2xl flex items-center justify-center gap-3 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl group transition-all duration-300 hover:bg-indigo-50/60 hover:border-indigo-100"
+              onClick={() => {
+                try {
+                  resetUserData();
+                } catch (e) {}
+                window.location.reload();
+              }}
+            >
+              <Sparkles className="w-5 h-5 text-indigo-500 group-hover:text-indigo-600 transition-colors" />
+              <span className="text-indigo-500 group-hover:text-indigo-600 transition-colors">Reset App / New User</span>
+            </motion.button>
+          </div>
         </motion.div>
 
         {/* App Version */}

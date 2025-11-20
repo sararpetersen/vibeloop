@@ -80,7 +80,7 @@ export function Login({ onLogin, onSwitchToSignup }: LoginProps) {
           >
             <Sparkles className="w-10 h-10 text-white" />
           </motion.div>
-          <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-[#4A4A6A] mb-1 text-3xl font-bold">
+          <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-[#4A4A6A] mb-1 text-4xl font-bold">
             Welcome back
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="text-[#8A8AA8]">

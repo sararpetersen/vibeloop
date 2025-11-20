@@ -4,7 +4,7 @@ import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { MOODS, getMoodColor, getMoodEmoji } from "./moods";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { UserDream } from "../App";
 
 const moods = [{ name: "All", color: "#A9C7FF" }, ...MOODS];
@@ -13,14 +13,92 @@ interface VibeFeedProps {
   selectedMood: string;
   setSelectedMood: (mood: string) => void;
   userDreams: UserDream[];
+  setCurrentScreen?: (s: string) => void;
+  toggleFollow?: (author: string) => void;
+  followingList?: string[];
 }
 
-export function VibeFeed({ selectedMood, setSelectedMood, userDreams }: VibeFeedProps) {
+export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, setCurrentScreen, toggleFollow, followingList }: VibeFeedProps) {
   const [clickedOrbs, setClickedOrbs] = useState<Set<number>>(new Set());
+  const [savedDreams, setSavedDreams] = useState<number[]>(() => {
+    try {
+      const raw = localStorage.getItem("vibeloop_saved_dreams");
+      if (!raw) return [];
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "object") {
+        return parsed.map((p: any) => p.id).filter(Boolean) as number[];
+      }
+      return parsed as number[];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const [localFollowing, setLocalFollowing] = useState<string[]>(() => {
+    try {
+      const raw = localStorage.getItem("vibeloop_following");
+      return raw ? JSON.parse(raw) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const following = followingList ?? localFollowing;
+
+  // Sync savedDreams to localStorage
+  useEffect(() => {
+    try {
+      localStorage.setItem("vibeloop_saved_dreams", JSON.stringify(savedDreams));
+    } catch (e) {}
+  }, [savedDreams]);
+
+  // Listen for external changes (App or other components)
+  useEffect(() => {
+    const handler = () => {
+      try {
+        const raw = localStorage.getItem("vibeloop_saved_dreams");
+        if (!raw) return;
+        const parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length > 0 && typeof parsed[0] === "object") {
+          setSavedDreams(parsed.map((p: any) => p.id).filter(Boolean));
+        } else {
+          setSavedDreams(parsed as number[]);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+    window.addEventListener("vibeloop:data_changed", handler as EventListener);
+    return () => window.removeEventListener("vibeloop:data_changed", handler as EventListener);
+  }, []);
+
+  // also update following when external components change it
+  useEffect(() => {
+    const h2 = () => {
+      try {
+        const raw = localStorage.getItem("vibeloop_following");
+        setLocalFollowing(raw ? JSON.parse(raw) : []);
+      } catch (e) {}
+    };
+    window.addEventListener("vibeloop:data_changed", h2 as EventListener);
+    return () => window.removeEventListener("vibeloop:data_changed", h2 as EventListener);
+  }, []);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("vibeloop_following", JSON.stringify(localFollowing));
+    } catch (e) {}
+  }, [localFollowing]);
+
+  // initialize clicked orbs from savedDreams
+  useEffect(() => {
+    try {
+      setClickedOrbs(new Set(savedDreams));
+    } catch (e) {}
+  }, [savedDreams]);
 
   // Combine user dreams with existing vibes data
   const allVibes = userDreams;
-
   const filteredVibes = selectedMood === "All" ? allVibes : allVibes.filter((v) => v.mood === selectedMood);
 
   const handleOrbClick = (vibeId: number) => {
@@ -28,12 +106,29 @@ export function VibeFeed({ selectedMood, setSelectedMood, userDreams }: VibeFeed
       const newSet = new Set(prev);
       if (newSet.has(vibeId)) {
         newSet.delete(vibeId);
+        setSavedDreams((s) => s.filter((id) => id !== vibeId));
       } else {
         newSet.add(vibeId);
+        setSavedDreams((s) => (s.includes(vibeId) ? s : [...s, vibeId]));
       }
+      try {
+        window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+      } catch (e) {}
       return newSet;
     });
   };
+
+  function localToggleFollow(author: string) {
+    if (toggleFollow) return toggleFollow(author);
+    if (localFollowing.includes(author)) {
+      setLocalFollowing((f) => f.filter((a) => a !== author));
+    } else {
+      setLocalFollowing((f) => [author, ...f]);
+    }
+    try {
+      window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+    } catch (e) {}
+  }
 
   return (
     <motion.div
@@ -81,8 +176,45 @@ export function VibeFeed({ selectedMood, setSelectedMood, userDreams }: VibeFeed
       <div className="px-6 space-y-4 mt-4 max-w-3xl mx-auto">
         {filteredVibes.length === 0 && (
           <div className="px-6 pt-8 text-center text-sm text-[#8A8AA8]">
-            <p>No vibes here yet.</p>
-            <p className="mt-1">Try sharing your first dream in the DreamCatcher ✨</p>
+            <div className="max-w-xl mx-auto p-6 rounded-2xl bg-white/60 border-2 border-white/30">
+              <h3 className="text-[#4A4A6A] text-lg font-semibold">Welcome — it looks like you're new here</h3>
+              <p className="mt-2">Your feed will show vibes from people you follow and dreams you save.</p>
+              <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
+                <Button
+                  onClick={() => {
+                    if (setCurrentScreen) {
+                      setCurrentScreen("dreamcatcher");
+                    } else {
+                      window.dispatchEvent(new CustomEvent("vibeloop:open_dreamcatcher"));
+                    }
+                  }}
+                >
+                  Share your first dream
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    if (setCurrentScreen) {
+                      setCurrentScreen("loops");
+                    } else {
+                      window.dispatchEvent(new CustomEvent("vibeloop:open_loops"));
+                    }
+                  }}
+                >
+                  Explore local loops
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={() => {
+                    setCurrentScreen?.("settings");
+                    window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs"));
+                  }}
+                >
+                  Set your mood palette
+                </Button>
+              </div>
+              <p className="mt-3 text-xs text-[#B8B8CC]">Tip: you can follow people, RSVP to events, and save dream orbs to build your feed.</p>
+            </div>
           </div>
         )}
         {filteredVibes.length > 0 &&
@@ -126,7 +258,19 @@ export function VibeFeed({ selectedMood, setSelectedMood, userDreams }: VibeFeed
                     </Avatar>
                     <div className="flex-1 flex items-center gap-2">
                       <span className="text-sm text-[#6A6A88]">{vibe.author}</span>
-                      {vibe.isFollowing && <span className="text-xs px-2 py-0.5 rounded-full bg-[#A9C7FF]/20 text-[#6A6A88]">following</span>}
+                      {vibe.isFollowing || following.includes(vibe.author) ? (
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-[#A9C7FF]/20 text-[#6A6A88]">following</span>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            localToggleFollow(vibe.author);
+                          }}
+                        >
+                          Follow
+                        </Button>
+                      )}
                     </div>
                     <span className="text-sm text-[#B8B8CC]">{vibe.timestamp}</span>
                   </div>

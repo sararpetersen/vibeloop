@@ -57,6 +57,18 @@ export function Onboarding({ onComplete }: OnboardingProps) {
       expressionStyle: expressionStyle || "spontaneous",
       initialMood: moodName,
     });
+    try {
+      const user = {
+        name: name || "Traveler",
+        ageRange: ageRange || "18-24",
+        seekingFor: seekingFor.length > 0 ? seekingFor : ["expression"],
+        expressionStyle: expressionStyle || "spontaneous",
+        initialMood: moodName,
+      };
+      localStorage.setItem("vibeloop_user", JSON.stringify(user));
+    } catch (e) {
+      console.warn("Could not persist onboarding", e);
+    }
   };
 
   const getStepIcon = () => {

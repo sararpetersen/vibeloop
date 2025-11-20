@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { motion } from 'motion/react';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from './ui/sheet';
-import { Button } from './ui/button';
-import { Badge } from './ui/badge';
-import { Heart, MessageCircle, Sparkles } from 'lucide-react';
-import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
+import { useState } from "react";
+import { motion } from "motion/react";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "./ui/sheet";
+import { Button } from "./ui/button";
+import { Badge } from "./ui/badge";
+import { Heart, MessageCircle, Sparkles } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 interface Friend {
   id: number;
@@ -19,96 +19,43 @@ interface Friend {
   lastActive: string;
 }
 
-const friends: Friend[] = [
-  {
-    id: 1,
-    name: 'Aria Chen',
-    currentMood: 'Dreamy',
-    moodColor: '#C5A9FF',
-    x: 30,
-    y: 25,
-    size: 24,
-    recentVibes: ['listening to lofi and floating', 'had the strangest dream last night', 'feeling soft today'],
-    connectedTo: [2, 4],
-    lastActive: '2h ago',
-  },
-  {
-    id: 2,
-    name: 'Kai Schmidt',
-    currentMood: 'Peaceful',
-    moodColor: '#B8E8E0',
-    x: 70,
-    y: 20,
-    size: 28,
-    recentVibes: ['morning meditation hit different today', 'grateful for the quiet moments', 'just breathing'],
-    connectedTo: [1, 3, 5],
-    lastActive: '30m ago',
-  },
-  {
-    id: 3,
-    name: 'Sofia Morales',
-    currentMood: 'Creative',
-    moodColor: '#D4A9FF',
-    x: 50,
-    y: 45,
-    size: 26,
-    recentVibes: ['made something beautiful today', 'colors everywhere', 'inspiration is flowing'],
-    connectedTo: [2, 6],
-    lastActive: '1h ago',
-  },
-  {
-    id: 4,
-    name: 'Finn O\'Brien',
-    currentMood: 'Hopeful',
-    moodColor: '#FFD4A9',
-    x: 20,
-    y: 55,
-    size: 22,
-    recentVibes: ['maybe things are getting better', 'saw a rainbow today', 'feeling optimistic'],
-    connectedTo: [1, 5],
-    lastActive: '45m ago',
-  },
-  {
-    id: 5,
-    name: 'Priya Patel',
-    currentMood: 'Calm',
-    moodColor: '#A9C7FF',
-    x: 65,
-    y: 60,
-    size: 25,
-    recentVibes: ['everything feels still', 'found my center again', 'peaceful evening vibes'],
-    connectedTo: [2, 4, 6],
-    lastActive: '20m ago',
-  },
-  {
-    id: 6,
-    name: 'Zara Ahmed',
-    currentMood: 'Reflective',
-    moodColor: '#E0C9D9',
-    x: 80,
-    y: 75,
-    size: 23,
-    recentVibes: ['thinking about everything and nothing', 'journaling my way through it', 'introspection hours'],
-    connectedTo: [3, 5],
-    lastActive: '1h ago',
-  },
-  {
-    id: 7,
-    name: 'You',
-    currentMood: 'Curious',
-    moodColor: '#FFA9D4',
-    x: 45,
-    y: 80,
-    size: 30,
-    recentVibes: ['exploring new feelings', 'wondering about connection', 'open to whatever comes'],
-    connectedTo: [1, 2, 3, 4, 5, 6],
-    lastActive: 'now',
-  },
-];
+// Constellation friends are user-specific data. Default to an empty list for new users
+// and read from `vibeloop_constellation_friends` if present. This prevents hardcoded demo
+// people from being treated as the current user's friends by default.
 
 export function Constellation() {
   const [selectedFriend, setSelectedFriend] = useState<Friend | null>(null);
   const [detailOpen, setDetailOpen] = useState(false);
+  // Load friends from localStorage; default to an empty array for new users
+  const [friendsState, setFriendsState] = useState<Friend[]>(() => {
+    try {
+      const raw = localStorage.getItem("vibeloop_constellation_friends");
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch (e) {
+      return [];
+    }
+  });
+
+  // toggle connection (persisted list of connected friends)
+  const toggleConnect = (friend: Friend) => {
+    try {
+      const exists = friendsState.find((f) => f.id === friend.id);
+      let next: Friend[] = [];
+      if (exists) {
+        next = friendsState.filter((f) => f.id !== friend.id);
+      } else {
+        next = [friend, ...friendsState];
+      }
+      setFriendsState(next);
+      localStorage.setItem("vibeloop_constellation_friends", JSON.stringify(next));
+      try {
+        window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+      } catch (e) {}
+    } catch (e) {
+      // ignore
+    }
+  };
 
   const handleStarClick = (friend: Friend) => {
     setSelectedFriend(friend);
@@ -116,9 +63,12 @@ export function Constellation() {
   };
 
   return (
-    <div className="h-screen pb-24 md:pb-8 relative overflow-y-auto" style={{
-      background: 'radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)',
-    }}>
+    <div
+      className="h-screen pb-24 md:pb-8 relative overflow-y-auto"
+      style={{
+        background: "radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)",
+      }}
+    >
       {/* Subtle stars background */}
       <div className="absolute inset-0 opacity-30">
         {[...Array(50)].map((_, i) => (
@@ -144,13 +94,9 @@ export function Constellation() {
 
       {/* Header */}
       <div className="relative px-6 pt-8 pb-6">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
+        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
           <h1 className="text-white mb-2 text-xl md:text-3xl font-bold">Your Constellation</h1>
-          <p className="text-sm" style={{ color: '#B8B8CC' }}>
+          <p className="text-sm" style={{ color: "#B8B8CC" }}>
             souls connected across the cosmos
           </p>
         </motion.div>
@@ -158,11 +104,11 @@ export function Constellation() {
 
       {/* Constellation visualization */}
       <div className="relative px-6 h-[60vh]">
-        <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: 'none' }}>
+        <svg className="absolute inset-0 w-full h-full" style={{ pointerEvents: "none" }}>
           {/* Connection lines */}
-          {friends.map((friend) =>
+          {friendsState.map((friend) =>
             friend.connectedTo.map((targetId) => {
-              const target = friends.find((f) => f.id === targetId);
+              const target = friendsState.find((f) => f.id === targetId);
               if (!target || targetId < friend.id) return null; // Avoid duplicate lines
 
               return (
@@ -193,7 +139,7 @@ export function Constellation() {
         </svg>
 
         {/* Friend stars */}
-        {friends.map((friend, index) => (
+        {friendsState.map((friend, index) => (
           <motion.div
             key={friend.id}
             className="absolute"
@@ -203,7 +149,7 @@ export function Constellation() {
             }}
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: index * 0.1, duration: 0.5, type: 'spring' }}
+            transition={{ delay: index * 0.1, duration: 0.5, type: "spring" }}
             whileHover={{ scale: 1.2 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => handleStarClick(friend)}
@@ -216,7 +162,7 @@ export function Constellation() {
                 opacity: 0.6,
               }}
             />
-            
+
             {/* Star orb */}
             <motion.div
               className="relative rounded-full flex items-center justify-center"
@@ -237,7 +183,7 @@ export function Constellation() {
               transition={{
                 duration: 3 + Math.random() * 2,
                 repeat: Infinity,
-                ease: 'easeInOut',
+                ease: "easeInOut",
               }}
             >
               {/* Initial */}
@@ -250,9 +196,9 @@ export function Constellation() {
             <motion.div
               className="absolute top-full mt-2 left-1/2 -translate-x-1/2 whitespace-nowrap text-xs px-2 py-1 rounded-lg"
               style={{
-                backgroundColor: 'rgba(0,0,0,0.6)',
-                color: '#FFFFFF',
-                backdropFilter: 'blur(10px)',
+                backgroundColor: "rgba(0,0,0,0.6)",
+                color: "#FFFFFF",
+                backdropFilter: "blur(10px)",
               }}
               initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
@@ -265,26 +211,21 @@ export function Constellation() {
       </div>
 
       {/* Soul Resonance hint */}
-      <motion.div
-        className="px-6 mt-8"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-      >
+      <motion.div className="px-6 mt-8" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}>
         <div
           className="p-4 rounded-3xl backdrop-blur-sm border border-white/10"
           style={{
-            backgroundColor: 'rgba(197, 169, 255, 0.1)',
+            backgroundColor: "rgba(197, 169, 255, 0.1)",
           }}
         >
           <div className="flex items-center gap-3">
-            <Sparkles className="w-5 h-5" style={{ color: '#C5A9FF' }} />
+            <Sparkles className="w-5 h-5" style={{ color: "#C5A9FF" }} />
             <div>
-              <p className="text-sm" style={{ color: '#E0E0EA' }}>
+              <p className="text-sm" style={{ color: "#E0E0EA" }}>
                 Soul Resonance Active
               </p>
-              <p className="text-xs mt-1" style={{ color: '#B8B8CC' }}>
-                3 people nearby are feeling similar to you
+              <p className="text-xs mt-1" style={{ color: "#B8B8CC" }}>
+                {friendsState.length > 0 ? `${friendsState.length} people nearby are feeling similar to you` : `No nearby connections yet`}
               </p>
             </div>
           </div>
@@ -297,7 +238,7 @@ export function Constellation() {
           side="bottom"
           className="h-[85vh] rounded-t-3xl border-0 p-0"
           style={{
-            backgroundColor: '#F6F8FB',
+            backgroundColor: "#F6F8FB",
           }}
         >
           <SheetHeader className="p-6 pb-4">
@@ -314,7 +255,7 @@ export function Constellation() {
                 <div
                   className="w-20 h-20 rounded-full flex items-center justify-center relative"
                   style={{
-                    backgroundColor: selectedFriend.moodColor + '40',
+                    backgroundColor: selectedFriend.moodColor + "40",
                     boxShadow: `0 0 30px ${selectedFriend.moodColor}40`,
                   }}
                 >
@@ -337,16 +278,14 @@ export function Constellation() {
                     <Badge
                       className="px-3 py-1 rounded-full border-0"
                       style={{
-                        backgroundColor: selectedFriend.moodColor + '30',
-                        color: '#6A6A88',
+                        backgroundColor: selectedFriend.moodColor + "30",
+                        color: "#6A6A88",
                       }}
                     >
                       {selectedFriend.currentMood}
                     </Badge>
                   </div>
-                  <p className="text-xs text-[#B8B8CC]">
-                    Active {selectedFriend.lastActive}
-                  </p>
+                  <p className="text-xs text-[#B8B8CC]">Active {selectedFriend.lastActive}</p>
                 </div>
               </div>
 
@@ -359,7 +298,7 @@ export function Constellation() {
                       key={index}
                       className="p-4 rounded-2xl backdrop-blur-sm"
                       style={{
-                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                        backgroundColor: "rgba(255, 255, 255, 0.8)",
                         border: `1px solid ${selectedFriend.moodColor}20`,
                       }}
                       initial={{ opacity: 0, x: -20 }}
@@ -367,9 +306,7 @@ export function Constellation() {
                       transition={{ delay: index * 0.1 }}
                     >
                       <p className="text-sm text-[#6A6A88] italic">"{vibe}"</p>
-                      <p className="text-xs text-[#B8B8CC] mt-1">
-                        {index === 0 ? '2h ago' : index === 1 ? '1d ago' : '2d ago'}
-                      </p>
+                      <p className="text-xs text-[#B8B8CC] mt-1">{index === 0 ? "2h ago" : index === 1 ? "1d ago" : "2d ago"}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -381,17 +318,18 @@ export function Constellation() {
                   className="flex-1 py-6 rounded-full border-0"
                   style={{
                     background: `linear-gradient(135deg, ${selectedFriend.moodColor}40, ${selectedFriend.moodColor}20)`,
-                    color: '#6A6A88',
+                    color: "#6A6A88",
                   }}
+                  onClick={() => toggleConnect(selectedFriend)}
                 >
                   <Heart className="w-4 h-4 mr-2" />
-                  Send Gentle Nudge
+                  {friendsState.find((f) => f.id === selectedFriend.id) ? "Connected" : "Connect"}
                 </Button>
                 <Button
                   className="flex-1 py-6 rounded-full border-0"
                   style={{
                     background: `linear-gradient(135deg, ${selectedFriend.moodColor}EE, ${selectedFriend.moodColor}AA)`,
-                    color: '#FFFFFF',
+                    color: "#FFFFFF",
                   }}
                 >
                   <MessageCircle className="w-4 h-4 mr-2" />

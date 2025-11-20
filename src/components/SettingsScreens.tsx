@@ -13,11 +13,12 @@ import { Badge } from "./ui/badge";
 interface ScreenProps {
   onBack: () => void;
   userName: string;
+  onProfileSave?: (profile: { name: string; username: string; bio: string; avatarUrl?: string | null }) => void;
 }
 
 // Edit Profile Screen
 // Edit Profile Screen
-export function EditProfile({ onBack, userName }: ScreenProps) {
+export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
   const [name, setName] = useState(userName);
   const [username, setUsername] = useState("@dreamweaver");
   const [bio, setBio] = useState("Living in dreams, expressing in vibes 🌙✨");
@@ -99,6 +100,13 @@ export function EditProfile({ onBack, userName }: ScreenProps) {
       setSaveMessage("Changes saved ✨");
       setTimeout(() => setSaveMessage(null), 2000);
     }, 400);
+
+    // Notify parent that profile changed
+    try {
+      onProfileSave?.({ name, username, bio, avatarUrl });
+    } catch (e) {
+      // ignore
+    }
   };
 
   return (
