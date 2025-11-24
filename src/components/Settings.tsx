@@ -55,11 +55,11 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
   const [vibeReminders, setVibeReminders] = useState(true);
   const [showMoodHistory, setShowMoodHistory] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
   const [language, setLanguage] = useState("en");
   const [currentScreen, setCurrentScreen] = useState<SettingsScreen>("main");
   const [displayName, setDisplayName] = useState(userName);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [userHandle, setUserHandle] = useState<string>("@dreamweaver");
 
   const handleNavigate = (label: string) => {
     const screenMap: Record<string, SettingsScreen> = {
@@ -90,7 +90,6 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
         if (typeof data.vibeReminders === "boolean") setVibeReminders(data.vibeReminders);
         if (typeof data.showMoodHistory === "boolean") setShowMoodHistory(data.showMoodHistory);
         if (typeof data.privateProfile === "boolean") setPrivateProfile(data.privateProfile);
-        if (typeof data.darkMode === "boolean") setDarkMode(data.darkMode);
         if (typeof data.language === "string") setLanguage(data.language);
       }
     } catch (e) {
@@ -109,7 +108,6 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
         if (typeof data.vibeReminders === "boolean") setVibeReminders(data.vibeReminders);
         if (typeof data.showMoodHistory === "boolean") setShowMoodHistory(data.showMoodHistory);
         if (typeof data.privateProfile === "boolean") setPrivateProfile(data.privateProfile);
-        if (typeof data.darkMode === "boolean") setDarkMode(data.darkMode);
         if (typeof data.language === "string") setLanguage(data.language);
         try {
           onSettingsChange?.(data as any);
@@ -132,6 +130,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
       if (raw) {
         const p = JSON.parse(raw);
         if (p.name) setDisplayName(p.name);
+        if (p.username) setUserHandle(p.username);
       }
     } catch (e) {
       // ignore
@@ -140,6 +139,38 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
       const a = localStorage.getItem("vibeloop_profile_avatar");
       if (a) setAvatarUrl(a);
     } catch (e) {}
+  }, []);
+
+  // Keep handle in sync when profile changes elsewhere
+  useEffect(() => {
+    const handler = (e: Event) => {
+      try {
+        const ce = e as CustomEvent;
+        if (ce && ce.detail && typeof ce.detail.username === "string") {
+          setUserHandle(ce.detail.username);
+          return;
+        }
+      } catch (err) {
+        // ignore
+      }
+
+      try {
+        const raw = localStorage.getItem("vibeloop_profile");
+        if (raw) {
+          const p = JSON.parse(raw);
+          if (p.username) setUserHandle(p.username);
+        }
+      } catch (err) {
+        // ignore
+      }
+    };
+
+    window.addEventListener("vibeloop:profile_updated", handler as EventListener);
+    window.addEventListener("vibeloop:data_changed", handler as EventListener);
+    return () => {
+      window.removeEventListener("vibeloop:profile_updated", handler as EventListener);
+      window.removeEventListener("vibeloop:data_changed", handler as EventListener);
+    };
   }, []);
 
   // Listen for global open mood prefs event (from feed empty-state)
@@ -152,17 +183,17 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
   // Persist settings whenever they change
   useEffect(() => {
     try {
-      const payload = { notifications, vibeReminders, showMoodHistory, privateProfile, darkMode, language };
+      const payload = { notifications, vibeReminders, showMoodHistory, privateProfile, language };
       localStorage.setItem("vibeloop_settings", JSON.stringify(payload));
       try {
-        onSettingsChange?.(payload);
+        onSettingsChange?.(payload as any);
       } catch (e) {
         // ignore
       }
     } catch (e) {
       // ignore
     }
-  }, [notifications, vibeReminders, showMoodHistory, privateProfile, darkMode, language]);
+  }, [notifications, vibeReminders, showMoodHistory, privateProfile, language]);
 
   // Render sub-screens
   if (currentScreen === "editProfile") {
@@ -253,13 +284,6 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
           onChange: setShowMoodHistory,
         },
         {
-          icon: Moon,
-          label: "Dark Mode",
-          toggle: true,
-          value: darkMode,
-          onChange: setDarkMode,
-        },
-        {
           icon: Languages,
           label: "Language",
           selector: true,
@@ -316,7 +340,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
               whileHover={{ scale: 1.1, rotate: 90 }}
               whileTap={{ scale: 0.9 }}
               onClick={onClose}
-              className="p-3 rounded-full bg-white/80 backdrop-blur-sm shadow-lg"
+              className="p-3 rounded-full bg-white/80 backdrop-blur-sm shadow-lg cursor-pointer"
             >
               <X className="w-5 h-5 text-[#8A8AA8]" />
             </motion.button>
@@ -348,10 +372,13 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
               </div>
               <div className="flex-1">
                 <h3 className="text-[#4A4A6A]">{displayName}</h3>
-                <p className="text-[#8A8AA8]">@dreamweaver</p>
+                <p className="text-[#8A8AA8]">{userHandle}</p>
               </div>
               <div className="flex flex-col items-end gap-2">
-                <button onClick={() => setCurrentScreen("editProfile")} className="text-sm text-[#6A6A88] px-3 py-1 rounded-md bg-white/30">
+                <button
+                  onClick={() => setCurrentScreen("editProfile")}
+                  className="text-sm text-[#6A6A88] px-3 py-1 rounded-md bg-white/30 hover:bg-white/50 transition-colors cursor-pointer"
+                >
                   Edit Profile
                 </button>
                 <button
@@ -363,7 +390,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
                     } catch (e) {}
                     setCurrentScreen("moodPreferences");
                   }}
-                  className="text-xs text-[#C5A9FF] hover:text-[#A9C7FF]"
+                  className="text-xs text-[#C5A9FF] hover:text-[#A9C7FF] transition-colors px-3 py-1 rounded-md bg-white/20 hover:bg-white/40 cursor-pointer"
                 >
                   Reset Mood Palette
                 </button>
@@ -390,7 +417,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
                     {item.toggle ? (
                       <motion.div
                         whileTap={{ scale: 0.98 }}
-                        className="w-full p-4 flex items-center justify-between group transition-all duration-300 hover:bg-white/30"
+                        className="w-full p-4 flex items-center justify-between group transition-all duration-300 hover:bg-white/30 cursor-pointer"
                       >
                         <div className="flex items-center gap-3">
                           <div
@@ -416,7 +443,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
                     ) : item.selector ? (
                       <motion.div
                         whileTap={{ scale: 0.98 }}
-                        className="w-full p-4 flex items-center justify-between group transition-all duration-300 hover:bg-white/30"
+                        className="w-full p-4 flex items-center justify-between group transition-all duration-300 hover:bg-white/30 cursor-pointer"
                       >
                         <div className="flex items-center gap-3">
                           <div
@@ -436,7 +463,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
                         </div>
 
                         <Select value={language} onValueChange={setLanguage}>
-                          <SelectTrigger className="w-[140px] border-[#E0E8F5] bg-white/50 backdrop-blur-sm">
+                          <SelectTrigger className="w-[140px] border-[#E0E8F5] bg-white/50 backdrop-blur-sm hover:bg-white/70 cursor-pointer">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
@@ -451,7 +478,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
                     ) : (
                       <motion.button
                         whileTap={{ scale: 0.98 }}
-                        className="w-full p-4 flex items-center justify-between group transition-all duration-300 hover:bg-white/30"
+                        className="w-full p-4 flex items-center justify-between group transition-all duration-300 hover:bg-white/30 cursor-pointer"
                         onClick={() => handleNavigate(item.label)}
                       >
                         <div className="flex items-center gap-3">
@@ -495,13 +522,21 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
                   localStorage.removeItem("vibeloop_profile");
                   localStorage.removeItem("vibeloop_profile_avatar");
                   localStorage.removeItem("vibeloop_user");
+                  // Notify listeners that profile was removed
+                  try {
+                    window.dispatchEvent(
+                      new CustomEvent("vibeloop:profile_updated", { detail: { name: null, username: null, bio: null, avatarUrl: null } })
+                    );
+                  } catch (e) {
+                    // ignore
+                  }
                   window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
                 } catch (e) {}
                 window.location.reload();
               }}
             >
               <LogOut className="w-5 h-5 text-red-400 group-hover:text-red-500 transition-colors" />
-              <span className="text-red-400 group-hover:text-red-500 transition-colors">Log Out</span>
+              <span className="text-red-400 group-hover:text-red-500 transition-colors cursor-pointer">Log Out</span>
             </motion.button>
 
             <motion.button
@@ -515,7 +550,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
               }}
             >
               <Sparkles className="w-5 h-5 text-indigo-500 group-hover:text-indigo-600 transition-colors" />
-              <span className="text-indigo-500 group-hover:text-indigo-600 transition-colors">Reset App / New User</span>
+              <span className="text-indigo-500 group-hover:text-indigo-600 transition-colors cursor-pointer">Reset App / New User</span>
             </motion.button>
           </div>
         </motion.div>

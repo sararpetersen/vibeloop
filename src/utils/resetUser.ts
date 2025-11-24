@@ -26,6 +26,12 @@ export function resetUserData() {
 
   // Dispatch events so components can refresh if they listen
   try {
+    // Notify that profile is cleared
+    try {
+      window.dispatchEvent(new CustomEvent("vibeloop:profile_updated", { detail: { name: null, username: null, bio: null, avatarUrl: null } }));
+    } catch (e) {
+      // ignore
+    }
     window.dispatchEvent(new CustomEvent("vibeloop:reset"));
     window.dispatchEvent(new CustomEvent("vibeloop:joined_loops_changed"));
     window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));

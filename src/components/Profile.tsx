@@ -11,12 +11,6 @@ import { vibesData } from "./vibes-data";
 
 // joined loops are persisted to localStorage so they can be managed across the app
 
-const moodStats = [
-  { mood: "Calm", percentage: 45, color: "#A9C7FF" },
-  { mood: "Dreamy", percentage: 30, color: "#C5A9FF" },
-  { mood: "Reflective", percentage: 25, color: "#E0C9D9" },
-];
-
 interface ProfileProps {
   userName: string;
   onSettingsClick?: () => void;
@@ -28,6 +22,7 @@ interface ProfilePropsExtended extends ProfileProps {
   followingListProp?: string[];
   joinedLoopsProp?: { id: number; name: string; color: string }[];
   followersCountProp?: number;
+  newUserMode?: boolean;
 }
 
 export function Profile({
@@ -38,9 +33,24 @@ export function Profile({
   followingListProp,
   joinedLoopsProp,
   followersCountProp,
+  newUserMode = false,
 }: ProfilePropsExtended) {
+  // newUserMode indicates the app should visually behave like a new user
+  // Calculate mood distribution. If we're in newUserMode, show an empty/reset palette.
+  const moodStats = newUserMode
+    ? [
+        { mood: "Calm", percentage: 0, color: "#A9C7FF" },
+        { mood: "Dreamy", percentage: 0, color: "#C5A9FF" },
+        { mood: "Reflective", percentage: 0, color: "#E0C9D9" },
+      ]
+    : [
+        { mood: "Calm", percentage: 45, color: "#A9C7FF" },
+        { mood: "Dreamy", percentage: 30, color: "#C5A9FF" },
+        { mood: "Reflective", percentage: 25, color: "#E0C9D9" },
+      ];
+
   // Calculate dominant mood color
-  const dominantMood = moodStats[0];
+  const dominantMood = moodStats[0] || { mood: "Calm", percentage: 0, color: "#A9C7FF" };
 
   const [activeTab, setActiveTab] = useState("aura");
   const [hoveredOrb, setHoveredOrb] = useState<number | null>(null);
@@ -70,8 +80,8 @@ export function Profile({
     }
   });
 
-  // derive saved dream objects for display
-  const savedDreamObjects = (userDreams || []).filter((d) => savedDreamIds.includes(d.id));
+  // derive saved dream objects for display (but respect new-user mode)
+  const savedDreamObjects = newUserMode ? [] : (userDreams || []).filter((d) => savedDreamIds.includes(d.id));
 
   useEffect(() => {
     const handler = () => {
@@ -194,7 +204,7 @@ export function Profile({
           <div className="flex items-center gap-4">
             <Avatar className="w-16 h-16 border-2" style={{ borderColor: dominantMood.color + "60" }}>
               <AvatarFallback
-                className="text-sm"
+                className="text-md"
                 style={{
                   backgroundColor: dominantMood.color + "30",
                   color: "#4A4A6A",
@@ -244,7 +254,7 @@ export function Profile({
 
             {/* Dream Orbs */}
             <div className="mb-6">
-              <h4 className="mb-4 text-[#4A4A6A]">My Dream Orbs</h4>
+              <h4 className="mb-4 text-[#4A4A6A] font-semibold">My Dream Orbs</h4>
               {savedDreamObjects.length === 0 ? (
                 <div className="text-sm text-[#8A8AA8] italic">You haven't saved any dreams yet.</div>
               ) : (
@@ -305,12 +315,12 @@ export function Profile({
           </div>
           <div className="flex gap-6 mt-4">
             <div className="text-center">
-              <div className="text-lg text-[#4A4A6A]">{(followingListProp ?? followingList).length}</div>
+              <div className="text-lg text-[#4A4A6A]">{newUserMode ? 0 : (followingListProp ?? followingList).length}</div>
               <div className="text-xs text-[#8A8AA8]">following</div>
             </div>
             <div className="w-px bg-[#E0E8F5]" />
             <div className="text-center">
-              <div className="text-lg text-[#4A4A6A]">{followersCountProp ?? 0}</div>
+              <div className="text-lg text-[#4A4A6A]">{newUserMode ? 0 : followersCountProp ?? 0}</div>
               <div className="text-xs text-[#8A8AA8]">followers</div>
             </div>
           </div>
@@ -318,7 +328,7 @@ export function Profile({
 
         {/* Mood Distribution */}
         <Card className="p-6 rounded-3xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm mb-6">
-          <h4 className="mb-4 text-[#4A4A6A]">Your Emotional Palette</h4>
+          <h4 className="mb-4 text-[#4A4A6A] font-semibold">Your Emotional Palette</h4>
 
           <div className="space-y-4">
             {moodStats.map((stat) => (
@@ -348,9 +358,9 @@ export function Profile({
 
         {/* Joined Loops */}
         <div className="mb-6">
-          <h4 className="mb-4 text-[#4A4A6A]">Joined Loops</h4>
+          <h4 className="mb-4 text-[#4A4A6A] font-semibold">Joined Loops</h4>
           <div className="space-y-3">
-            {joinedLoopsState.map((loop, index) => (
+            {(newUserMode ? [] : joinedLoopsState).map((loop, index) => (
               <motion.div
                 key={loop.id}
                 initial={{ opacity: 0, x: -20 }}
@@ -377,15 +387,15 @@ export function Profile({
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <Card className="p-4 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm text-center">
-            <div className="text-2xl mb-1 text-[#4A4A6A]">{savedDreamIds.length}</div>
+            <div className="text-2xl mb-1 text-[#4A4A6A]">{newUserMode ? 0 : savedDreamIds.length}</div>
             <div className="text-sm text-[#8A8AA8]">Vibes</div>
           </Card>
           <Card className="p-4 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm text-center">
-            <div className="text-2xl mb-1 text-[#4A4A6A]">{joinedLoopsState.length}</div>
+            <div className="text-2xl mb-1 text-[#4A4A6A]">{newUserMode ? 0 : joinedLoopsState.length}</div>
             <div className="text-sm text-[#8A8AA8]">Loops</div>
           </Card>
           <Card className="p-4 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm text-center">
-            <div className="text-2xl mb-1 text-[#4A4A6A]">{savedDreamIds.length}</div>
+            <div className="text-2xl mb-1 text-[#4A4A6A]">{newUserMode ? 0 : savedDreamIds.length}</div>
             <div className="text-sm text-[#8A8AA8]">Orbs</div>
           </Card>
         </div>
@@ -394,13 +404,13 @@ export function Profile({
         <div className="mb-6">
           <div className="flex items-center gap-2 mb-4">
             <Sparkles className="w-5 h-5 text-[#C5A9FF]" />
-            <h4 className="text-[#4A4A6A]">Saved Dreams</h4>
+            <h4 className="text-[#4A4A6A] font-semibold">Saved Dreams</h4>
           </div>
 
           <Card className="p-6 rounded-3xl border-2 border-[#C5A9FF]/30 bg-white/80 backdrop-blur-sm">
-            <p className="text-[#8A8AA8] text-sm text-center italic mb-4">Collect dream orbs from the feed to save them here</p>
+            <p className="text-[#4A4A6A] text-md text-center italic mb-3">Collect dream orbs from the feed to save them here</p>
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               {savedDreamObjects.length === 0 ? (
                 <div className="text-sm text-[#8A8AA8] italic text-center">No saved dreams yet — save a dream from the feed.</div>
               ) : (
@@ -447,7 +457,18 @@ export function Profile({
             </div>
 
             <div className="mt-4 text-center">
-              <button className="text-sm text-[#C5A9FF] hover:text-[#A9C7FF] transition-colors cursor-pointer">View all saved dreams →</button>
+              <button
+                onClick={() => {
+                  if (setCurrentScreen) setCurrentScreen("feed");
+                  else
+                    try {
+                      window.dispatchEvent(new CustomEvent("vibeloop:open_feed"));
+                    } catch (e) {}
+                }}
+                className="text-sm text-[#C5A9FF] hover:text-[#A9C7FF] transition-colors cursor-pointer"
+              >
+                View all saved dreams →
+              </button>
             </div>
           </Card>
         </div>

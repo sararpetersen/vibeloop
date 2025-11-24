@@ -274,107 +274,119 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
 
             {/* Recent Members */}
             <div>
-              <h3 className="text-[#4A4A6A] mb-3">Recent members</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-[#4A4A6A] mb-3">Recent members</h3>
+                <div className="text-sm text-[#8A8AA8]">{recentMembersState.length}</div>
+              </div>
               <div className="space-y-2">
-                {recentMembersState.map((member, idx) => (
-                  <motion.div key={idx} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }}>
-                    <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm flex items-center gap-3">
-                      <Avatar className="w-10 h-10 border-2" style={{ borderColor: member.color + "60" }}>
-                        <AvatarFallback
-                          className="text-sm"
-                          style={{
-                            backgroundColor: member.color + "30",
-                            color: "#4A4A6A",
-                          }}
-                        >
-                          {member.initial}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="text-sm text-[#6A6A88]">{member.name}</div>
-                        <div className="text-xs text-[#B8B8CC]">Feeling {member.mood}</div>
-                      </div>
-                      <div className="flex-shrink-0">
-                        {following.includes(member.id) ? (
-                          <Button
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              unfollowMember(member.id);
+                {recentMembersState.length === 0 && <div className="text-sm text-[#8A8AA8] italic">No recent members yet.</div>}
+
+                {recentMembersState.length > 0 &&
+                  recentMembersState.map((member, idx) => (
+                    <motion.div key={idx} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }}>
+                      <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm flex items-center gap-3">
+                        <Avatar className="w-10 h-10 border-2" style={{ borderColor: member.color + "60" }}>
+                          <AvatarFallback
+                            className="text-sm"
+                            style={{
+                              backgroundColor: member.color + "30",
+                              color: "#4A4A6A",
                             }}
                           >
-                            Following
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              followMember(member.id);
-                            }}
-                          >
-                            Follow
-                          </Button>
-                        )}
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
+                            {member.initial}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="text-sm text-[#6A6A88]">{member.name}</div>
+                          <div className="text-xs text-[#B8B8CC]">Feeling {member.mood}</div>
+                        </div>
+                        <div className="flex-shrink-0">
+                          {following.includes(member.id) ? (
+                            <Button
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                unfollowMember(member.id);
+                              }}
+                            >
+                              Following
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                followMember(member.id);
+                              }}
+                            >
+                              Follow
+                            </Button>
+                          )}
+                        </div>
+                      </Card>
+                    </motion.div>
+                  ))}
               </div>
             </div>
 
             {/* Upcoming Events */}
             <div>
-              <h3 className="text-[#4A4A6A] mb-3">Upcoming gatherings</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-[#4A4A6A] mb-3">Upcoming gatherings</h3>
+                <div className="text-sm text-[#8A8AA8]">{upcomingEventsState.length}</div>
+              </div>
               <div className="space-y-3">
-                {upcomingEventsState.map((event, idx) => (
-                  <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}>
-                    <Card
-                      className="p-4 rounded-2xl border-2 bg-white/80 backdrop-blur-sm"
-                      style={{
-                        borderColor: loop.color + "30",
-                      }}
-                    >
-                      <div className="flex items-start justify-between mb-2">
-                        <div className="text-[#6A6A88]">{event.name}</div>
-                        <Badge
-                          className="px-2 py-0.5 text-xs rounded-full border-0"
-                          style={{
-                            backgroundColor: loop.color + "20",
-                            color: "#6A6A88",
-                          }}
-                        >
-                          {event.attendees} going
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-2 text-xs text-[#B8B8CC]">
-                        <Calendar className="w-3.5 h-3.5" />
-                        <span>{event.date}</span>
-                      </div>
-                      <div className="mt-3 flex justify-end">
-                        {rsvpedEvents.includes(event.id) ? (
-                          <Button
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleRsvp(event.id);
+                {upcomingEventsState.length === 0 && <div className="text-sm text-[#8A8AA8] italic">No upcoming gatherings.</div>}
+
+                {upcomingEventsState.length > 0 &&
+                  upcomingEventsState.map((event, idx) => (
+                    <motion.div key={idx} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}>
+                      <Card
+                        className="p-4 rounded-2xl border-2 bg-white/80 backdrop-blur-sm"
+                        style={{
+                          borderColor: loop.color + "30",
+                        }}
+                      >
+                        <div className="flex items-start justify-between mb-2">
+                          <div className="text-[#6A6A88]">{event.name}</div>
+                          <Badge
+                            className="px-2 py-0.5 text-xs rounded-full border-0"
+                            style={{
+                              backgroundColor: loop.color + "20",
+                              color: "#6A6A88",
                             }}
                           >
-                            Joined
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              toggleRsvp(event.id);
-                            }}
-                          >
-                            RSVP
-                          </Button>
-                        )}
-                      </div>
-                    </Card>
-                  </motion.div>
-                ))}
+                            {event.attendees} going
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-[#B8B8CC]">
+                          <Calendar className="w-3.5 h-3.5" />
+                          <span>{event.date}</span>
+                        </div>
+                        <div className="mt-3 flex justify-end">
+                          {rsvpedEvents.includes(event.id) ? (
+                            <Button
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleRsvp(event.id);
+                              }}
+                            >
+                              Joined
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                toggleRsvp(event.id);
+                              }}
+                            >
+                              RSVP
+                            </Button>
+                          )}
+                        </div>
+                      </Card>
+                    </motion.div>
+                  ))}
               </div>
             </div>
           </div>

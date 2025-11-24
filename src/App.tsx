@@ -67,6 +67,7 @@ export default function App() {
   const [userName, setUserName] = useState("");
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
   const [userBio, setUserBio] = useState<string | null>(null);
+  const [userHandle, setUserHandle] = useState<string | null>(null);
   const [currentScreen, setCurrentScreen] = useState<Screen>("feed");
   const [selectedMood, setSelectedMood] = useState("All");
   const [showSettings, setShowSettings] = useState(false);
@@ -89,7 +90,21 @@ export default function App() {
   const [followersCount, setFollowersCount] = useState<number>(0);
   const [savedDreamOrbs, setSavedDreamOrbs] = useState<number[]>([]);
   const [userDreams, setUserDreams] = useState<UserDream[]>([]);
-  const [darkMode, setDarkMode] = useState(false);
+  // Theme: 'light' or 'dark' (persisted via vibeloop_settings.darkMode)
+  const [theme, setTheme] = useState<"light" | "dark">(() => {
+    try {
+      const rawSettings = localStorage.getItem("vibeloop_settings");
+      if (rawSettings) {
+        const settings = JSON.parse(rawSettings);
+        if (typeof settings.darkMode === "boolean") return settings.darkMode ? "dark" : "light";
+      }
+    } catch (e) {
+      // ignore
+    }
+    return "light";
+  });
+  // Make the app behave like a brand-new user by default visually
+  const [newUserMode, setNewUserMode] = useState<boolean>(true);
   const [showDebug, setShowDebug] = useState<boolean>(() => {
     try {
       const raw = localStorage.getItem("vibeloop_debug");
@@ -128,6 +143,7 @@ export default function App() {
         const profile = JSON.parse(profileRaw);
         if (profile.name) setUserName(profile.name);
         if (profile.bio) setUserBio(profile.bio);
+        if (profile.username) setUserHandle(profile.username);
       }
     } catch (e) {
       // ignore
@@ -144,25 +160,22 @@ export default function App() {
       const rawSettings = localStorage.getItem("vibeloop_settings");
       if (rawSettings) {
         const settings = JSON.parse(rawSettings);
-        if (typeof settings.darkMode === "boolean") setDarkMode(settings.darkMode);
+        if (typeof settings.darkMode === "boolean") setTheme(settings.darkMode ? "dark" : "light");
       }
     } catch (e) {
       // ignore
     }
   }, []);
 
-  // Apply dark mode class to document
+  // Apply theme class to document element so CSS variables switch
   useEffect(() => {
     try {
-      if (darkMode) {
-        document.documentElement.classList.add("dark");
-      } else {
-        document.documentElement.classList.remove("dark");
-      }
+      if (theme === "dark") document.documentElement.classList.add("dark");
+      else document.documentElement.classList.remove("dark");
     } catch (e) {
-      // ignore (SSR or restricted env)
+      // ignore
     }
-  }, [darkMode]);
+  }, [theme]);
 
   // Listen for app-wide navigation events (allow components to dispatch events)
   useEffect(() => {
@@ -192,6 +205,38 @@ export default function App() {
     };
   }, []);
 
+  // Listen for profile updates dispatched from settings so we update UI immediately
+  useEffect(() => {
+    const handleProfileUpdated = (e: Event) => {
+      try {
+        const custom = e as CustomEvent;
+        if (custom && custom.detail) {
+          const { name, username, bio, avatarUrl } = custom.detail as any;
+          if (typeof name === "string") setUserName(name);
+          if (typeof bio === "string") setUserBio(bio);
+          if (typeof avatarUrl === "string") setUserAvatar(avatarUrl ?? null);
+          if (typeof username === "string") setUserHandle(username);
+        } else {
+          // Fallback: read from localStorage
+          const raw = localStorage.getItem("vibeloop_profile");
+          if (raw) {
+            const p = JSON.parse(raw);
+            if (p.name) setUserName(p.name);
+            if (p.bio) setUserBio(p.bio);
+            if (p.username) setUserHandle(p.username);
+          }
+          const av = localStorage.getItem("vibeloop_profile_avatar");
+          if (av) setUserAvatar(av);
+        }
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    window.addEventListener("vibeloop:profile_updated", handleProfileUpdated as EventListener);
+    return () => window.removeEventListener("vibeloop:profile_updated", handleProfileUpdated as EventListener);
+  }, []);
+
   // Listen for global data changes (localStorage writes from other components)
   useEffect(() => {
     const handler = () => {
@@ -200,7 +245,7 @@ export default function App() {
         const rawSettings = localStorage.getItem("vibeloop_settings");
         if (rawSettings) {
           const settings = JSON.parse(rawSettings);
-          if (typeof settings.darkMode === "boolean") setDarkMode(settings.darkMode);
+          if (typeof settings.darkMode === "boolean") setTheme(settings.darkMode ? "dark" : "light");
         }
       } catch (e) {
         // ignore
@@ -313,7 +358,7 @@ export default function App() {
       timestamp: "Just now",
       dreamOrb: true,
       author: userName,
-      authorUsername: "you",
+      authorUsername: userHandle || "you",
       authorColor: dream.moodColor,
       isFollowing: true,
       image: dream.image,
@@ -542,7 +587,7 @@ export default function App() {
                 if (typeof profile?.avatarUrl === "string") setUserAvatar(profile.avatarUrl ?? null);
               }}
               onSettingsChange={(payload) => {
-                if (typeof payload.darkMode === "boolean") setDarkMode(payload.darkMode);
+                if (typeof payload.darkMode === "boolean") setTheme(payload.darkMode ? "dark" : "light");
               }}
             />
           ) : (
@@ -569,7 +614,8 @@ export default function App() {
                   setCurrentScreen={(s: string) => setCurrentScreen(s as Screen)}
                   joinLoop={joinLoop}
                   leaveLoop={leaveLoop}
-                  joinedLoopsProp={joinedLoops}
+                  // show empty joined loops visually for new users until they interact
+                  joinedLoopsProp={newUserMode ? [] : joinedLoops}
                 />
               )}
               {currentScreen === "profile" && (
@@ -578,9 +624,10 @@ export default function App() {
                   userName={userName}
                   onSettingsClick={() => setShowSettings(true)}
                   setCurrentScreen={(s: string) => setCurrentScreen(s as Screen)}
-                  followingListProp={followingList}
-                  joinedLoopsProp={joinedLoops}
-                  followersCountProp={followersCount}
+                  followingListProp={newUserMode ? [] : followingList}
+                  joinedLoopsProp={newUserMode ? [] : joinedLoops}
+                  followersCountProp={newUserMode ? 0 : followersCount}
+                  newUserMode={newUserMode}
                 />
               )}
               {!showSettings && (

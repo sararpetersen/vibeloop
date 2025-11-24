@@ -266,52 +266,58 @@ export function EventDetail({ isOpen, onClose, event, eventColor, onOpenChat }: 
 
             {/* Attendees */}
             <div>
-              <h3 className="text-[#4A4A6A] mb-3">Who's coming</h3>
+              <div className="flex items-center justify-between">
+                <h3 className="text-[#4A4A6A] mb-3">Who's coming</h3>
+                <div className="text-sm text-[#8A8AA8]">{eventAttendeesState.length}</div>
+              </div>
               <div className="space-y-2">
-                {eventAttendeesState.slice(0, event.attendees > 6 ? 6 : event.attendees).map((attendee, idx) => (
-                  <motion.div key={idx} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }}>
-                    <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm flex items-center gap-3">
-                      <Avatar className="w-10 h-10 border-2" style={{ borderColor: attendee.color + "60" }}>
-                        <AvatarFallback
-                          className="text-sm"
-                          style={{
-                            backgroundColor: attendee.color + "30",
-                            color: "#4A4A6A",
-                          }}
-                        >
-                          {attendee.initial}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1">
-                        <div className="text-sm text-[#6A6A88]">{attendee.name}</div>
-                        <div className="text-xs text-[#B8B8CC]">Feeling {attendee.mood}</div>
-                      </div>
-                      <div className="flex-shrink-0">
-                        {following.includes(attendee.id) ? (
-                          <Button
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              unfollowMember(attendee.id);
+                {eventAttendeesState.length === 0 && <div className="text-sm text-[#8A8AA8] italic">No attendees yet.</div>}
+
+                {eventAttendeesState.length > 0 &&
+                  eventAttendeesState.slice(0, event.attendees > 6 ? 6 : event.attendees).map((attendee, idx) => (
+                    <motion.div key={idx} initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: idx * 0.05 }}>
+                      <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm flex items-center gap-3">
+                        <Avatar className="w-10 h-10 border-2" style={{ borderColor: attendee.color + "60" }}>
+                          <AvatarFallback
+                            className="text-sm"
+                            style={{
+                              backgroundColor: attendee.color + "30",
+                              color: "#4A4A6A",
                             }}
                           >
-                            Following
-                          </Button>
-                        ) : (
-                          <Button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              followMember(attendee.id);
-                            }}
-                          >
-                            Follow
-                          </Button>
-                        )}
-                      </div>
-                      {idx === 0 && <Badge className="px-2 py-0.5 text-xs rounded-full bg-[#A9C7FF]/20 text-[#6A6A88] border-0">Host</Badge>}
-                    </Card>
-                  </motion.div>
-                ))}
+                            {attendee.initial}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1">
+                          <div className="text-sm text-[#6A6A88]">{attendee.name}</div>
+                          <div className="text-xs text-[#B8B8CC]">Feeling {attendee.mood}</div>
+                        </div>
+                        <div className="flex-shrink-0">
+                          {following.includes(attendee.id) ? (
+                            <Button
+                              variant="outline"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                unfollowMember(attendee.id);
+                              }}
+                            >
+                              Following
+                            </Button>
+                          ) : (
+                            <Button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                followMember(attendee.id);
+                              }}
+                            >
+                              Follow
+                            </Button>
+                          )}
+                        </div>
+                        {idx === 0 && <Badge className="px-2 py-0.5 text-xs rounded-full bg-[#A9C7FF]/20 text-[#6A6A88] border-0">Host</Badge>}
+                      </Card>
+                    </motion.div>
+                  ))}
               </div>
             </div>
 

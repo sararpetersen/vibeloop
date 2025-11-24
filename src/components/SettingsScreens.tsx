@@ -107,6 +107,18 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
     } catch (e) {
       // ignore
     }
+
+    // Notify other parts of the app (localStorage readers) that profile changed
+    try {
+      window.dispatchEvent(new CustomEvent("vibeloop:profile_updated", { detail: { name, username, bio, avatarUrl } }));
+    } catch (e) {
+      // ignore
+    }
+    try {
+      window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+    } catch (e) {
+      // ignore
+    }
   };
 
   return (
@@ -117,7 +129,7 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -212,7 +224,7 @@ export function PrivacySettings({ onBack }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -288,7 +300,7 @@ export function BlockedUsers({ onBack }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -327,7 +339,8 @@ export function BlockedUsers({ onBack }: ScreenProps) {
 
 // Mood Preferences Screen
 export function MoodPreferences({ onBack }: ScreenProps) {
-  const [favoriteMoods, setFavoriteMoods] = useState<string[]>(["Dreamy", "Chill", "Creative"]);
+  // Start empty for a brand-new user
+  const [favoriteMoods, setFavoriteMoods] = useState<string[]>([]);
 
   // Load existing mood preferences from vibeloop_settings or legacy vibeloop_mood_prefs
   useEffect(() => {
@@ -336,7 +349,7 @@ export function MoodPreferences({ onBack }: ScreenProps) {
       if (settingsRaw) {
         const parsed = JSON.parse(settingsRaw);
         if (parsed && Array.isArray(parsed.moodPreferences)) {
-          setFavoriteMoods(parsed.moodPreferences);
+          setFavoriteMoods(parsed.moodPreferences || []);
           return;
         }
       }
@@ -345,7 +358,7 @@ export function MoodPreferences({ onBack }: ScreenProps) {
       if (legacy) {
         const parsedLegacy = JSON.parse(legacy);
         if (Array.isArray(parsedLegacy)) {
-          setFavoriteMoods(parsedLegacy);
+          setFavoriteMoods(parsedLegacy || []);
           return;
         }
       }
@@ -396,7 +409,7 @@ export function MoodPreferences({ onBack }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -412,12 +425,13 @@ export function MoodPreferences({ onBack }: ScreenProps) {
                 key={mood.name}
                 onClick={() => toggleMood(mood.name)}
                 whileTap={{ scale: 0.95 }}
-                className={`p-6 rounded-2xl backdrop-blur-xl border-2 transition-all duration-300 ${
+                className={`p-6 rounded-2xl backdrop-blur-xl border-2 transition-all duration-300 cursor-pointer focus:outline-none ${
                   isSelected ? "bg-white/80 border-white/60 shadow-xl" : "bg-white/40 border-white/30 shadow-md"
                 }`}
                 style={{
                   boxShadow: isSelected ? `0 0 30px ${mood.color}30` : undefined,
                 }}
+                aria-pressed={isSelected}
               >
                 <div className="text-4xl mb-2">{mood.emoji}</div>
                 <h3 className="text-[#4A4A6A]">{mood.name}</h3>
@@ -451,7 +465,7 @@ export function GenericSettingsScreen({ onBack, title, description }: { onBack: 
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -484,7 +498,7 @@ export function SecuritySettings({ onBack }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -613,7 +627,7 @@ export function DataPrivacySettings({ onBack }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -691,7 +705,7 @@ export function LoopRadiusSettings({ onBack }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -830,7 +844,7 @@ export function HelpFAQs({ onBack }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>
@@ -875,7 +889,13 @@ export function HelpFAQs({ onBack }: ScreenProps) {
         <Card className="mt-6 p-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl text-center">
           <p className="text-[#6A6A88] mb-4">Still need help?</p>
           <Button
-            className="w-full py-4 text-white"
+            onClick={() => {
+              const email = "support@vibeloop.app";
+              const subject = "VibeLoop Support";
+              const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject)}`;
+              window.location.href = mailtoLink;
+            }}
+            className="w-full py-4 text-white cursor-pointer"
             style={{
               background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
               boxShadow: "0 0 20px #C5A9FF50",
@@ -948,7 +968,7 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
       className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
-        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors">
+        <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
           <ChevronLeft className="w-5 h-5" />
           <span>Back</span>
         </button>

@@ -305,44 +305,13 @@ export function LocalLoops({
     }
   };
 
-  // Local joined state: start empty to represent a new-user empty state
-  const [joinedLoopsIds, setJoinedLoopsIds] = useState<number[]>([]);
-
-  const isJoined = (id: number) => joinedLoopsIds.includes(id);
-
-  const handleToggleJoin = (loopItem: { id: number; name: string; color: string }) => {
-    setJoinedLoopsIds((prev) => {
-      const exists = prev.includes(loopItem.id);
-      const nextIds = exists ? prev.filter((i) => i !== loopItem.id) : [loopItem.id, ...prev];
-
-      // Persist a friendly joined loops array for other parts of the app
-      try {
-        const raw = localStorage.getItem("vibeloop_joined_loops");
-        const parsed = raw ? JSON.parse(raw) : [];
-        // Build object list from nextIds mapping to available loop data (try to preserve names/colors)
-        const nextObjs = nextIds.map((id) => {
-          if (id === loopItem.id) return { id: loopItem.id, name: loopItem.name, color: loopItem.color };
-          const existing = (parsed || []).find((p: any) => p.id === id);
-          return existing || { id, name: `Loop ${id}`, color: "#C5A9FF" };
-        });
-        localStorage.setItem("vibeloop_joined_loops", JSON.stringify(nextObjs));
-        window.dispatchEvent(new Event("vibeloop:joined_loops_changed"));
-        window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
-      } catch (e) {
-        // ignore
-      }
-
-      // Notify App-level handlers when present
-      try {
-        if (exists) {
-          if (leaveLoop) leaveLoop(loopItem.id);
-        } else {
-          if (joinLoop) joinLoop(loopItem);
-        }
-      } catch (e) {}
-
-      return nextIds;
-    });
+  const isJoined = (id: number) => {
+    try {
+      if (joinedLoopsProp) return joinedLoopsProp.some((l) => l.id === id);
+      return getJoinedFromStorage().includes(id);
+    } catch (e) {
+      return false;
+    }
   };
 
   return (
@@ -438,69 +407,105 @@ export function LocalLoops({
                   }}
                 >
                   <Card
-                    className="p-4 md:p-5 rounded-3xl border-2 bg-white/70 backdrop-blur-xl shadow-md relative overflow-hidden"
-                    style={{ borderColor: "rgba(255,255,255,0.4)" }}
+                    onClick={() => {
+                      setSelectedLoop(loop);
+                      setLoopDetailOpen(true);
+                    }}
+                    className="p-5 rounded-3xl border-2 relative overflow-hidden backdrop-blur-sm cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+                    style={{
+                      borderColor: loop.color + "40",
+                      backgroundColor: "rgba(255,255,255,0.8)",
+                    }}
                   >
-                    <div className="flex flex-col md:flex-row md:items-start gap-3 md:gap-4 space-y-3 md:space-y-0">
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="w-14 h-14 rounded-2xl flex items-center justify-center"
-                          style={{ backgroundColor: loop.color, color: "white", boxShadow: `0 10px 30px ${loop.color}20` }}
-                        >
-                          <span className="font-semibold text-sm">{loop.name.charAt(0)}</span>
-                        </div>
-                        <div className="min-w-0">
-                          <h3 className="text-[#4A4A6A] font-semibold truncate">{loop.name}</h3>
-                          <p className="text-xs text-[#8A8AA8] truncate">{loop.location}</p>
-                          <div className="mt-2 flex flex-wrap gap-1.5">
-                            {loop.activities.slice(0, 3).map((activity, idx) => (
-                              <Badge
-                                key={idx}
-                                className="px-2 py-0.5 text-xs rounded-full border-0"
-                                style={{ backgroundColor: loop.color + "20", color: "#6A6A88" }}
-                              >
-                                {activity}
-                              </Badge>
-                            ))}
-                          </div>
-                        </div>
+                    {/* Gradient overlay */}
+                    <div
+                      className="absolute top-0 left-0 right-0 h-1 opacity-60 pointer-events-none"
+                      style={{
+                        background: `linear-gradient(90deg, ${loop.color}00, ${loop.color}, ${loop.color}00)`,
+                      }}
+                    />
+
+                    <div className="flex gap-4">
+                      {/* Icon */}
+                      <div
+                        className="flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center"
+                        style={{
+                          backgroundColor: loop.color + "30",
+                          boxShadow: `0 0 20px ${loop.color}20`,
+                        }}
+                      >
+                        <IconComponent className="w-7 h-7" style={{ color: loop.color }} />
                       </div>
 
-                      <div className="flex-1 flex flex-col justify-between">
-                        <div className="hidden md:block" />
+                      {/* Content */}
+                      <div className="flex-1 min-w-0">
+                        <h3 className="mb-1 text-[#4A4A6A]">{loop.name}</h3>
+                        <p className="text-sm text-[#8A8AA8] mb-2 line-clamp-2">{loop.description}</p>
+                        <div className="flex items-center gap-2 text-sm text-[#8A8AA8] mb-2">
+                          <MapPin className="w-3.5 h-3.5 text-[#B8B8CC]" />
+                          <span>{loop.location}</span>
+                        </div>
+                        <div className="flex items-center gap-3 text-sm mb-2">
+                          <span className="text-[#B8B8CC] italic">{getCommunitySize(loop.members)}</span>
+                          <span className="text-[#E0E0EA]">•</span>
+                          <span className="text-[#B8B8CC] text-xs">{loop.activeMembersToday} active today</span>
+                        </div>
 
-                        <div className="flex items-center justify-between mt-2 md:mt-0">
-                          <div className="text-xs text-[#6A6A88]">
-                            <div>{loop.members} members</div>
-                            <div className="text-[#B8B8CC] text-xs">{loop.activeMembersToday} active today</div>
-                          </div>
-
-                          <div>
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleToggleJoin({ id: loop.id, name: loop.name, color: loop.color });
+                        {/* Activities */}
+                        <div className="flex flex-wrap gap-1.5 mb-3">
+                          {loop.activities.map((activity, idx) => (
+                            <Badge
+                              key={idx}
+                              className="px-2 py-0.5 text-xs rounded-full border-0"
+                              style={{
+                                backgroundColor: loop.color + "20",
+                                color: "#6A6A88",
                               }}
-                              className={`px-4 py-2 rounded-full ${
-                                isJoined(loop.id)
-                                  ? "bg-white/0 border border-[#E0E8F5] text-[#6A6A88]"
-                                  : "bg-gradient-to-r from-[rgba(197,169,255,0.4)] to-[rgba(169,199,255,0.4)] text-white"
-                              }`}
                             >
-                              {isJoined(loop.id) ? "Joined ✓" : "Join loop"}
-                            </Button>
-                          </div>
+                              {activity}
+                            </Badge>
+                          ))}
+                        </div>
+
+                        <div className="flex items-center gap-2 text-xs text-[#B8B8CC] italic">
+                          <span>{loop.founded}</span>
+                          <span className="text-[#E0E0EA]">•</span>
+                          <Badge
+                            className="px-2 py-0.5 text-xs rounded-full border-0"
+                            style={{
+                              backgroundColor: loop.color + "30",
+                              color: "#6A6A88",
+                            }}
+                          >
+                            {loop.vibe}
+                          </Badge>
+                        </div>
+
+                        <div className="mt-3">
+                          <button
+                            type="button"
+                            aria-pressed={isJoined(loop.id)}
+                            aria-label={isJoined(loop.id) ? `Leave ${loop.name}` : `Join ${loop.name}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isJoined(loop.id)) {
+                                if (leaveLoop) leaveLoop(loop.id);
+                                else leaveLoopLocal(loop.id);
+                              } else {
+                                if (joinLoop) joinLoop({ id: loop.id, name: loop.name, color: loop.color });
+                                else joinLoopLocal(loop);
+                              }
+                            }}
+                            className={`relative z-20 px-3 py-2 rounded-full text-sm cursor-pointer ${
+                              isJoined(loop.id) ? "text-[#111827] font-semibold border" : "bg-[#C5A9FF20] text-[#6A6A88]"
+                            }`}
+                            style={isJoined(loop.id) ? { backgroundColor: "#9AA4C6", borderColor: "#7F8BAF", boxShadow: "none" } : undefined}
+                          >
+                            {isJoined(loop.id) ? "Leave" : "Join"}
+                          </button>
                         </div>
                       </div>
                     </div>
-                    <button
-                      onClick={() => {
-                        setSelectedLoop(loop);
-                        setLoopDetailOpen(true);
-                      }}
-                      className="absolute inset-0 opacity-0"
-                      aria-hidden
-                    />
                   </Card>
                 </motion.div>
               );
@@ -571,87 +576,132 @@ export function LocalLoops({
                       setSelectedEvent(event);
                       setEventDetailOpen(true);
                     }}
-                    className="p-4 rounded-2xl border-2 relative overflow-hidden backdrop-blur-sm cursor-pointer hover:scale-[1.01] transition-transform duration-200"
+                    className="p-5 rounded-3xl border-2 relative overflow-hidden backdrop-blur-sm cursor-pointer hover:scale-[1.02] transition-transform duration-300"
                     style={{
-                      borderColor: eventColor + "30",
-                      backgroundColor: "rgba(255,255,255,0.9)",
+                      borderColor: eventColor + "40",
+                      backgroundColor: "rgba(255,255,255,0.8)",
                     }}
                   >
-                    <div className="flex items-start gap-4">
-                      <div className="flex-shrink-0">
-                        <div
-                          className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                    {/* Gradient overlay */}
+                    <div
+                      className="absolute top-0 left-0 right-0 h-1 opacity-60 pointer-events-none"
+                      style={{
+                        background: `linear-gradient(90deg, ${eventColor}00, ${eventColor}, ${eventColor}00)`,
+                      }}
+                    />
+
+                    <div className="relative">
+                      {/* Header */}
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex-1">
+                          <h3 className="mb-1 text-[#4A4A6A]">{event.name}</h3>
+                          <p className="text-sm text-[#8A8AA8] mb-3">{event.description}</p>
+                        </div>
+                        <Badge
+                          className="ml-2 px-3 py-1 rounded-full border-0 whitespace-nowrap"
                           style={{
                             backgroundColor: eventColor + "30",
-                            boxShadow: `0 6px 18px ${eventColor}16`,
+                            color: "#6A6A88",
                           }}
                         >
-                          <Calendar className="w-6 h-6" style={{ color: eventColor }} />
+                          {event.vibe}
+                        </Badge>
+                      </div>
+
+                      {/* Event Details */}
+                      <div className="space-y-2 mb-4">
+                        <div className="flex items-center gap-2 text-sm text-[#6A6A88]">
+                          <Calendar className="w-4 h-4 text-[#B8B8CC]" />
+                          <span>{event.date}</span>
+                          <span className="text-[#D0D0E0]">•</span>
+                          <span className="text-[#B8B8CC]">{event.duration}</span>
+                        </div>
+                        <div className="flex items-center gap-2 text-sm text-[#6A6A88]">
+                          <MapPin className="w-4 h-4 text-[#B8B8CC]" />
+                          <span>{event.location}</span>
+                          <span className="text-[#D0D0E0]">•</span>
+                          <span className="text-[#B8B8CC]">{event.distance}</span>
+                        </div>
+                        <div className="text-xs text-[#B8B8CC] italic">Hosted by {event.host}</div>
+                      </div>
+
+                      {/* What to Bring */}
+                      <div className="mb-4">
+                        <p className="text-xs text-[#8A8AA8] mb-2">What to bring:</p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {event.whatToBring.map((item, idx) => (
+                            <Badge
+                              key={idx}
+                              className="px-2 py-0.5 text-xs rounded-full border-0"
+                              style={{
+                                backgroundColor: eventColor + "20",
+                                color: "#6A6A88",
+                              }}
+                            >
+                              {item}
+                            </Badge>
+                          ))}
                         </div>
                       </div>
 
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between">
-                          <div className="min-w-0">
-                            <h3 className="text-[#4A4A6A] truncate">{event.name}</h3>
-                            <p className="text-sm text-[#8A8AA8] line-clamp-2">{event.description}</p>
-                          </div>
-
-                          <Badge
-                            className="ml-2 px-3 py-1 rounded-full border-0 whitespace-nowrap"
-                            style={{ backgroundColor: eventColor + "30", color: "#6A6A88" }}
-                          >
-                            {event.vibe}
-                          </Badge>
+                      {/* Attendance - Subtle and Poetic */}
+                      <div className="mb-3">
+                        <div className="flex items-center gap-1.5 text-sm text-[#8A8AA8] mb-3">
+                          <UsersIcon className="w-4 h-4 text-[#B8B8CC]" />
+                          <span className="italic">
+                            {event.attendees} {event.attendees === 1 ? "soul" : "souls"} gathering
+                          </span>
+                          {isAlmostFull && (
+                            <>
+                              <span className="text-[#D0D0E0] mx-1">•</span>
+                              <span className="text-[#B8B8CC] text-xs">
+                                {spotsLeft} {spotsLeft === 1 ? "spot" : "spots"} left
+                              </span>
+                            </>
+                          )}
+                          {isFull && (
+                            <>
+                              <span className="text-[#D0D0E0] mx-1">•</span>
+                              <span className="text-[#B8B8CC] text-xs">gathering full</span>
+                            </>
+                          )}
                         </div>
 
-                        <div className="mt-3 flex items-center justify-between gap-4">
-                          <div className="text-xs text-[#6A6A88]">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="w-3.5 h-3.5 text-[#B8B8CC]" />
-                              <span>{event.date}</span>
-                              <span className="text-[#D0D0E0]">•</span>
-                              <span className="text-[#B8B8CC]">{event.duration}</span>
-                            </div>
-                            <div className="flex items-center gap-2 mt-1">
-                              <MapPin className="w-3.5 h-3.5 text-[#B8B8CC]" />
-                              <span>{event.location}</span>
-                            </div>
-                            <div className="text-xs text-[#B8B8CC] italic mt-1">Hosted by {event.host}</div>
-                          </div>
-
-                          <div className="text-right">
-                            <div className="text-sm text-[#4A4A6A]">{event.attendees}</div>
-                            <div className="text-xs text-[#8A8AA8]">going</div>
-                          </div>
-                        </div>
-
-                        <div className="mt-3 flex items-center justify-between">
-                          <div className="flex gap-2 items-center text-xs text-[#B8B8CC]">
-                            {isAlmostFull && <span className="text-[#D97706]">{spotsLeft} spots left</span>}
-                            {isFull && <span className="text-red-500">Full</span>}
-                          </div>
-
-                          <div>
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                if (isJoined(event.id)) {
-                                  if (leaveLoop) leaveLoop(event.id);
-                                  else leaveLoopLocal(event.id);
-                                } else {
-                                  if (joinLoop) joinLoop({ id: event.id, name: event.name, color: eventColor });
-                                  else joinLoopLocal({ id: event.id, name: event.name, color: eventColor });
-                                }
+                        {/* Subtle visual indicator - only show when getting full */}
+                        {(isAlmostFull || isFull) && (
+                          <div className="h-1 bg-[#F6F8FB] rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${(event.attendees / event.maxAttendees) * 100}%`,
+                                backgroundColor: eventColor + "60",
+                                boxShadow: `0 0 6px ${eventColor}20`,
                               }}
-                              disabled={isFull}
-                              className={`px-3 py-2 rounded-full text-sm ${
-                                isJoined(event.id) ? "bg-red-50 text-red-500" : "bg-[#C5A9FF20] text-[#6A6A88]"
-                              } ${isFull ? "opacity-50 pointer-events-none" : ""}`}
-                            >
-                              {isJoined(event.id) ? "Leave" : "Join"}
-                            </button>
+                            />
                           </div>
+                        )}
+                      </div>
+
+                      {/* Tap to see details hint */}
+                      <div className="text-center pt-2">
+                        <div className="flex items-center justify-center gap-3">
+                          <span className="text-xs text-[#B8B8CC] italic">Tap to see details</span>
+                          <button
+                            type="button"
+                            aria-pressed={isJoined(event.id)}
+                            aria-label={isJoined(event.id) ? `Leave ${event.name}` : `Join ${event.name}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (isJoined(event.id)) leaveLoopLocal(event.id);
+                              else joinLoopLocal({ id: event.id, name: event.name, color: eventColor });
+                            }}
+                            className={`relative z-20 px-3 py-1 rounded-full text-xs cursor-pointer ${
+                              isJoined(event.id) ? "text-[#111827] font-semibold border" : "bg-[#C5A9FF20] text-[#6A6A88]"
+                            }`}
+                            style={isJoined(event.id) ? { backgroundColor: "#9AA4C6", borderColor: "#7F8BAF", boxShadow: "none" } : undefined}
+                          >
+                            {isJoined(event.id) ? "Leave" : "Join"}
+                          </button>
                         </div>
                       </div>
                     </div>
