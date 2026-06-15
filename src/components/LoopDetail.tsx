@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "./ui/sheet";
-import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
@@ -455,18 +454,18 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
           {/* Footer Actions */}
           <div className="sticky bottom-0 bg-white/90 backdrop-blur-xl border-t-2 border-[#E0E8F5] px-6 py-4">
             <div className="flex gap-3">
-              <Button
+              <motion.button
                 onClick={onOpenChat}
-                className="rounded-full py-6 border-0 transition-all duration-300 hover:shadow-lg flex-shrink-0"
+                whileHover={{ scale: 1.08, boxShadow: `0 4px 18px ${loop.color}50` }}
+                whileTap={{ scale: 0.95 }}
+                className="flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-300"
                 style={{
-                  background: `linear-gradient(135deg, ${loop.color}40, ${loop.color}20)`,
-                  color: "#6A6A88",
-                  width: "56px",
-                  padding: "0",
+                  background: `linear-gradient(135deg, ${loop.color}50, ${loop.color}25)`,
+                  color: loop.color,
                 }}
               >
                 <MessageCircle className="w-5 h-5" />
-              </Button>
+              </motion.button>
               <button
                 onClick={() => {
                   if (hasJoined) {
