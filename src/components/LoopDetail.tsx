@@ -112,6 +112,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
         arr.push(l);
         localStorage.setItem("vibeloop_joined_loops", JSON.stringify(arr));
         window.dispatchEvent(new CustomEvent("vibeloop:joined_loops_changed"));
+        window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
       }
     } catch (e) {
       // ignore
@@ -126,6 +127,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
       arr = arr.filter((x) => x.id !== id);
       localStorage.setItem("vibeloop_joined_loops", JSON.stringify(arr));
       window.dispatchEvent(new CustomEvent("vibeloop:joined_loops_changed"));
+      window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
     } catch (e) {
       // ignore
     }
