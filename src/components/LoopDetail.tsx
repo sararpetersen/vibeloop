@@ -407,7 +407,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           borderColor: loop.color + "30",
                         }}
                       >
-                        <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-start justify-between mb-1.5">
                           <div className="text-sm font-medium text-[#4A4A6A] flex-1 pr-2">{event.name}</div>
                           <Badge
                             className="px-2 py-0.5 text-xs rounded-full border-0 flex-shrink-0"
@@ -417,16 +417,16 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           </Badge>
                         </div>
                         {event.description && (
-                          <p className="text-xs text-[#8A8AA8] mb-3 leading-relaxed">{event.description}</p>
+                          <p className="text-xs text-[#8A8AA8] mb-1.5 leading-snug">{event.description}</p>
                         )}
                         {event.location && (
-                          <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC] mb-3">
+                          <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC] mb-1.5">
                             <MapPin className="w-3 h-3 flex-shrink-0" />
                             <span>{event.location}</span>
                           </div>
                         )}
                         {/* Date + RSVP always in the same row */}
-                        <div className="flex items-center justify-between mt-1">
+                        <div className="flex items-center justify-between mt-0.5">
                           <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC]">
                             <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
                             <span>{event.date}</span>
