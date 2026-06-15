@@ -27,7 +27,69 @@ interface LoopDetailProps {
   onOpenChat: () => void;
 }
 
-// No hardcoded user-specific demo members or upcoming events — start empty for new users
+// Default community-level data per loop (not user-specific)
+const defaultMembers: Record<number, { id: string; name: string; initial: string; color: string; mood: string }[]> = {
+  1: [
+    { id: "m1", name: "Ines Varga", initial: "I", color: "#D4A9FF", mood: "Creative" },
+    { id: "m2", name: "Malik Osei", initial: "M", color: "#C5A9FF", mood: "Inspired" },
+    { id: "m3", name: "Yara Khalil", initial: "Y", color: "#A9C7FF", mood: "Dreamy" },
+    { id: "m4", name: "Jun Nakamura", initial: "J", color: "#FFD4A9", mood: "Energetic" },
+  ],
+  2: [
+    { id: "m5", name: "Theo Braun", initial: "T", color: "#A9C7FF", mood: "Calm" },
+    { id: "m6", name: "Aisha Diallo", initial: "A", color: "#C5A9FF", mood: "Reflective" },
+    { id: "m7", name: "Nora Eriksen", initial: "N", color: "#B8E8E0", mood: "Peaceful" },
+  ],
+  3: [
+    { id: "m8", name: "Hana Sato", initial: "H", color: "#C5A9FF", mood: "Dreamy" },
+    { id: "m9", name: "Liam Walsh", initial: "L", color: "#A9C7FF", mood: "Curious" },
+    { id: "m10", name: "Safiya Mensah", initial: "S", color: "#D4A9FF", mood: "Reflective" },
+    { id: "m11", name: "Chiara Romano", initial: "C", color: "#E0C9D9", mood: "Calm" },
+  ],
+  4: [
+    { id: "m12", name: "Jade Laurent", initial: "J", color: "#E0C9D9", mood: "Reflective" },
+    { id: "m13", name: "Dmitri Volkov", initial: "D", color: "#C5A9FF", mood: "Calm" },
+    { id: "m14", name: "Suki Watanabe", initial: "S", color: "#FFD4A9", mood: "Peaceful" },
+  ],
+  5: [
+    { id: "m15", name: "Tariq Hassan", initial: "T", color: "#C5A9FF", mood: "Curious" },
+    { id: "m16", name: "Mira Petrov", initial: "M", color: "#A9C7FF", mood: "Dreamy" },
+    { id: "m17", name: "Kenji Sato", initial: "K", color: "#FFD4A9", mood: "Inspired" },
+  ],
+  6: [
+    { id: "m18", name: "Kiera Murphy", initial: "K", color: "#E0C9D9", mood: "Reflective" },
+    { id: "m19", name: "Hassan Ali", initial: "H", color: "#C5A9FF", mood: "Calm" },
+    { id: "m20", name: "Luna Reyes", initial: "L", color: "#D4A9FF", mood: "Peaceful" },
+    { id: "m21", name: "Zainab Nour", initial: "Z", color: "#FFD4A9", mood: "Hopeful" },
+  ],
+};
+
+const defaultEvents: Record<number, { id: string; name: string; date: string; attendees: number }[]> = {
+  1: [
+    { id: "e1", name: "Open Mic Night", date: "This Friday, 7:00 PM", attendees: 18 },
+    { id: "e2", name: "Collaborative Zine Session", date: "Next Tuesday, 6:30 PM", attendees: 9 },
+  ],
+  2: [
+    { id: "e3", name: "Forest Route Walk", date: "Tomorrow, 10:00 PM", attendees: 11 },
+    { id: "e4", name: "Rooftop Starwatch", date: "Saturday, 11:00 PM", attendees: 7 },
+  ],
+  3: [
+    { id: "e5", name: "Dream Sharing Circle", date: "Sunday, 4:00 PM", attendees: 14 },
+    { id: "e6", name: "Lucid Dreaming Workshop", date: "Next Thursday, 7:00 PM", attendees: 20 },
+  ],
+  4: [
+    { id: "e7", name: "Silent Reading Afternoon", date: "Saturday, 2:00 PM", attendees: 12 },
+    { id: "e8", name: "Slow Book Club", date: "Next Sunday, 3:00 PM", attendees: 8 },
+  ],
+  5: [
+    { id: "e9", name: "Stargazing Night", date: "Next Wed, 9:00 PM", attendees: 11 },
+    { id: "e10", name: "Cosmos & Coffee Talk", date: "Next Friday, 6:00 PM", attendees: 15 },
+  ],
+  6: [
+    { id: "e11", name: "Art Therapy Session", date: "Tomorrow, 5:00 PM", attendees: 9 },
+    { id: "e12", name: "Gentle Sharing Circle", date: "Thursday, 6:30 PM", attendees: 13 },
+  ],
+};
 
 export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProps) {
   const [hasJoined, setHasJoined] = useState<boolean>(() => {
@@ -69,14 +131,15 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
     }
   }
 
-  // recent members state (user-specific) — default to empty for new users
-  const [recentMembersState, setRecentMembersState] = useState(() => {
+  // recent members — use community defaults, supplemented by any user-persisted data
+  const [recentMembersState] = useState(() => {
     try {
       const raw = localStorage.getItem("vibeloop_recent_members");
-      if (!raw) return [];
-      return JSON.parse(raw);
+      const persisted = raw ? JSON.parse(raw) : [];
+      const defaults = defaultMembers[loop.id] ?? [];
+      return persisted.length > 0 ? persisted : defaults;
     } catch (e) {
-      return [];
+      return defaultMembers[loop.id] ?? [];
     }
   });
 
@@ -112,14 +175,15 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
     window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
   }
 
-  // upcoming events state (user-specific) — default to empty for new users
+  // upcoming events — use community defaults, supplemented by any user-persisted data
   const [upcomingEventsState, setUpcomingEventsState] = useState(() => {
     try {
       const raw = localStorage.getItem("vibeloop_upcoming_events");
-      if (!raw) return [];
-      return JSON.parse(raw);
+      const persisted = raw ? JSON.parse(raw) : [];
+      const defaults = defaultEvents[loop.id] ?? [];
+      return persisted.length > 0 ? persisted : defaults;
     } catch (e) {
-      return [];
+      return defaultEvents[loop.id] ?? [];
     }
   });
 
