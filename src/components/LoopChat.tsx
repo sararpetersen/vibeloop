@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "./ui/sheet";
+import { Sheet, SheetContent, SheetTitle, SheetDescription } from "./ui/sheet";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
@@ -225,111 +225,99 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[85vh] rounded-t-3xl border-0 p-0 overflow-hidden flex flex-col gap-0"
-        style={{
-          background: "linear-gradient(to bottom, #F6F8FB, #FAFBFD)",
-        }}
+        className="h-[85vh] rounded-t-3xl border-0 p-0 overflow-hidden"
+        style={{ background: "linear-gradient(to bottom, #F6F8FB, #FAFBFD)" }}
       >
-        {/* Header */}
-        <SheetHeader
-          className="px-6 pt-6 pb-4 border-b border-[#E0E8F5] sticky top-0 z-10"
-          style={{
-            background: "linear-gradient(to bottom, #F6F8FBEE, #FAFBFDEE)",
-            backdropFilter: "blur(12px)",
-          }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-2xl flex items-center justify-center"
-              style={{
-                background: `linear-gradient(135deg, ${loopColor}40, ${loopColor}20)`,
-                boxShadow: `0 0 20px ${loopColor}30`,
-              }}
-            >
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: loopColor }} />
-            </div>
-            <div className="flex-1">
-              <SheetTitle className="text-[#4A4A6A] text-left">{loopName}</SheetTitle>
-              <SheetDescription className="text-sm text-[#8A8AA8] mt-0.5">{type === "community" ? "Community chat" : "Event chat"}</SheetDescription>
+        {/* Inner flex column — owns the layout independently of SheetContent's built-in styles */}
+        <div className="flex flex-col h-full">
+          {/* Header */}
+          <div
+            className="flex-shrink-0 px-6 pt-6 pb-4 border-b border-[#E0E8F5]"
+            style={{ background: "linear-gradient(to bottom, #F6F8FBEE, #FAFBFDEE)", backdropFilter: "blur(12px)" }}
+          >
+            <div className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-2xl flex items-center justify-center"
+                style={{ background: `linear-gradient(135deg, ${loopColor}40, ${loopColor}20)`, boxShadow: `0 0 20px ${loopColor}30` }}
+              >
+                <div className="w-3 h-3 rounded-full" style={{ backgroundColor: loopColor }} />
+              </div>
+              <div className="flex-1">
+                <SheetTitle className="text-[#4A4A6A] text-left">{loopName}</SheetTitle>
+                <SheetDescription className="text-sm text-[#8A8AA8] mt-0.5">{type === "community" ? "Community chat" : "Event chat"}</SheetDescription>
+              </div>
             </div>
           </div>
-        </SheetHeader>
 
-        {/* Messages */}
-        <ScrollArea className="flex-1 min-h-0 px-6 py-4">
-          <div ref={messagesRef} className="space-y-4 pb-4">
-            {messages.map((message, index) => (
-              <motion.div
-                key={message.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05, duration: 0.4 }}
-                className={`flex ${message.isOwn ? "justify-end" : "justify-start"}`}
-              >
-                <div className={`max-w-[80%] ${message.isOwn ? "items-end" : "items-start"} flex flex-col gap-1`}>
-                  {!message.isOwn && <span className="text-xs text-[#B8B8CC] px-3">{message.author}</span>}
-                  <div
-                    className="px-4 py-3 rounded-3xl backdrop-blur-sm"
-                    style={{
-                      backgroundColor: message.isOwn ? `${loopColor}30` : "rgba(255,255,255,0.8)",
-                      border: message.isOwn ? `1px solid ${loopColor}40` : "1px solid #E0E8F5",
-                      boxShadow: message.isOwn ? `0 4px 16px ${loopColor}20` : "0 2px 8px rgba(0,0,0,0.04)",
-                    }}
-                  >
-                    <p className="text-[#4A4A6A] leading-relaxed">{message.text}</p>
+          {/* Messages — fills remaining space */}
+          <ScrollArea className="flex-1 min-h-0 px-6 py-4">
+            <div ref={messagesRef} className="space-y-4 pb-2">
+              {messages.map((message, index) => (
+                <motion.div
+                  key={message.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.05, duration: 0.4 }}
+                  className={`flex ${message.isOwn ? "justify-end" : "justify-start"}`}
+                >
+                  <div className={`max-w-[80%] ${message.isOwn ? "items-end" : "items-start"} flex flex-col gap-1`}>
+                    {!message.isOwn && <span className="text-xs text-[#B8B8CC] px-3">{message.author}</span>}
+                    <div
+                      className="px-4 py-3 rounded-3xl backdrop-blur-sm"
+                      style={{
+                        backgroundColor: message.isOwn ? `${loopColor}30` : "rgba(255,255,255,0.8)",
+                        border: message.isOwn ? `1px solid ${loopColor}40` : "1px solid #E0E8F5",
+                        boxShadow: message.isOwn ? `0 4px 16px ${loopColor}20` : "0 2px 8px rgba(0,0,0,0.04)",
+                      }}
+                    >
+                      <p className="text-[#4A4A6A] leading-relaxed">{message.text}</p>
+                    </div>
+                    <span className="text-xs text-[#D0D0E0] px-3">{message.timestamp}</span>
                   </div>
-                  <span className="text-xs text-[#D0D0E0] px-3">{message.timestamp}</span>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </ScrollArea>
-
-        {/* Input Area */}
-        <div
-          className="flex-shrink-0 p-4 border-t border-[#E0E8F5]"
-          style={{
-            background: "linear-gradient(to top, #F6F8FBEE, #FAFBFDEE)",
-            backdropFilter: "blur(12px)",
-          }}
-        >
-          <div className="flex gap-2 items-end">
-            <div className="flex-1 relative">
-              <Input
-                value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
-                onKeyPress={handleKeyPress}
-                placeholder="Share what's on your mind..."
-                className="pr-12 py-6 rounded-full bg-white/80 border-2 text-[#4A4A6A] placeholder:text-[#B8B8CC] resize-none"
-                style={{
-                  borderColor: `${loopColor}30`,
-                }}
-              />
-              <button
-                className="absolute right-4 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition-opacity"
-                onClick={() => setNewMessage((prev) => `${prev} 😊`)}
-                aria-label="Add emoji"
-              >
-                <Smile className="w-5 h-5 text-[#B8B8CC]" />
-              </button>
+                </motion.div>
+              ))}
             </div>
-            <Button
-              onClick={handleSend}
-              disabled={!newMessage.trim()}
-              className="h-12 w-12 rounded-full p-0 border-0 transition-all duration-300 disabled:opacity-40"
-              style={{
-                background: newMessage.trim()
-                  ? `linear-gradient(135deg, ${loopColor}EE, ${loopColor}AA)`
-                  : "linear-gradient(135deg, #E0E0EA, #D0D0E0)",
-                boxShadow: newMessage.trim() ? `0 4px 16px ${loopColor}40` : "none",
-              }}
-            >
-              <Send className="w-5 h-5 text-white" />
-            </Button>
-          </div>
+          </ScrollArea>
 
-          {/* Gentle reminder */}
-          <p className="text-xs text-[#B8B8CC] mt-3 text-center italic">This is a safe space. Be gentle with yourself and others.</p>
+          {/* Input — always anchored to bottom */}
+          <div
+            className="flex-shrink-0 p-4 border-t border-[#E0E8F5]"
+            style={{ background: "linear-gradient(to top, #F6F8FBEE, #FAFBFDEE)", backdropFilter: "blur(12px)" }}
+          >
+            <div className="flex gap-2 items-end">
+              <div className="flex-1 relative">
+                <Input
+                  value={newMessage}
+                  onChange={(e) => setNewMessage(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Share what's on your mind..."
+                  className="pr-12 py-6 rounded-full bg-white/80 border-2 text-[#4A4A6A] placeholder:text-[#B8B8CC] resize-none"
+                  style={{ borderColor: `${loopColor}30` }}
+                />
+                <button
+                  className="absolute right-4 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
+                  onClick={() => setNewMessage((prev) => `${prev} 😊`)}
+                  aria-label="Add emoji"
+                >
+                  <Smile className="w-5 h-5 text-[#B8B8CC]" />
+                </button>
+              </div>
+              <Button
+                onClick={handleSend}
+                disabled={!newMessage.trim()}
+                className="h-12 w-12 rounded-full p-0 border-0 transition-all duration-300 disabled:opacity-40 cursor-pointer"
+                style={{
+                  background: newMessage.trim()
+                    ? `linear-gradient(135deg, ${loopColor}EE, ${loopColor}AA)`
+                    : "linear-gradient(135deg, #E0E0EA, #D0D0E0)",
+                  boxShadow: newMessage.trim() ? `0 4px 16px ${loopColor}40` : "none",
+                }}
+              >
+                <Send className="w-5 h-5 text-white" />
+              </Button>
+            </div>
+            <p className="text-xs text-[#B8B8CC] mt-3 text-center italic">This is a safe space. Be gentle with yourself and others.</p>
+          </div>
         </div>
       </SheetContent>
     </Sheet>
