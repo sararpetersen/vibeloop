@@ -221,7 +221,7 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
                 Set your mood palette ›
               </button>
 
-              <p className="mt-5 text-xs text-[#C8C8D8]">Tip: follow people, RSVP to events, and save dream orbs to build your feed.</p>
+              <p className="mt-5 text-xs" style={{ color: "#C8C8D8" }}>Tip: follow people, RSVP to events, and save dream orbs to build your feed.</p>
             </div>
           </div>
         )}
