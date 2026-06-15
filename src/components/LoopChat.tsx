@@ -225,7 +225,7 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[85vh] rounded-t-3xl border-0 p-0 overflow-hidden"
+        className="h-[85vh] rounded-t-3xl border-0 p-0 overflow-hidden flex flex-col gap-0"
         style={{
           background: "linear-gradient(to bottom, #F6F8FB, #FAFBFD)",
         }}
@@ -256,7 +256,7 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
         </SheetHeader>
 
         {/* Messages */}
-        <ScrollArea className="flex-1 h-[calc(85vh-180px)] px-6 py-4">
+        <ScrollArea className="flex-1 min-h-0 px-6 py-4">
           <div ref={messagesRef} className="space-y-4 pb-4">
             {messages.map((message, index) => (
               <motion.div
@@ -287,7 +287,7 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
 
         {/* Input Area */}
         <div
-          className="absolute bottom-0 left-0 right-0 p-4 border-t border-[#E0E8F5]"
+          className="flex-shrink-0 p-4 border-t border-[#E0E8F5]"
           style={{
             background: "linear-gradient(to top, #F6F8FBEE, #FAFBFDEE)",
             backdropFilter: "blur(12px)",
