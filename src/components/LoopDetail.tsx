@@ -241,7 +241,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:!top-6 [&>button]:!right-6 [&>button]:!rounded-full [&>button]:!p-0 [&>button]:!opacity-100 [&>button]:!bg-white/70 [&>button]:hover:!bg-white [&>button]:!w-10 [&>button]:!h-10 [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-sm"
+        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:!top-6 [&>button]:!right-6 [&>button]:!rounded-full [&>button]:!p-0 [&>button]:!opacity-100 [&>button]:!bg-white/70 [&>button]:hover:!bg-white [&>button]:hover:!scale-110 [&>button]:!w-10 [&>button]:!h-10 [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-sm [&>button]:!transition-all [&>button]:!duration-200"
       >
         <VisuallyHidden>
           <SheetTitle>{loop.name}</SheetTitle>
@@ -361,12 +361,14 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             <div className="text-[10px] text-[#B8B8CC]">Feeling {member.mood}</div>
                           </div>
                           <div style={{ textAlign: "center" }}>
-                            <button
+                            <motion.button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
                               }}
-                              className="rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
+                              whileHover={{ scale: 1.07 }}
+                              whileTap={{ scale: 0.94 }}
+                              className="rounded-full text-[11px] font-medium cursor-pointer"
                               style={{
                                 display: "inline-block",
                                 padding: "4px 20px",
@@ -376,7 +378,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                               }}
                             >
                               {following.includes(member.id) ? "Following ✓" : "Follow"}
-                            </button>
+                            </motion.button>
                           </div>
                         </div>
                       </Card>
@@ -429,12 +431,14 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
                             <span>{event.date}</span>
                           </div>
-                          <button
+                          <motion.button
                             onClick={(e) => {
                               e.stopPropagation();
                               toggleRsvp(event.id);
                             }}
-                            className="px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85 hover:scale-[1.03]"
+                            whileHover={{ scale: 1.07 }}
+                            whileTap={{ scale: 0.94 }}
+                            className="px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer"
                             style={
                               rsvpedEvents.includes(event.id)
                                 ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
@@ -442,7 +446,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             }
                           >
                             {rsvpedEvents.includes(event.id) ? "Going ✓" : "RSVP"}
-                          </button>
+                          </motion.button>
                         </div>
                       </Card>
                     </motion.div>
