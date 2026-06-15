@@ -345,34 +345,38 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                 {recentMembersState.length > 0 &&
                   recentMembersState.map((member, idx) => (
                     <motion.div key={idx} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}>
-                      <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm flex flex-col items-center gap-2 text-center">
-                        <Avatar className="w-10 h-10 border-2" style={{ borderColor: member.color + "60" }}>
-                          <AvatarFallback
-                            className="text-xs"
-                            style={{ backgroundColor: member.color + "30", color: "#4A4A6A" }}
-                          >
-                            {member.initial}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="w-full">
-                          <div className="text-xs font-medium text-[#6A6A88] truncate">{member.name}</div>
-                          <div className="text-[10px] text-[#B8B8CC]">Feeling {member.mood}</div>
-                        </div>
-                        <div className="flex justify-center w-full">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
-                            }}
-                            className="px-5 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
-                            style={
-                              following.includes(member.id)
-                                ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
-                                : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 6px ${loop.color}30` }
-                            }
-                          >
-                            {following.includes(member.id) ? "Following ✓" : "Follow"}
-                          </button>
+                      <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm">
+                        <div className="flex flex-col gap-2 text-center">
+                          <div className="flex justify-center">
+                            <Avatar className="w-10 h-10 border-2" style={{ borderColor: member.color + "60" }}>
+                              <AvatarFallback
+                                className="text-xs"
+                                style={{ backgroundColor: member.color + "30", color: "#4A4A6A" }}
+                              >
+                                {member.initial}
+                              </AvatarFallback>
+                            </Avatar>
+                          </div>
+                          <div>
+                            <div className="text-xs font-medium text-[#6A6A88] truncate">{member.name}</div>
+                            <div className="text-[10px] text-[#B8B8CC]">Feeling {member.mood}</div>
+                          </div>
+                          <div className="flex justify-center">
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
+                              }}
+                              className="px-5 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
+                              style={
+                                following.includes(member.id)
+                                  ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
+                                  : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 6px ${loop.color}30` }
+                              }
+                            >
+                              {following.includes(member.id) ? "Following ✓" : "Follow"}
+                            </button>
+                          </div>
                         </div>
                       </Card>
                     </motion.div>
