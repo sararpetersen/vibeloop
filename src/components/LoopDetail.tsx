@@ -325,7 +325,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:!top-6 [&>button]:!right-6 [&>button]:!rounded-full [&>button]:!p-0 [&>button]:!opacity-100 [&>button]:!bg-white/70 [&>button]:hover:!bg-white [&>button]:hover:!scale-110 [&>button]:!w-10 [&>button]:!h-10 [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-sm [&>button]:!transition-all [&>button]:!duration-200 [&>button]:!cursor-pointer"
+        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:!top-5 [&>button]:!right-5 [&>button]:!rounded-full [&>button]:!p-0 [&>button]:!opacity-100 [&>button]:!bg-white [&>button]:hover:!bg-[#F0ECFA] [&>button]:hover:!scale-110 [&>button]:!w-12 [&>button]:!h-12 [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-md [&>button]:!transition-all [&>button]:!duration-200 [&>button]:!cursor-pointer [&>button_svg]:!w-5 [&>button_svg]:!h-5"
       >
         <VisuallyHidden>
           <SheetTitle>{loop.name}</SheetTitle>
@@ -484,7 +484,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           borderColor: loop.color + "30",
                         }}
                       >
-                        <div className="flex items-start justify-evenly mb-2">
+                        <div className="flex items-start justify-between mb-1.5">
                           <div className="text-sm font-medium text-[#4A4A6A] flex-1 pr-2">{event.name}</div>
                           <Badge
                             className="px-2 py-0.5 text-xs rounded-full border-0 flex-shrink-0"
@@ -493,15 +493,15 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             {event.attendees} going
                           </Badge>
                         </div>
-                        {event.description && <p className="text-xs text-[#8A8AA8] mb-3 leading-relaxed">{event.description}</p>}
+                        {event.description && <p className="text-xs text-[#8A8AA8] mb-1.5 leading-snug">{event.description}</p>}
                         {event.location && (
-                          <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC] mb-3">
+                          <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC] mb-1.5">
                             <MapPin className="w-3 h-3 flex-shrink-0" />
                             <span>{event.location}</span>
                           </div>
                         )}
                         {/* Date + RSVP always in the same row */}
-                        <div className="flex items-center justify-between mt-1">
+                        <div className="flex items-center justify-between mt-0.5">
                           <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC]">
                             <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
                             <span>{event.date}</span>
