@@ -232,88 +232,55 @@ export function Profile({
           </motion.button>
         </div>
 
-        {/* Aura Avatar */}
+        {/* Mood ring avatar + follower counts */}
         <div className="flex flex-col items-center mb-8">
-          <div className="relative mb-4">
-            {/* Animated gradient background */}
-            <motion.div
-              className="absolute inset-0 rounded-full blur-3xl"
-              style={{
-                background: `radial-gradient(circle, ${moodStats[0].color}80, ${moodStats[1].color}60, ${moodStats[2].color}40)`,
-              }}
-              animate={{
-                scale: [1, 1.2, 1],
-                rotate: [0, 360],
-              }}
-              transition={{
-                duration: 20,
-                repeat: Infinity,
-                ease: "linear",
-              }}
-            />
-
-            {/* Dream Orbs */}
-            <div className="mb-6">
-              <h4 className="mb-4 text-[#4A4A6A] font-semibold">My Dream Orbs</h4>
-              {savedDreamObjects.length === 0 ? (
-                <div className="text-sm text-[#8A8AA8] italic">You haven't saved any dreams yet.</div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {savedDreamObjects.map((dream, index) => (
-                    <motion.div key={dream.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06 }}>
-                      <Card
-                        className="p-4 rounded-2xl border-2 flex items-center gap-3"
-                        style={{ borderColor: dream.moodColor + "30", backgroundColor: dream.moodColor + "10" }}
-                      >
-                        <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center"
-                          style={{ background: `radial-gradient(circle, ${dream.moodColor}FF, ${dream.moodColor}60)` }}
-                        >
-                          <span className="text-white font-semibold">{dream.mood.charAt(0)}</span>
-                        </div>
-
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm text-[#4A4A6A] line-clamp-2">{dream.text}</div>
-                          <div className="text-xs text-[#8A8AA8] mt-1">{dream.timestamp}</div>
-                        </div>
-
-                        <div className="flex flex-col items-end gap-2">
-                          <button
-                            onClick={() => {
-                              try {
-                                const raw = localStorage.getItem("vibeloop_saved_dreams");
-                                if (!raw) return;
-                                const parsed = JSON.parse(raw) as number[];
-                                const next = parsed.filter((id) => id !== dream.id);
-                                localStorage.setItem("vibeloop_saved_dreams", JSON.stringify(next));
-                                window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
-                              } catch (e) {}
-                            }}
-                            className="text-xs text-[#C5A9FF]"
-                          >
-                            Remove
-                          </button>
-                          <button
-                            onClick={() => {
-                              if (setCurrentScreen) setCurrentScreen("feed");
-                              else
-                                try {
-                                  window.dispatchEvent(new CustomEvent("vibeloop:open_feed"));
-                                } catch (e) {}
-                            }}
-                            className="text-xs text-[#6A6A88]"
-                          >
-                            View
-                          </button>
-                        </div>
-                      </Card>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
+          {/* Static mood-ring avatar */}
+          <div className="relative w-28 h-28 mb-5">
+            {/* Outer mood-colour ring */}
+            <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 112 112">
+              {moodStats.map((stat, i) => {
+                const total = moodStats.reduce((s, m) => s + (m.percentage || 0), 0) || 1;
+                const prev = moodStats.slice(0, i).reduce((s, m) => s + (m.percentage || 0), 0);
+                const startAngle = (prev / total) * 2 * Math.PI;
+                const endAngle = ((prev + stat.percentage) / total) * 2 * Math.PI;
+                const r = 50;
+                const cx = 56, cy = 56;
+                const x1 = cx + r * Math.cos(startAngle);
+                const y1 = cy + r * Math.sin(startAngle);
+                const x2 = cx + r * Math.cos(endAngle);
+                const y2 = cy + r * Math.sin(endAngle);
+                const large = stat.percentage / total > 0.5 ? 1 : 0;
+                return stat.percentage > 0 ? (
+                  <path
+                    key={stat.mood}
+                    d={`M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`}
+                    fill={stat.color + "50"}
+                    stroke={stat.color}
+                    strokeWidth="1"
+                  />
+                ) : null;
+              })}
+              <circle cx="56" cy="56" r="38" fill="white" />
+            </svg>
+            {/* Avatar initial */}
+            <div
+              className="absolute inset-0 flex items-center justify-center"
+              style={{ top: 8, left: 8, right: 8, bottom: 8 }}
+            >
+              <div
+                className="w-full h-full rounded-full flex items-center justify-center"
+                style={{
+                  background: `radial-gradient(circle at 40% 35%, ${moodStats[0].color}40, ${moodStats[1].color}25)`,
+                }}
+              >
+                <span className="text-2xl font-semibold text-[#4A4A6A]">
+                  {(displayName || userName || "?").charAt(0).toUpperCase()}
+                </span>
+              </div>
             </div>
           </div>
-          <div className="flex gap-6 mt-4">
+
+          <div className="flex gap-6">
             <div className="text-center">
               <div className="text-lg text-[#4A4A6A]">{newUserMode ? 0 : (followingListProp ?? followingList).length}</div>
               <div className="text-xs text-[#8A8AA8]">following</div>
@@ -324,6 +291,67 @@ export function Profile({
               <div className="text-xs text-[#8A8AA8]">followers</div>
             </div>
           </div>
+        </div>
+
+        {/* Dream Orbs */}
+        <div className="mb-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="w-5 h-5 text-[#C5A9FF]" />
+            <h4 className="text-[#4A4A6A] font-semibold">My Dream Orbs</h4>
+          </div>
+          <Card className="p-5 rounded-3xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm">
+            {savedDreamObjects.length === 0 ? (
+              <p className="text-sm text-[#8A8AA8] italic text-center py-2">You haven't saved any dreams yet.</p>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {savedDreamObjects.map((dream, index) => (
+                  <motion.div key={dream.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06 }}>
+                    <div
+                      className="p-4 rounded-2xl border-2 flex items-center gap-3"
+                      style={{ borderColor: dream.moodColor + "30", backgroundColor: dream.moodColor + "10" }}
+                    >
+                      <div
+                        className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center"
+                        style={{ background: `radial-gradient(circle, ${dream.moodColor}FF, ${dream.moodColor}60)` }}
+                      >
+                        <span className="text-white text-sm font-semibold">{dream.mood.charAt(0)}</span>
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm text-[#4A4A6A] line-clamp-2">{dream.text}</div>
+                        <div className="text-xs text-[#8A8AA8] mt-1">{dream.timestamp}</div>
+                      </div>
+                      <div className="flex flex-col items-end gap-1.5">
+                        <button
+                          onClick={() => {
+                            try {
+                              const raw = localStorage.getItem("vibeloop_saved_dreams");
+                              if (!raw) return;
+                              const parsed = JSON.parse(raw) as number[];
+                              const next = parsed.filter((id) => id !== dream.id);
+                              localStorage.setItem("vibeloop_saved_dreams", JSON.stringify(next));
+                              window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+                            } catch (e) {}
+                          }}
+                          className="text-xs text-[#C5A9FF] hover:text-[#A990EE] transition-colors cursor-pointer"
+                        >
+                          Remove
+                        </button>
+                        <button
+                          onClick={() => {
+                            if (setCurrentScreen) setCurrentScreen("feed");
+                            else try { window.dispatchEvent(new CustomEvent("vibeloop:open_feed")); } catch (e) {}
+                          }}
+                          className="text-xs text-[#6A6A88] hover:text-[#4A4A6A] transition-colors cursor-pointer"
+                        >
+                          View
+                        </button>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            )}
+          </Card>
         </div>
 
         {/* Mood Distribution */}
