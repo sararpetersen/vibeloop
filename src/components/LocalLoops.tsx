@@ -684,27 +684,27 @@ export function LocalLoops({
                         )}
                       </div>
 
-                      {/* Tap to see details hint */}
-                      <div className="text-center pt-2">
-                        <div className="flex items-center justify-center gap-3">
-                          <span className="text-xs text-[#B8B8CC] italic">Tap to see details</span>
-                          <button
-                            type="button"
-                            aria-pressed={isJoined(event.id)}
-                            aria-label={isJoined(event.id) ? `Leave ${event.name}` : `Join ${event.name}`}
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (isJoined(event.id)) leaveLoopLocal(event.id);
-                              else joinLoopLocal({ id: event.id, name: event.name, color: eventColor });
-                            }}
-                            className={`relative z-20 px-3 py-1 rounded-full text-xs cursor-pointer ${
-                              isJoined(event.id) ? "text-[#111827] font-semibold border" : "bg-[#C5A9FF20] text-[#6A6A88]"
-                            }`}
-                            style={isJoined(event.id) ? { backgroundColor: "#9AA4C6", borderColor: "#7F8BAF", boxShadow: "none" } : undefined}
-                          >
-                            {isJoined(event.id) ? "Leave" : "Join"}
-                          </button>
-                        </div>
+                      {/* Footer: hint + join */}
+                      <div className="flex items-center justify-between pt-2">
+                        <span className="text-xs text-[#B8B8CC] italic">Tap to see details</span>
+                        <button
+                          type="button"
+                          aria-pressed={isJoined(event.id)}
+                          aria-label={isJoined(event.id) ? `Leave ${event.name}` : `Join ${event.name}`}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (isJoined(event.id)) leaveLoopLocal(event.id);
+                            else joinLoopLocal({ id: event.id, name: event.name, color: eventColor });
+                          }}
+                          className="relative z-20 flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85 hover:scale-[1.04]"
+                          style={
+                            isJoined(event.id)
+                              ? { backgroundColor: eventColor + "25", color: eventColor, border: `1.5px solid ${eventColor}60` }
+                              : { backgroundColor: eventColor, color: "#fff", boxShadow: `0 2px 10px ${eventColor}50` }
+                          }
+                        >
+                          {isJoined(event.id) ? "Joined ✓" : "Join"}
+                        </button>
                       </div>
                     </div>
                   </Card>
