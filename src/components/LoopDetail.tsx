@@ -240,20 +240,14 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
 
   return (
     <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent side="bottom" className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button:last-child]:hidden">
+      <SheetContent
+        side="bottom"
+        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:top-4 [&>button]:right-4 [&>button]:rounded-full [&>button]:p-2 [&>button]:opacity-100 [&>button]:bg-white/60 [&>button]:hover:bg-white/90 [&>button]:backdrop-blur-sm [&>button]:w-9 [&>button]:h-9 [&>button]:flex [&>button]:items-center [&>button]:justify-center"
+      >
         <VisuallyHidden>
           <SheetTitle>{loop.name}</SheetTitle>
           <SheetDescription>{loop.description}</SheetDescription>
         </VisuallyHidden>
-
-        {/* Close button — fixed to sheet, never scrolls away, no background box */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          onClick={onClose}
-          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/60 hover:bg-white/90 transition-colors backdrop-blur-sm"
-        >
-          <X className="w-5 h-5 text-[#8A8AA8]" />
-        </motion.button>
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
