@@ -124,7 +124,10 @@ export default function App() {
         if (ho) setHasOnboarded(ho);
         if (typeof un === "string") setUserName(un);
         if (typeof im === "string") setSelectedMood(im);
-        if (ho) setAuthState("authenticated");
+        if (ho) {
+          setAuthState("authenticated");
+          setNewUserMode(false); // returning user — show their real data
+        }
       } catch (e) {
         // malformed onboarding data — clear it to avoid repeated failures
         try {
@@ -293,8 +296,6 @@ export default function App() {
   }, []);
 
   const handleLogin = (email: string, password: string) => {
-    // In a real app, this would validate credentials
-    // For now, we'll check if user has onboarding data
     const onboardingData = localStorage.getItem("vibeloop_onboarded");
     if (onboardingData) {
       try {
@@ -302,6 +303,7 @@ export default function App() {
         if (parsed.userName) setUserName(parsed.userName);
         if (parsed.initialMood) setSelectedMood(parsed.initialMood);
         setHasOnboarded(true);
+        setNewUserMode(false); // returning user — show their real data
         setAuthState("authenticated");
       } catch (e) {
         // corrupted stored onboarding — remove and fallthrough to signup
@@ -317,6 +319,14 @@ export default function App() {
       // No account found, redirect to signup
       setAuthState("signup");
     }
+  };
+
+  const handleGuestLogin = () => {
+    // Enter as a guest: clean slate, no credentials, nothing persisted
+    setUserName("Guest");
+    setHasOnboarded(true);
+    setNewUserMode(true);
+    setAuthState("authenticated");
   };
 
   const handleOnboardingComplete = (userData: {
@@ -423,7 +433,7 @@ export default function App() {
 
   // Show login screen for unauthenticated users
   if (authState === "login") {
-    return <Login onLogin={handleLogin} onSwitchToSignup={() => setAuthState("signup")} />;
+    return <Login onLogin={handleLogin} onSwitchToSignup={() => setAuthState("signup")} onGuestLogin={handleGuestLogin} />;
   }
 
   // Show onboarding for new users (signup)

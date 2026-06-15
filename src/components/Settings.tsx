@@ -519,10 +519,10 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
               className="w-full p-4 rounded-2xl flex items-center justify-center gap-3 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl group transition-all duration-300 hover:bg-red-50/60 hover:border-red-100"
               onClick={() => {
                 try {
+                  localStorage.removeItem("vibeloop_onboarded");
                   localStorage.removeItem("vibeloop_profile");
                   localStorage.removeItem("vibeloop_profile_avatar");
                   localStorage.removeItem("vibeloop_user");
-                  // Notify listeners that profile was removed
                   try {
                     window.dispatchEvent(
                       new CustomEvent("vibeloop:profile_updated", { detail: { name: null, username: null, bio: null, avatarUrl: null } })
