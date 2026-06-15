@@ -150,14 +150,14 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
               key={mood.name}
               whileHover={{
                 scale: 1.02,
-                filter: `drop-shadow(0 0 12px ${mood.color}60)`,
+                filter: `drop-shadow(0 0 6px ${mood.color}30)`,
               }}
               whileTap={{ scale: 0.98 }}
             >
               <Badge
                 onClick={() => setSelectedMood(mood.name)}
                 className={`cursor-pointer px-4 py-2 rounded-full transition-all duration-300 border-2 whitespace-nowrap ${
-                  selectedMood === mood.name ? "border-opacity-100 shadow-lg" : "border-opacity-0 bg-white/60"
+                  selectedMood === mood.name ? "border-opacity-100 shadow-sm" : "border-opacity-0 bg-white/60"
                 }`}
                 style={{
                   backgroundColor: selectedMood === mood.name ? mood.color + "40" : "rgba(255,255,255,0.6)",
