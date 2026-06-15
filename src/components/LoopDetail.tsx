@@ -253,7 +253,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
           className="h-full overflow-auto"
         >
           {/* Header */}
-          <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-xl border-b-2 border-[#E0E8F5] px-6 py-4">
+          <div className="sticky top-0 z-10 backdrop-blur-xl border-b border-[#E0E8F5]/60 px-6 py-4" style={{ background: "linear-gradient(to bottom, #F0ECFAEE, #EDE8F5DD)" }}>
             <div className="flex items-start justify-between">
               <div className="flex-1">
                 <div className="flex items-center gap-3 mb-2">
@@ -370,7 +370,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             e.stopPropagation();
                             following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
                           }}
-                          className="px-4 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
+                          className="self-center px-5 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
                           style={
                             following.includes(member.id)
                               ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
