@@ -27,9 +27,9 @@ interface LoopChatProps {
 // Chat message variations for different loops/events
 const chatMessageSets = {
   "The Creative Collective": [
-    { author: "Ines", text: "finished something. staring at it. no idea if it works or if i just need sleep 🎨", timestamp: "4h ago", color: "#D4A9FF" },
+    { author: "Ines", text: "Finished something. Staring at it. No idea if it works or if I just need sleep 🎨", timestamp: "4h ago", color: "#D4A9FF" },
     { author: "Malik", text: "what were you going for?", timestamp: "3h ago", color: "#C5A9FF" },
-    { author: "Ines", text: "honestly no clue. started as anger and somehow became a landscape", timestamp: "3h ago", color: "#D4A9FF" },
+    { author: "Ines", text: "Honestly no clue. Started as anger and somehow became a landscape.", timestamp: "3h ago", color: "#D4A9FF" },
     {
       author: "Yara",
       text: "That's the most interesting kind of work — the kind that surprises you mid-process. I've been chasing that feeling with this poem for three weeks.",
@@ -48,12 +48,12 @@ const chatMessageSets = {
       timestamp: "2h ago",
       color: "#C5A9FF",
     },
-    { author: "Viktor", text: "daytime is loud. night just... resets things", timestamp: "1h ago", color: "#D4A9FF" },
-    { author: "Nora", text: "forest route tomorrow?? who's brave 🌲", timestamp: "45m ago", color: "#B8E8E0" },
+    { author: "Viktor", text: "Daytime is loud. Night just... resets things.", timestamp: "1h ago", color: "#D4A9FF" },
+    { author: "Nora", text: "Forest route tomorrow?? Who's brave 🌲", timestamp: "45m ago", color: "#B8E8E0" },
     { author: "Raj", text: "in. obviously.", timestamp: "30m ago", color: "#E0C9D9" },
   ],
   "Dream Journal Club": [
-    { author: "Hana", text: "swimming. through clouds. physically swimming. that was my whole night", timestamp: "5h ago", color: "#C5A9FF" },
+    { author: "Hana", text: "Swimming. Through clouds. Physically swimming. That was my whole night.", timestamp: "5h ago", color: "#C5A9FF" },
     { author: "Liam", text: "DUUUDE ok so mine: reading a book but every time i looked away the words changed into different words. not bad words just. different", timestamp: "4h ago", color: "#A9C7FF" },
     {
       author: "Safiya",
@@ -61,12 +61,12 @@ const chatMessageSets = {
       timestamp: "3h ago",
       color: "#D4A9FF",
     },
-    { author: "Anders", text: "i appreciate that we can say 'swimming through clouds' and nobody here laughs", timestamp: "1h ago", color: "#FFD4A9" },
+    { author: "Anders", text: "I appreciate that we can say 'swimming through clouds' and nobody here laughs.", timestamp: "1h ago", color: "#FFD4A9" },
     { author: "Chiara", text: "cheaper than therapy. more interesting than therapy. fight me", timestamp: "40m ago", color: "#E0C9D9" },
   ],
   "Book & Coffee Meetups": [
-    { author: "Jade", text: "quiet cafe recs? my usual has started playing music and I can't", timestamp: "4h ago", color: "#E0C9D9" },
-    { author: "Dmitri", text: "Jægersborggade — the one with the green sign. silent hours 1–5. non-negotiable rule. it's perfect.", timestamp: "3h ago", color: "#C5A9FF" },
+    { author: "Jade", text: "Quiet cafe recs? My usual has started playing music and I genuinely cannot.", timestamp: "4h ago", color: "#E0C9D9" },
+    { author: "Dmitri", text: "Jægersborggade — the one with the green sign. Silent hours 1–5, non-negotiable rule. It's perfect.", timestamp: "3h ago", color: "#C5A9FF" },
     {
       author: "Amina",
       text: "currently reading something about slow living and having a full moment about how fast I normally move. we don't talk about that enough",
@@ -74,7 +74,7 @@ const chatMessageSets = {
       color: "#D4A9FF",
     },
     { author: "Felix", text: "title?", timestamp: "1h ago", color: "#A9C7FF" },
-    { author: "Amina", text: "will send after i finish. don't want to oversell it before i know the ending", timestamp: "55m ago", color: "#D4A9FF" },
+    { author: "Amina", text: "Will send after I finish. Don't want to oversell it before I know how it ends.", timestamp: "55m ago", color: "#D4A9FF" },
     { author: "Suki", text: "next silent session i'm bringing the chamomile situation ☕ see you all there", timestamp: "45m ago", color: "#FFD4A9" },
   ],
   "Astronomy Club": [
@@ -86,23 +86,23 @@ const chatMessageSets = {
       color: "#A9C7FF",
     },
     { author: "Oskar", text: "existentialism but make it 10pm and cozy. that's this group", timestamp: "2h ago", color: "#D4A9FF" },
-    { author: "Nia", text: "we manage to be genuinely into the science AND not annoying about it and i think that's rare", timestamp: "1h ago", color: "#E0C9D9" },
+    { author: "Nia", text: "We manage to be genuinely into the science and not annoying about it, and I think that's actually rare.", timestamp: "1h ago", color: "#E0C9D9" },
     { author: "Kenji", text: "friday. telescope. saturn. be there 🪐", timestamp: "30m ago", color: "#FFD4A9" },
   ],
   "The Support Circle": [
-    { author: "Kiera", text: "rough day. not looking for solutions. just needed somewhere to put it", timestamp: "3h ago", color: "#E0C9D9" },
-    { author: "Hassan", text: "it's here. you're allowed 💛", timestamp: "2h ago", color: "#C5A9FF" },
+    { author: "Kiera", text: "Rough day. Not looking for solutions. Just needed somewhere to put it.", timestamp: "3h ago", color: "#E0C9D9" },
+    { author: "Hassan", text: "It's here. You're allowed 💛", timestamp: "2h ago", color: "#C5A9FF" },
     {
       author: "Luna",
       text: "Healing isn't a straight line and I think we all know that intellectually but it still catches me off guard when I have a bad day after several good ones.",
       timestamp: "1h ago",
       color: "#D4A9FF",
     },
-    { author: "Elias", text: "yes. that. exactly that.", timestamp: "50m ago", color: "#A9C7FF" },
-    { author: "Zainab", text: "art therapy tomorrow if anyone wants to process through making things rather than talking about them — both are valid", timestamp: "25m ago", color: "#FFD4A9" },
+    { author: "Elias", text: "Yes. That. Exactly that.", timestamp: "50m ago", color: "#A9C7FF" },
+    { author: "Zainab", text: "Art therapy tomorrow if anyone wants to process through making things rather than words — both are valid.", timestamp: "25m ago", color: "#FFD4A9" },
   ],
   "Quiet Tea Night": [
-    { author: "Rowan", text: "first time tonight. what do i actually... do", timestamp: "2h ago", color: "#A9C7FF" },
+    { author: "Rowan", text: "First time tonight. What do I actually... do?", timestamp: "2h ago", color: "#A9C7FF" },
     { author: "Davi", text: "nothing! genuinely nothing. sit, have tea, exist. that's it", timestamp: "1h ago", color: "#C5A9FF" },
     {
       author: "Iris",
@@ -110,35 +110,35 @@ const chatMessageSets = {
       timestamp: "45m ago",
       color: "#E0C9D9",
     },
-    { author: "Rowan", text: "ok i think i need this more than i realised", timestamp: "35m ago", color: "#A9C7FF" },
+    { author: "Rowan", text: "Ok, I think I need this more than I realised.", timestamp: "35m ago", color: "#A9C7FF" },
     { author: "Mateo", text: "8pm ☕ see u there", timestamp: "30m ago", color: "#D4A9FF" },
   ],
   "Art & Coffee Session": [
-    { author: "Tala", text: "NEVER painted before. terrified. coming anyway 🫠", timestamp: "3h ago", color: "#D4A9FF" },
-    { author: "Noah", text: "zero experience required, open mind sufficient ✨ you'll be fine", timestamp: "2h ago", color: "#C5A9FF" },
+    { author: "Tala", text: "NEVER painted before. Terrified. Coming anyway 🫠", timestamp: "3h ago", color: "#D4A9FF" },
+    { author: "Noah", text: "Zero experience required, open mind sufficient ✨ You'll be fine.", timestamp: "2h ago", color: "#C5A9FF" },
     { author: "Kaia", text: "last time i painted what i thought was a sunset. it looked like a fire in a parking lot. 10/10 would do again", timestamp: "1h ago", color: "#FFD4A9" },
-    { author: "Silas", text: "bringing speaker + ambient playlist. open to requests as long as the request is 'yes that's fine'", timestamp: "45m ago", color: "#A9C7FF" },
+    { author: "Silas", text: "Bringing speaker + ambient playlist. Open to requests as long as the request is 'yes that's fine'.", timestamp: "45m ago", color: "#A9C7FF" },
   ],
   "Midnight Walk": [
-    { author: "Aria", text: "friday midnight walk. already counting down", timestamp: "4h ago", color: "#C5A9FF" },
-    { author: "Javier", text: "routing through the quiet side streets, probably stopping at the 24h place for something warm. thoughts?", timestamp: "3h ago", color: "#A9C7FF" },
+    { author: "Aria", text: "Friday midnight walk. Already counting down.", timestamp: "4h ago", color: "#C5A9FF" },
+    { author: "Javier", text: "Routing through the quiet side streets, probably stopping at the 24h place for something warm. Thoughts?", timestamp: "3h ago", color: "#A9C7FF" },
     {
       author: "Mei",
-      text: "bring your journals. last time the conversations under the streetlights were genuinely the best part of my week and i think about it still",
+      text: "Bring your journals. Last time the conversations under the streetlights were genuinely the best part of my week and I still think about it.",
       timestamp: "2h ago",
       color: "#D4A9FF",
     },
-    { author: "Finn", text: "night walks do something to the brain. everything gets quieter and somehow more true", timestamp: "1h ago", color: "#E0C9D9" },
+    { author: "Finn", text: "Night walks do something to the brain. Everything gets quieter and somehow more true.", timestamp: "1h ago", color: "#E0C9D9" },
   ],
   "Sunrise Movement": [
     { author: "Zara", text: "6am saturday. voluntarily. who are we 🌅", timestamp: "3h ago", color: "#FFD4A9" },
-    { author: "Akira", text: "WORTHWHILE EVERY TIME. the energy afterwards carries me literally all day. i've tried to explain it to non-morning people and cannot", timestamp: "2h ago", color: "#D4A9FF" },
-    { author: "Layla", text: "bringing spare mats, just say if you need one", timestamp: "1h ago", color: "#A9C7FF" },
-    { author: "Omar", text: "sets the tone for the whole week honestly. see you all out there", timestamp: "45m ago", color: "#C5A9FF" },
+    { author: "Akira", text: "WORTHWHILE EVERY TIME. The energy afterwards carries me literally all day. I've tried to explain it to non-morning people and cannot.", timestamp: "2h ago", color: "#D4A9FF" },
+    { author: "Layla", text: "Bringing spare mats — just say if you need one.", timestamp: "1h ago", color: "#A9C7FF" },
+    { author: "Omar", text: "Sets the tone for the whole week, honestly. See you all out there.", timestamp: "45m ago", color: "#C5A9FF" },
   ],
   "Journaling Session": [
-    { author: "Yasmin", text: "been writing every day this week. have a lot. maybe too much. see you tomorrow", timestamp: "4h ago", color: "#E0C9D9" },
-    { author: "Luca", text: "no pressure to share any of it — just write what comes, that's enough", timestamp: "3h ago", color: "#C5A9FF" },
+    { author: "Yasmin", text: "Been writing every day this week. Have a lot. Maybe too much. See you tomorrow.", timestamp: "4h ago", color: "#E0C9D9" },
+    { author: "Luca", text: "No pressure to share any of it — just write what comes, that's enough.", timestamp: "3h ago", color: "#C5A9FF" },
     {
       author: "Priya",
       text: "Writing has genuinely taught me things about myself that years of thinking hadn't. There's something about having to form a complete sentence.",
@@ -148,15 +148,15 @@ const chatMessageSets = {
     { author: "Anton", text: "tea situation handled. cozy levels: maximum. see you all there", timestamp: "1h ago", color: "#A9C7FF" },
   ],
   "Stargazing Night": [
-    { author: "Nisha", text: "checked. wednesday is clear. we're on 🌌", timestamp: "5h ago", color: "#C5A9FF" },
-    { author: "Diego", text: "bringing the star map app so we can actually name what we're looking at instead of just pointing", timestamp: "4h ago", color: "#A9C7FF" },
+    { author: "Nisha", text: "Checked. Wednesday is clear. We're on 🌌", timestamp: "5h ago", color: "#C5A9FF" },
+    { author: "Diego", text: "Bringing the star map app so we can actually name what we're looking at instead of just pointing.", timestamp: "4h ago", color: "#A9C7FF" },
     {
       author: "Aaliyah",
-      text: "last time a shooting star went right across our field of view and everyone just went quiet. hoping for that again ✨",
+      text: "Last time a shooting star went right across our field of view and everyone just went quiet. Hoping for that again ✨",
       timestamp: "2h ago",
       color: "#D4A9FF",
     },
-    { author: "Ren", text: "the way this group makes science feel like a feeling. that's the thing", timestamp: "1h ago", color: "#E0C9D9" },
+    { author: "Ren", text: "The way this group makes science feel like a feeling. That's the thing.", timestamp: "1h ago", color: "#E0C9D9" },
   ],
 };
 
