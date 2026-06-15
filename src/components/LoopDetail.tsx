@@ -245,6 +245,16 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
           <SheetTitle>{loop.name}</SheetTitle>
           <SheetDescription>{loop.description}</SheetDescription>
         </VisuallyHidden>
+
+        {/* Close button — fixed to sheet, never scrolls away, no background box */}
+        <motion.button
+          whileTap={{ scale: 0.9 }}
+          onClick={onClose}
+          className="absolute top-4 right-4 z-20 p-2 rounded-full bg-white/60 hover:bg-white/90 transition-colors backdrop-blur-sm"
+        >
+          <X className="w-5 h-5 text-[#8A8AA8]" />
+        </motion.button>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -252,38 +262,27 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
           transition={{ duration: 0.3 }}
           className="h-full overflow-auto"
         >
-          {/* Header */}
-          <div className="sticky top-0 z-10 backdrop-blur-xl border-b border-[#E0E8F5]/60 px-6 py-4" style={{ background: "linear-gradient(to bottom, #F0ECFAEE, #EDE8F5DD)" }}>
-            <div className="flex items-start justify-between">
-              <div className="flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                  <div
-                    className="w-12 h-12 rounded-2xl flex items-center justify-center"
-                    style={{
-                      backgroundColor: loop.color + "30",
-                      boxShadow: `0 0 20px ${loop.color}20`,
-                    }}
-                  >
-                    <IconComponent className="w-6 h-6" style={{ color: loop.color }} />
-                  </div>
-                  <div>
-                    <h2 className="text-[#4A4A6A]">{loop.name}</h2>
-                    <p className="text-sm text-[#8A8AA8]">{loop.location}</p>
-                  </div>
-                </div>
-              </div>
-              <motion.button
-                whileTap={{ scale: 0.9 }}
-                onClick={onClose}
-                className="p-2 rounded-full bg-[#F6F8FB] hover:bg-[#E8E4F3] transition-colors"
+          {/* Header — scrolls with content, no floating box */}
+          <div className="px-6 pt-6 pb-4 pr-14">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
+                style={{
+                  backgroundColor: loop.color + "30",
+                  boxShadow: `0 0 20px ${loop.color}20`,
+                }}
               >
-                <X className="w-5 h-5 text-[#8A8AA8]" />
-              </motion.button>
+                <IconComponent className="w-6 h-6" style={{ color: loop.color }} />
+              </div>
+              <div>
+                <h2 className="text-[#4A4A6A]">{loop.name}</h2>
+                <p className="text-sm text-[#8A8AA8]">{loop.location}</p>
+              </div>
             </div>
           </div>
 
           {/* Content */}
-          <div className="px-6 py-6 space-y-6">
+          <div className="px-6 pb-6 space-y-6">
             {/* Description */}
             <div>
               <p className="text-[#6A6A88] leading-relaxed mb-4">{loop.description}</p>
@@ -365,20 +364,22 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           <div className="text-xs font-medium text-[#6A6A88] truncate">{member.name}</div>
                           <div className="text-[10px] text-[#B8B8CC]">Feeling {member.mood}</div>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
-                          }}
-                          className="self-center px-5 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
-                          style={
-                            following.includes(member.id)
-                              ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
-                              : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 6px ${loop.color}30` }
-                          }
-                        >
-                          {following.includes(member.id) ? "Following ✓" : "Follow"}
-                        </button>
+                        <div className="flex justify-center w-full">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
+                            }}
+                            className="px-5 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
+                            style={
+                              following.includes(member.id)
+                                ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
+                                : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 6px ${loop.color}30` }
+                            }
+                          >
+                            {following.includes(member.id) ? "Following ✓" : "Follow"}
+                          </button>
+                        </div>
                       </Card>
                     </motion.div>
                   ))}
