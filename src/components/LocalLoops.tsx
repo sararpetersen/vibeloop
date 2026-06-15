@@ -467,21 +467,21 @@ export function LocalLoops({
                           ))}
                         </div>
 
-                        <div className="flex items-center gap-2 text-xs text-[#B8B8CC] italic">
-                          <span>{loop.founded}</span>
-                          <span className="text-[#E0E0EA]">•</span>
-                          <Badge
-                            className="px-2 py-0.5 text-xs rounded-full border-0"
-                            style={{
-                              backgroundColor: loop.color + "30",
-                              color: "#6A6A88",
-                            }}
-                          >
-                            {loop.vibe}
-                          </Badge>
-                        </div>
+                        <div className="flex items-center justify-between gap-2 mt-3">
+                          <div className="flex items-center gap-2 text-xs text-[#B8B8CC] italic">
+                            <span>{loop.founded}</span>
+                            <span className="text-[#E0E0EA]">•</span>
+                            <Badge
+                              className="px-2 py-0.5 text-xs rounded-full border-0"
+                              style={{
+                                backgroundColor: loop.color + "30",
+                                color: "#6A6A88",
+                              }}
+                            >
+                              {loop.vibe}
+                            </Badge>
+                          </div>
 
-                        <div className="mt-3">
                           <button
                             type="button"
                             aria-pressed={isJoined(loop.id)}
@@ -496,12 +496,14 @@ export function LocalLoops({
                                 else joinLoopLocal(loop);
                               }
                             }}
-                            className={`relative z-20 px-3 py-2 rounded-full text-sm cursor-pointer ${
-                              isJoined(loop.id) ? "text-[#111827] font-semibold border" : "bg-[#C5A9FF20] text-[#6A6A88]"
-                            }`}
-                            style={isJoined(loop.id) ? { backgroundColor: "#9AA4C6", borderColor: "#7F8BAF", boxShadow: "none" } : undefined}
+                            className="relative z-20 flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85 hover:scale-[1.04]"
+                            style={
+                              isJoined(loop.id)
+                                ? { backgroundColor: loop.color + "25", color: loop.color, border: `1.5px solid ${loop.color}60` }
+                                : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 10px ${loop.color}50` }
+                            }
                           >
-                            {isJoined(loop.id) ? "Leave" : "Join"}
+                            {isJoined(loop.id) ? "Joined ✓" : "Join"}
                           </button>
                         </div>
                       </div>

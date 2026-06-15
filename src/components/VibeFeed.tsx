@@ -175,46 +175,53 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
       {/* Feed */}
       <div className="px-6 space-y-4 mt-4 max-w-3xl mx-auto">
         {filteredVibes.length === 0 && (
-          <div className="px-6 pt-8 text-center text-sm text-[#8A8AA8]">
-            <div className="max-w-xl mx-auto p-6 rounded-2xl bg-white/60 border-2 border-white/30">
-              <h3 className="text-[#4A4A6A] text-xl font-bold">Welcome — it looks like you're new here</h3>
-              <p className="mt-2">Your feed will show vibes from people you follow and dreams you save.</p>
-              <div className="mt-4 flex flex-col sm:flex-row gap-3 justify-center">
-                <Button
+          <div className="px-2 pt-8">
+            <div
+              className="max-w-xl mx-auto p-8 rounded-3xl border-2 bg-white/70 backdrop-blur-sm text-center"
+              style={{ borderColor: "#C5A9FF40" }}
+            >
+              <h3 className="text-[#4A4A6A] text-xl font-bold mb-2">Welcome — it looks like you're new here</h3>
+              <p className="text-sm text-[#8A8AA8] mb-6">Your feed will show vibes from people you follow and dreams you save.</p>
+
+              {/* Primary actions */}
+              <div className="flex flex-col sm:flex-row gap-3 justify-center mb-5">
+                <button
                   onClick={() => {
-                    if (setCurrentScreen) {
-                      setCurrentScreen("dreamcatcher");
-                    } else {
-                      window.dispatchEvent(new CustomEvent("vibeloop:open_dreamcatcher"));
-                    }
+                    if (setCurrentScreen) setCurrentScreen("dreamcatcher");
+                    else window.dispatchEvent(new CustomEvent("vibeloop:open_dreamcatcher"));
+                  }}
+                  className="cursor-pointer px-6 py-3 rounded-full text-white text-sm font-medium transition-all duration-300 hover:opacity-90 hover:scale-[1.02]"
+                  style={{
+                    background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
+                    boxShadow: "0 4px 16px #C5A9FF40",
                   }}
                 >
                   Share your first dream
-                </Button>
-                <Button
-                  variant="outline"
+                </button>
+                <button
                   onClick={() => {
-                    if (setCurrentScreen) {
-                      setCurrentScreen("loops");
-                    } else {
-                      window.dispatchEvent(new CustomEvent("vibeloop:open_loops"));
-                    }
+                    if (setCurrentScreen) setCurrentScreen("loops");
+                    else window.dispatchEvent(new CustomEvent("vibeloop:open_loops"));
                   }}
+                  className="cursor-pointer px-6 py-3 rounded-full text-sm font-medium border-2 bg-white/80 transition-all duration-300 hover:bg-white hover:scale-[1.02]"
+                  style={{ borderColor: "#C5A9FF60", color: "#6A6A88" }}
                 >
                   Explore local loops
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => {
-                    try {
-                      window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs"));
-                    } catch (e) {}
-                  }}
-                >
-                  Set your mood palette
-                </Button>
+                </button>
               </div>
-              <p className="mt-3 text-xs text-[#B8B8CC]">Tip: you can follow people, RSVP to events, and save dream orbs to build your feed.</p>
+
+              {/* Tertiary — clearly a link, not competing with the buttons above */}
+              <button
+                onClick={() => {
+                  try { window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs")); } catch (e) {}
+                }}
+                className="cursor-pointer text-sm transition-colors duration-200 hover:opacity-80"
+                style={{ color: "#C5A9FF" }}
+              >
+                Set your mood palette ›
+              </button>
+
+              <p className="mt-5 text-xs text-[#C8C8D8]">Tip: follow people, RSVP to events, and save dream orbs to build your feed.</p>
             </div>
           </div>
         )}
