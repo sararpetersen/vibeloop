@@ -352,20 +352,18 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                 {recentMembersState.length > 0 &&
                   recentMembersState.map((member, idx) => (
                     <motion.div key={idx} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }}>
-                      <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          <Avatar className="w-8 h-8 flex-shrink-0 border-2" style={{ borderColor: member.color + "60" }}>
-                            <AvatarFallback
-                              className="text-xs"
-                              style={{ backgroundColor: member.color + "30", color: "#4A4A6A" }}
-                            >
-                              {member.initial}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="min-w-0">
-                            <div className="text-xs font-medium text-[#6A6A88] truncate">{member.name}</div>
-                            <div className="text-[10px] text-[#B8B8CC]">Feeling {member.mood}</div>
-                          </div>
+                      <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm flex flex-col items-center gap-2 text-center">
+                        <Avatar className="w-10 h-10 border-2" style={{ borderColor: member.color + "60" }}>
+                          <AvatarFallback
+                            className="text-xs"
+                            style={{ backgroundColor: member.color + "30", color: "#4A4A6A" }}
+                          >
+                            {member.initial}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="w-full">
+                          <div className="text-xs font-medium text-[#6A6A88] truncate">{member.name}</div>
+                          <div className="text-[10px] text-[#B8B8CC]">Feeling {member.mood}</div>
                         </div>
                         <button
                           onClick={(e) => {
