@@ -24,6 +24,7 @@ interface SettingsProps {
   onClose?: () => void;
 }
 interface SettingsPropsExtended extends SettingsProps {
+  initialScreen?: string;
   onUpdateUser?: (profile: { name: string; username: string; bio?: string; avatarUrl?: string | null }) => void;
   onSettingsChange?: (payload: {
     notifications: boolean;
@@ -47,7 +48,7 @@ type SettingsScreen =
   | "help"
   | "feedback";
 
-export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) {
+export function Settings({ userName, onClose, initialScreen, ...rest }: SettingsPropsExtended) {
   const onUpdateUser = rest.onUpdateUser;
   const onSettingsChange = rest.onSettingsChange;
 
@@ -56,8 +57,11 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
   const [showMoodHistory, setShowMoodHistory] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
   const [language, setLanguage] = useState("en");
-  const [currentScreen, setCurrentScreen] = useState<SettingsScreen>("main");
-  const [openedViaEvent, setOpenedViaEvent] = useState(false);
+  const [currentScreen, setCurrentScreen] = useState<SettingsScreen>(
+    (initialScreen as SettingsScreen) || "main"
+  );
+  // true when opened directly to a sub-screen (e.g. from Feed) — Back should close Settings entirely
+  const [openedDirectly] = useState(!!initialScreen);
   const [displayName, setDisplayName] = useState(userName);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userHandle, setUserHandle] = useState<string>("@dreamweaver");
@@ -174,15 +178,6 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
     };
   }, []);
 
-  // Listen for global open mood prefs event (from feed empty-state)
-  useEffect(() => {
-    const h = () => {
-      setOpenedViaEvent(true);
-      setCurrentScreen("moodPreferences");
-    };
-    window.addEventListener("vibeloop:open_mood_prefs", h as EventListener);
-    return () => window.removeEventListener("vibeloop:open_mood_prefs", h as EventListener);
-  }, []);
 
   // Persist settings whenever they change
   useEffect(() => {
@@ -226,8 +221,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
     return (
       <MoodPreferences
         onBack={() => {
-          if (openedViaEvent) {
-            setOpenedViaEvent(false);
+          if (openedDirectly) {
             onClose?.();
           } else {
             setCurrentScreen("main");

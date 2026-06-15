@@ -72,6 +72,7 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState<Screen>("feed");
   const [selectedMood, setSelectedMood] = useState("All");
   const [showSettings, setShowSettings] = useState(false);
+  const [settingsInitialScreen, setSettingsInitialScreen] = useState<string | undefined>(undefined);
   const [joinedLoops, setJoinedLoops] = useState<{ id: number; name: string; color: string }[]>(() => {
     try {
       const raw = localStorage.getItem("vibeloop_joined_loops");
@@ -186,13 +187,8 @@ export default function App() {
     const openDreamcatcher = () => setCurrentScreen("dreamcatcher");
     const openLoops = () => setCurrentScreen("loops");
     const openMoodPrefs = () => {
+      setSettingsInitialScreen("moodPreferences");
       setShowSettings(true);
-      // small delay to ensure Settings mounted
-      setTimeout(() => {
-        try {
-          window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs"));
-        } catch (e) {}
-      }, 80);
     };
     const openFeed = () => setCurrentScreen("feed");
 
@@ -576,7 +572,8 @@ export default function App() {
             <Settings
               key="settings"
               userName={userName}
-              onClose={() => setShowSettings(false)}
+              initialScreen={settingsInitialScreen}
+              onClose={() => { setShowSettings(false); setSettingsInitialScreen(undefined); }}
               onUpdateUser={(profile) => {
                 if (profile?.name) setUserName(profile.name);
                 if (typeof profile?.bio === "string") setUserBio(profile.bio);
