@@ -4,7 +4,7 @@ import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { X, MapPin, Users as UsersIcon, MessageCircle, Calendar, Clock, Sparkles, TrendingUp } from "lucide-react";
+import { X, MapPin, Users as UsersIcon, MessageCircle, Calendar, Sparkles, TrendingUp } from "lucide-react";
 import { useState, useEffect } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
@@ -64,30 +64,30 @@ const defaultMembers: Record<number, { id: string; name: string; initial: string
   ],
 };
 
-const defaultEvents: Record<number, { id: string; name: string; date: string; attendees: number }[]> = {
+const defaultEvents: Record<number, { id: string; name: string; date: string; attendees: number; description: string; location: string }[]> = {
   1: [
-    { id: "e1", name: "Open Mic Night", date: "This Friday, 7:00 PM", attendees: 18 },
-    { id: "e2", name: "Collaborative Zine Session", date: "Next Tuesday, 6:30 PM", attendees: 9 },
+    { id: "e1", name: "Open Mic Night", date: "This Friday, 7:00 PM", attendees: 18, description: "Bring something to share — a poem, a sketch, a song, or just yourself", location: "Ungdomshuset, København" },
+    { id: "e2", name: "Collaborative Zine Session", date: "Next Tuesday, 6:30 PM", attendees: 9, description: "We make a zine together. Materials provided, no experience needed.", location: "Fabrikken for Kunst og Design" },
   ],
   2: [
-    { id: "e3", name: "Forest Route Walk", date: "Tomorrow, 10:00 PM", attendees: 11 },
-    { id: "e4", name: "Rooftop Starwatch", date: "Saturday, 11:00 PM", attendees: 7 },
+    { id: "e3", name: "Forest Route Walk", date: "Tomorrow, 10:00 PM", attendees: 11, description: "A slow walk through the trees. Bring a torch and good company.", location: "Møns Klint trailhead" },
+    { id: "e4", name: "Rooftop Starwatch", date: "Saturday, 11:00 PM", attendees: 7, description: "Clear skies forecast. Bring something warm and look up.", location: "Ballerup rooftop (shared in chat)" },
   ],
   3: [
-    { id: "e5", name: "Dream Sharing Circle", date: "Sunday, 4:00 PM", attendees: 14 },
-    { id: "e6", name: "Lucid Dreaming Workshop", date: "Next Thursday, 7:00 PM", attendees: 20 },
+    { id: "e5", name: "Dream Sharing Circle", date: "Sunday, 4:00 PM", attendees: 14, description: "Bring your strangest dreams. We discuss, interpret, wonder together.", location: "Absalon, Vesterbro" },
+    { id: "e6", name: "Lucid Dreaming Workshop", date: "Next Thursday, 7:00 PM", attendees: 20, description: "Techniques, experiences, and a lot of 'wait, is this real?' energy.", location: "Online — link in chat" },
   ],
   4: [
-    { id: "e7", name: "Silent Reading Afternoon", date: "Saturday, 2:00 PM", attendees: 12 },
-    { id: "e8", name: "Slow Book Club", date: "Next Sunday, 3:00 PM", attendees: 8 },
+    { id: "e7", name: "Silent Reading Afternoon", date: "Saturday, 2:00 PM", attendees: 12, description: "Come read. No talking required. Coffee available.", location: "Paludan Bog & Café, Fiolstræde" },
+    { id: "e8", name: "Slow Book Club", date: "Next Sunday, 3:00 PM", attendees: 8, description: "We're taking our time with this one. No pressure to have finished it.", location: "Coffee Collective, Nørrebro" },
   ],
   5: [
-    { id: "e9", name: "Stargazing Night", date: "Next Wed, 9:00 PM", attendees: 11 },
-    { id: "e10", name: "Cosmos & Coffee Talk", date: "Next Friday, 6:00 PM", attendees: 15 },
+    { id: "e9", name: "Stargazing Night", date: "Next Wed, 9:00 PM", attendees: 11, description: "Telescopes out, blankets ready. Saturn is visible this week.", location: "Dyrehaven, north clearing" },
+    { id: "e10", name: "Cosmos & Coffee Talk", date: "Next Friday, 6:00 PM", attendees: 15, description: "Casual conversation about the big stuff. No expertise required.", location: "Riccos Kaffebar, Istedgade" },
   ],
   6: [
-    { id: "e11", name: "Art Therapy Session", date: "Tomorrow, 5:00 PM", attendees: 9 },
-    { id: "e12", name: "Gentle Sharing Circle", date: "Thursday, 6:30 PM", attendees: 13 },
+    { id: "e11", name: "Art Therapy Session", date: "Tomorrow, 5:00 PM", attendees: 9, description: "Process through making. Paints, clay, collage — whatever feels right.", location: "Vesterbro Kulturhus" },
+    { id: "e12", name: "Gentle Sharing Circle", date: "Thursday, 6:30 PM", attendees: 13, description: "A quiet space to say the things that are hard to say. Safe, held, honest.", location: "Frederiksberg Have pavilion" },
   ],
 };
 
@@ -370,7 +370,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             e.stopPropagation();
                             following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
                           }}
-                          className="w-full py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
+                          className="px-4 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
                           style={
                             following.includes(member.id)
                               ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
@@ -406,22 +406,28 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                         }}
                       >
                         <div className="flex items-start justify-between mb-2">
-                          <div className="text-[#6A6A88]">{event.name}</div>
+                          <div className="text-sm font-medium text-[#4A4A6A] flex-1 pr-2">{event.name}</div>
                           <Badge
-                            className="px-2 py-0.5 text-xs rounded-full border-0"
-                            style={{
-                              backgroundColor: loop.color + "20",
-                              color: "#6A6A88",
-                            }}
+                            className="px-2 py-0.5 text-xs rounded-full border-0 flex-shrink-0"
+                            style={{ backgroundColor: loop.color + "20", color: "#6A6A88" }}
                           >
                             {event.attendees} going
                           </Badge>
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-[#B8B8CC]">
-                          <Calendar className="w-3.5 h-3.5" />
+                        {event.description && (
+                          <p className="text-xs text-[#8A8AA8] mb-2 leading-relaxed">{event.description}</p>
+                        )}
+                        <div className="flex items-center gap-2 text-xs text-[#B8B8CC] mb-1">
+                          <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
                           <span>{event.date}</span>
                         </div>
-                        <div className="mt-3 flex justify-end">
+                        {event.location && (
+                          <div className="flex items-center gap-2 text-xs text-[#B8B8CC] mb-3">
+                            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                            <span>{event.location}</span>
+                          </div>
+                        )}
+                        <div className="flex justify-end">
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
