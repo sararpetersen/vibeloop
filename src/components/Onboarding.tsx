@@ -4,6 +4,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { moods } from "./moods";
 import { Sparkles, Heart, Compass, Moon } from "lucide-react";
+import logoImg from "../images/logo.png";
 
 interface OnboardingProps {
   onComplete: (userData: { name: string; ageRange: string; seekingFor: string[]; expressionStyle: string; initialMood: string }) => void;
@@ -151,33 +152,11 @@ export function Onboarding({ onComplete }: OnboardingProps) {
             className="h-full flex flex-col items-center justify-center px-8 text-center relative z-10"
           >
             <motion.div
-              animate={{
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              animate={{ scale: [1, 1.06, 1] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="mb-8"
             >
-              <div className="relative w-32 h-32 mx-auto">
-                {/* Outer soft glow */}
-                <div
-                  className="absolute inset-0 rounded-full blur-3xl opacity-70"
-                  style={{
-                    background: "radial-gradient(circle, #A9C7FF 0%, #C5A9FF 100%)",
-                  }}
-                />
-                {/* Main orb with radial gradient */}
-                <div
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background: "radial-gradient(circle at 45% 40%, rgba(255,255,255,0.9) 0%, #A9C7FF 30%, #C5A9FF 100%)",
-                  }}
-                />
-              </div>
+              <img src={logoImg} alt="VibeLoop" className="w-32 h-32 mx-auto object-contain drop-shadow-xl" />
             </motion.div>
 
             <h1 className="mb-1 text-[#4A4A6A] text-4xl font-bold">Welcome to VibeLoop</h1>

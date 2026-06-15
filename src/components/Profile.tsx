@@ -232,52 +232,16 @@ export function Profile({
           </motion.button>
         </div>
 
-        {/* Mood ring avatar + follower counts */}
+        {/* Profile avatar + follower counts */}
         <div className="flex flex-col items-center mb-8">
-          {/* Static mood-ring avatar */}
-          <div className="relative w-28 h-28 mb-5">
-            {/* Outer mood-colour ring */}
-            <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 112 112">
-              {moodStats.map((stat, i) => {
-                const total = moodStats.reduce((s, m) => s + (m.percentage || 0), 0) || 1;
-                const prev = moodStats.slice(0, i).reduce((s, m) => s + (m.percentage || 0), 0);
-                const startAngle = (prev / total) * 2 * Math.PI;
-                const endAngle = ((prev + stat.percentage) / total) * 2 * Math.PI;
-                const r = 50;
-                const cx = 56, cy = 56;
-                const x1 = cx + r * Math.cos(startAngle);
-                const y1 = cy + r * Math.sin(startAngle);
-                const x2 = cx + r * Math.cos(endAngle);
-                const y2 = cy + r * Math.sin(endAngle);
-                const large = stat.percentage / total > 0.5 ? 1 : 0;
-                return stat.percentage > 0 ? (
-                  <path
-                    key={stat.mood}
-                    d={`M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`}
-                    fill={stat.color + "50"}
-                    stroke={stat.color}
-                    strokeWidth="1"
-                  />
-                ) : null;
-              })}
-              <circle cx="56" cy="56" r="38" fill="white" />
-            </svg>
-            {/* Avatar initial */}
-            <div
-              className="absolute inset-0 flex items-center justify-center"
-              style={{ top: 8, left: 8, right: 8, bottom: 8 }}
-            >
-              <div
-                className="w-full h-full rounded-full flex items-center justify-center"
-                style={{
-                  background: `radial-gradient(circle at 40% 35%, ${moodStats[0].color}40, ${moodStats[1].color}25)`,
-                }}
-              >
-                <span className="text-2xl font-semibold text-[#4A4A6A]">
-                  {(displayName || userName || "?").charAt(0).toUpperCase()}
-                </span>
-              </div>
-            </div>
+          <div
+            className="w-24 h-24 rounded-full flex items-center justify-center mb-5 text-3xl font-semibold text-[#4A4A6A]"
+            style={{
+              background: `linear-gradient(135deg, ${moodStats[0].color}35, ${moodStats[1].color}20)`,
+              boxShadow: `0 0 0 3px white, 0 0 0 6px ${moodStats[0].color}70, 0 8px 28px ${moodStats[0].color}30`,
+            }}
+          >
+            {(displayName || userName || "?").charAt(0).toUpperCase()}
           </div>
 
           <div className="flex gap-6">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Component } from "react";
 import { motion, AnimatePresence } from "motion/react";
+import logoImg from "./images/logo.png";
 import VibeFeed from "./components/VibeFeed";
 import { DreamCatcher } from "./components/DreamCatcher";
 import { LocalLoops } from "./components/LocalLoops";
@@ -458,22 +459,7 @@ export default function App() {
           {/* Logo/Header */}
           <div className="p-6 border-b-2 border-[#E0E8F5]">
             <div className="flex items-center gap-3">
-              <div className="relative w-10 h-10">
-                {/* Outer soft glow */}
-                <div
-                  className="absolute inset-0 rounded-full blur-xl opacity-60"
-                  style={{
-                    background: "radial-gradient(circle, #A9C7FF 0%, #C5A9FF 100%)",
-                  }}
-                />
-                {/* Main orb with radial gradient */}
-                <div
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background: "radial-gradient(circle at 45% 40%, rgba(255,255,255,0.9) 0%, #A9C7FF 30%, #C5A9FF 100%)",
-                  }}
-                />
-              </div>
+              <img src={logoImg} alt="VibeLoop" className="w-10 h-10 object-contain" />
               <div>
                 <h1 className="text-[#4A4A6A] dark:text-[#C5C5E0]">VibeLoop</h1>
                 <p className="text-[#B8B8CC] dark:text-[#8A8AA8] text-xs">Your sanctuary</p>

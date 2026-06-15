@@ -4,6 +4,7 @@ import { Card } from "./ui/card";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Sparkles, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import logoImg from "../images/logo.png";
 
 interface LoginProps {
   onLogin: (email: string, password: string) => void;
@@ -92,13 +93,9 @@ export function Login({ onLogin, onSwitchToSignup, onGuestLogin }: LoginProps) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-4"
-            style={{
-              background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
-              boxShadow: "0 0 40px #C5A9FF50",
-            }}
+            className="inline-flex items-center justify-center mb-4"
           >
-            <Sparkles className="w-10 h-10 text-white" />
+            <img src={logoImg} alt="VibeLoop" className="w-20 h-20 object-contain drop-shadow-lg" />
           </motion.div>
           <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-[#4A4A6A] mb-1 text-4xl font-bold">
             Welcome back
