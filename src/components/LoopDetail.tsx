@@ -415,19 +415,20 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           </Badge>
                         </div>
                         {event.description && (
-                          <p className="text-xs text-[#8A8AA8] mb-2 leading-relaxed">{event.description}</p>
+                          <p className="text-xs text-[#8A8AA8] mb-3 leading-relaxed">{event.description}</p>
                         )}
-                        <div className="flex items-center gap-2 text-xs text-[#B8B8CC] mb-1">
-                          <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
-                          <span>{event.date}</span>
-                        </div>
                         {event.location && (
-                          <div className="flex items-center gap-2 text-xs text-[#B8B8CC] mb-3">
-                            <MapPin className="w-3.5 h-3.5 flex-shrink-0" />
+                          <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC] mb-3">
+                            <MapPin className="w-3 h-3 flex-shrink-0" />
                             <span>{event.location}</span>
                           </div>
                         )}
-                        <div className="flex justify-end">
+                        {/* Date + RSVP always in the same row */}
+                        <div className="flex items-center justify-between mt-1">
+                          <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC]">
+                            <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
+                            <span>{event.date}</span>
+                          </div>
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
