@@ -242,7 +242,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:top-4 [&>button]:right-4 [&>button]:rounded-full [&>button]:p-2 [&>button]:opacity-100 [&>button]:bg-white/60 [&>button]:hover:bg-white/90 [&>button]:backdrop-blur-sm [&>button]:w-9 [&>button]:h-9 [&>button]:flex [&>button]:items-center [&>button]:justify-center"
+        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:top-5 [&>button]:right-5 [&>button]:rounded-full [&>button]:p-2.5 [&>button]:opacity-100 [&>button]:bg-white/60 [&>button]:hover:bg-white/90 [&>button]:backdrop-blur-sm [&>button]:w-10 [&>button]:h-10 [&>button]:flex [&>button]:items-center [&>button]:justify-center"
       >
         <VisuallyHidden>
           <SheetTitle>{loop.name}</SheetTitle>
