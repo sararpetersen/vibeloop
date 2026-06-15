@@ -156,7 +156,7 @@ export function Onboarding({ onComplete }: OnboardingProps) {
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="mb-8"
             >
-              <img src={logoImg} alt="VibeLoop" className="w-44 h-44 mx-auto object-contain drop-shadow-xl" />
+              <img src={logoImg} alt="VibeLoop" className="w-32 h-32 mx-auto object-contain drop-shadow-xl" />
             </motion.div>
 
             <h1 className="mb-1 text-[#4A4A6A] text-4xl font-bold">Welcome to VibeLoop</h1>

@@ -95,7 +95,7 @@ export function Login({ onLogin, onSwitchToSignup, onGuestLogin }: LoginProps) {
             transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
             className="inline-flex items-center justify-center mb-4"
           >
-            <img src={logoImg} alt="VibeLoop" className="w-36 h-36 object-contain drop-shadow-xl" />
+            <img src={logoImg} alt="VibeLoop" className="w-20 h-20 object-contain drop-shadow-lg" />
           </motion.div>
           <motion.h1 initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-[#4A4A6A] mb-1 text-4xl font-bold">
             Welcome back
