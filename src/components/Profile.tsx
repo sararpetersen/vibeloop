@@ -223,13 +223,13 @@ export function Profile({
               <h2 className="text-[#4A4A6A] text-xl md:text-3xl font-bold">{displayName}'s Aura</h2>
               <p className="text-[#8A8AA8] mt-1 text-sm">{bio}</p>
               <div className="flex gap-5 mt-2">
-                <div className="text-center">
+                <div className="text-center mr-2">
                   <span className="text-sm font-semibold text-[#4A4A6A]">{newUserMode ? 0 : (followingListProp ?? followingList).length}</span>
-                  <span className="text-xs text-[#8A8AA8] ml-1">following</span>
+                  <span className="text-xs text-[#8A8AA8] ml-1"> following</span>
                 </div>
                 <div className="text-center">
-                  <span className="text-sm font-semibold text-[#4A4A6A]">{newUserMode ? 0 : followersCountProp ?? 0}</span>
-                  <span className="text-xs text-[#8A8AA8] ml-1">followers</span>
+                  <span className="text-sm font-semibold text-[#4A4A6A]">{newUserMode ? 0 : (followersCountProp ?? 0)}</span>
+                  <span className="text-xs text-[#8A8AA8] ml-1"> followers</span>
                 </div>
               </div>
             </div>
@@ -302,7 +302,10 @@ export function Profile({
                           <button
                             onClick={() => {
                               if (setCurrentScreen) setCurrentScreen("feed");
-                              else try { window.dispatchEvent(new CustomEvent("vibeloop:open_feed")); } catch (e) {}
+                              else
+                                try {
+                                  window.dispatchEvent(new CustomEvent("vibeloop:open_feed"));
+                                } catch (e) {}
                             }}
                             className="text-xs text-[#6A6A88] hover:text-[#4A4A6A] transition-colors cursor-pointer"
                           >

@@ -65,28 +65,112 @@ const defaultMembers: Record<number, { id: string; name: string; initial: string
 
 const defaultEvents: Record<number, { id: string; name: string; date: string; attendees: number; description: string; location: string }[]> = {
   1: [
-    { id: "e1", name: "Open Mic Night", date: "This Friday, 7:00 PM", attendees: 18, description: "Bring something to share — a poem, a sketch, a song, or just yourself", location: "Ungdomshuset, København" },
-    { id: "e2", name: "Collaborative Zine Session", date: "Next Tuesday, 6:30 PM", attendees: 9, description: "We make a zine together. Materials provided, no experience needed.", location: "Fabrikken for Kunst og Design" },
+    {
+      id: "e1",
+      name: "Open Mic Night",
+      date: "This Friday, 7:00 PM",
+      attendees: 18,
+      description: "Bring something to share — a poem, a sketch, a song, or just yourself",
+      location: "Ungdomshuset, København",
+    },
+    {
+      id: "e2",
+      name: "Collaborative Zine Session",
+      date: "Next Tuesday, 6:30 PM",
+      attendees: 9,
+      description: "We make a zine together. Materials provided, no experience needed.",
+      location: "Fabrikken for Kunst og Design",
+    },
   ],
   2: [
-    { id: "e3", name: "Forest Route Walk", date: "Tomorrow, 10:00 PM", attendees: 11, description: "A slow walk through the trees. Bring a torch and good company.", location: "Møns Klint trailhead" },
-    { id: "e4", name: "Rooftop Starwatch", date: "Saturday, 11:00 PM", attendees: 7, description: "Clear skies forecast. Bring something warm and look up.", location: "Ballerup rooftop (shared in chat)" },
+    {
+      id: "e3",
+      name: "Forest Route Walk",
+      date: "Tomorrow, 10:00 PM",
+      attendees: 11,
+      description: "A slow walk through the trees. Bring a torch and good company.",
+      location: "Møns Klint trailhead",
+    },
+    {
+      id: "e4",
+      name: "Rooftop Starwatch",
+      date: "Saturday, 11:00 PM",
+      attendees: 7,
+      description: "Clear skies forecast. Bring something warm and look up.",
+      location: "Ballerup rooftop (shared in chat)",
+    },
   ],
   3: [
-    { id: "e5", name: "Dream Sharing Circle", date: "Sunday, 4:00 PM", attendees: 14, description: "Bring your strangest dreams. We discuss, interpret, wonder together.", location: "Absalon, Vesterbro" },
-    { id: "e6", name: "Lucid Dreaming Workshop", date: "Next Thursday, 7:00 PM", attendees: 20, description: "Techniques, experiences, and a lot of 'wait, is this real?' energy.", location: "Online — link in chat" },
+    {
+      id: "e5",
+      name: "Dream Sharing Circle",
+      date: "Sunday, 4:00 PM",
+      attendees: 14,
+      description: "Bring your strangest dreams. We discuss, interpret, wonder together.",
+      location: "Absalon, Vesterbro",
+    },
+    {
+      id: "e6",
+      name: "Lucid Dreaming Workshop",
+      date: "Next Thursday, 7:00 PM",
+      attendees: 20,
+      description: "Techniques, experiences, and a lot of 'wait, is this real?' energy.",
+      location: "Online — link in chat",
+    },
   ],
   4: [
-    { id: "e7", name: "Silent Reading Afternoon", date: "Saturday, 2:00 PM", attendees: 12, description: "Come read. No talking required. Coffee available.", location: "Paludan Bog & Café, Fiolstræde" },
-    { id: "e8", name: "Slow Book Club", date: "Next Sunday, 3:00 PM", attendees: 8, description: "We're taking our time with this one. No pressure to have finished it.", location: "Coffee Collective, Nørrebro" },
+    {
+      id: "e7",
+      name: "Silent Reading Afternoon",
+      date: "Saturday, 2:00 PM",
+      attendees: 12,
+      description: "Come read. No talking required. Coffee available.",
+      location: "Paludan Bog & Café, Fiolstræde",
+    },
+    {
+      id: "e8",
+      name: "Slow Book Club",
+      date: "Next Sunday, 3:00 PM",
+      attendees: 8,
+      description: "We're taking our time with this one. No pressure to have finished it.",
+      location: "Coffee Collective, Nørrebro",
+    },
   ],
   5: [
-    { id: "e9", name: "Stargazing Night", date: "Next Wed, 9:00 PM", attendees: 11, description: "Telescopes out, blankets ready. Saturn is visible this week.", location: "Dyrehaven, north clearing" },
-    { id: "e10", name: "Cosmos & Coffee Talk", date: "Next Friday, 6:00 PM", attendees: 15, description: "Casual conversation about the big stuff. No expertise required.", location: "Riccos Kaffebar, Istedgade" },
+    {
+      id: "e9",
+      name: "Stargazing Night",
+      date: "Next Wed, 9:00 PM",
+      attendees: 11,
+      description: "Telescopes out, blankets ready. Saturn is visible this week.",
+      location: "Dyrehaven, north clearing",
+    },
+    {
+      id: "e10",
+      name: "Cosmos & Coffee Talk",
+      date: "Next Friday, 6:00 PM",
+      attendees: 15,
+      description: "Casual conversation about the big stuff. No expertise required.",
+      location: "Riccos Kaffebar, Istedgade",
+    },
   ],
   6: [
-    { id: "e11", name: "Art Therapy Session", date: "Tomorrow, 5:00 PM", attendees: 9, description: "Process through making. Paints, clay, collage — whatever feels right.", location: "Vesterbro Kulturhus" },
-    { id: "e12", name: "Gentle Sharing Circle", date: "Thursday, 6:30 PM", attendees: 13, description: "A quiet space to say the things that are hard to say. Safe, held, honest.", location: "Frederiksberg Have pavilion" },
+    {
+      id: "e11",
+      name: "Art Therapy Session",
+      date: "Tomorrow, 5:00 PM",
+      attendees: 9,
+      description: "Process through making. Paints, clay, collage — whatever feels right.",
+      location: "Vesterbro Kulturhus",
+    },
+    {
+      id: "e12",
+      name: "Gentle Sharing Circle",
+      date: "Thursday, 6:30 PM",
+      attendees: 13,
+      description: "A quiet space to say the things that are hard to say. Safe, held, honest.",
+      location: "Frederiksberg Have pavilion",
+    },
   ],
 };
 
@@ -334,9 +418,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-[#4A4A6A]">Recent members</h3>
-                {recentMembersState.length > 0 && (
-                  <span className="text-sm text-[#8A8AA8]">{recentMembersState.length}</span>
-                )}
+                {recentMembersState.length > 0 && <span className="text-sm text-[#8A8AA8]">{recentMembersState.length}</span>}
               </div>
               <div className={recentMembersState.length >= 2 ? "grid grid-cols-2 gap-2" : "space-y-2"}>
                 {recentMembersState.length === 0 && <div className="text-sm text-[#8A8AA8] italic">No recent members yet.</div>}
@@ -348,10 +430,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                         <div className="flex flex-col gap-2 text-center">
                           <div className="flex justify-center">
                             <Avatar className="w-10 h-10 border-2" style={{ borderColor: member.color + "60" }}>
-                              <AvatarFallback
-                                className="text-xs"
-                                style={{ backgroundColor: member.color + "30", color: "#4A4A6A" }}
-                              >
+                              <AvatarFallback className="text-xs" style={{ backgroundColor: member.color + "30", color: "#4A4A6A" }}>
                                 {member.initial}
                               </AvatarFallback>
                             </Avatar>
@@ -391,9 +470,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
             <div>
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-[#4A4A6A]">Upcoming gatherings</h3>
-                {upcomingEventsState.length > 0 && (
-                  <span className="text-sm text-[#8A8AA8]">{upcomingEventsState.length}</span>
-                )}
+                {upcomingEventsState.length > 0 && <span className="text-sm text-[#8A8AA8]">{upcomingEventsState.length}</span>}
               </div>
               <div className="space-y-3">
                 {upcomingEventsState.length === 0 && <div className="text-sm text-[#8A8AA8] italic">No upcoming gatherings.</div>}
@@ -407,7 +484,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           borderColor: loop.color + "30",
                         }}
                       >
-                        <div className="flex items-start justify-between mb-2">
+                        <div className="flex items-start justify-evenly mb-2">
                           <div className="text-sm font-medium text-[#4A4A6A] flex-1 pr-2">{event.name}</div>
                           <Badge
                             className="px-2 py-0.5 text-xs rounded-full border-0 flex-shrink-0"
@@ -416,9 +493,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             {event.attendees} going
                           </Badge>
                         </div>
-                        {event.description && (
-                          <p className="text-xs text-[#8A8AA8] mb-3 leading-relaxed">{event.description}</p>
-                        )}
+                        {event.description && <p className="text-xs text-[#8A8AA8] mb-3 leading-relaxed">{event.description}</p>}
                         {event.location && (
                           <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC] mb-3">
                             <MapPin className="w-3 h-3 flex-shrink-0" />

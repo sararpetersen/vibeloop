@@ -441,18 +441,18 @@ export function LocalLoops({
                       <div className="flex-1 min-w-0">
                         <h3 className="mb-1 text-[#4A4A6A]">{loop.name}</h3>
                         <p className="text-sm text-[#8A8AA8] mb-2 line-clamp-2">{loop.description}</p>
-                        <div className="flex items-center gap-2 text-sm text-[#8A8AA8] mb-2">
+                        <div className="flex items-center gap-2 text-sm text-[#8A8AA8] mb-4">
                           <MapPin className="w-3.5 h-3.5 text-[#B8B8CC]" />
                           <span>{loop.location}</span>
                         </div>
-                        <div className="flex items-center gap-3 text-sm mb-2">
+                        <div className="flex items-center gap-3 text-sm mb-3">
                           <span className="text-[#B8B8CC] italic">{getCommunitySize(loop.members)}</span>
                           <span className="text-[#E0E0EA]">•</span>
                           <span className="text-[#B8B8CC] text-xs">{loop.activeMembersToday} active today</span>
                         </div>
 
                         {/* Activities */}
-                        <div className="flex flex-wrap gap-1.5 mb-3">
+                        <div className="flex flex-wrap gap-1.5 mb-4">
                           {loop.activities.map((activity, idx) => (
                             <Badge
                               key={idx}
