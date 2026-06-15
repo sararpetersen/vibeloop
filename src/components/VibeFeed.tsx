@@ -176,10 +176,7 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
       <div className="px-6 space-y-4 mt-4 max-w-3xl mx-auto">
         {filteredVibes.length === 0 && (
           <div className="px-2 pt-8">
-            <div
-              className="max-w-xl mx-auto p-8 rounded-3xl border-2 bg-white/70 backdrop-blur-sm text-center"
-              style={{ borderColor: "#C5A9FF40" }}
-            >
+            <div className="max-w-xl mx-auto p-8 rounded-3xl border-2 bg-white/70 backdrop-blur-sm text-center" style={{ borderColor: "#C5A9FF40" }}>
               <h3 className="text-[#4A4A6A] text-xl font-bold mb-2">Welcome — it looks like you're new here</h3>
               <p className="text-sm text-[#8A8AA8] mb-6">Your feed will show vibes from people you follow and dreams you save.</p>
 
@@ -203,7 +200,7 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
                     if (setCurrentScreen) setCurrentScreen("loops");
                     else window.dispatchEvent(new CustomEvent("vibeloop:open_loops"));
                   }}
-                  className="cursor-pointer px-6 py-3 rounded-full text-sm font-medium border-2 bg-white/80 transition-all duration-300 hover:bg-white hover:scale-[1.02]"
+                  className="cursor-pointer mb-4 px-6 py-3 rounded-full text-sm font-medium border-2 bg-white/80 transition-all duration-300 hover:bg-white hover:scale-[1.02]"
                   style={{ borderColor: "#C5A9FF60", color: "#6A6A88" }}
                 >
                   Explore local loops
@@ -213,9 +210,11 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
               {/* Tertiary — clearly a link, not competing with the buttons above */}
               <button
                 onClick={() => {
-                  try { window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs")); } catch (e) {}
+                  try {
+                    window.dispatchEvent(new CustomEvent("vibeloop:open_mood_prefs"));
+                  } catch (e) {}
                 }}
-                className="cursor-pointer text-sm transition-colors duration-200 hover:opacity-80"
+                className="cursor-pointer mb-2 text-sm transition-colors duration-200 hover:opacity-80"
                 style={{ color: "#C5A9FF" }}
               >
                 Set your mood palette ›

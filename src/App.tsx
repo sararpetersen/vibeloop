@@ -351,7 +351,7 @@ export default function App() {
         seekingFor: userData.seekingFor,
         expressionStyle: userData.expressionStyle,
         initialMood: userData.initialMood,
-      })
+      }),
     );
 
     // Set mood after a brief delay for smooth transition
@@ -461,8 +461,8 @@ export default function App() {
             <div className="flex items-center gap-3">
               <img src={logoImg} alt="VibeLoop" className="w-10 h-10 object-contain" />
               <div>
-                <h1 className="text-[#4A4A6A] dark:text-[#C5C5E0]">VibeLoop</h1>
-                <p className="text-[#B8B8CC] dark:text-[#8A8AA8] text-xs">Your sanctuary</p>
+                <h1 className="text-[#4A4A6A] dark:text-[#C5C5E0] font-bold text-lg">VibeLoop</h1>
+                <p className="text-[#B8B8CC] dark:text-[#8A8AA8] text-xs">Find Your Calm</p>
               </div>
             </div>
           </div>
