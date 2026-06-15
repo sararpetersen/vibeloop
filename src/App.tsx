@@ -454,7 +454,7 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] relative">
       {/* Desktop Sidebar Navigation */}
       {!showSettings && (
-        <div className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-white/80 backdrop-blur-xl border-r-2 border-[#E0E8F5] z-50 flex-col">
+        <div className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-white/80 dark:bg-[#1A1A2E]/90 backdrop-blur-xl border-r-2 border-[#E0E8F5] dark:border-[#2A2A4E] z-50 flex-col">
           {/* Logo/Header */}
           <div className="p-6 border-b-2 border-[#E0E8F5]">
             <div className="flex items-center gap-3">
@@ -475,8 +475,8 @@ export default function App() {
                 />
               </div>
               <div>
-                <h1 className="text-[#4A4A6A]">VibeLoop</h1>
-                <p className="text-[#B8B8CC] text-xs">Your sanctuary</p>
+                <h1 className="text-[#4A4A6A] dark:text-[#C5C5E0]">VibeLoop</h1>
+                <p className="text-[#B8B8CC] dark:text-[#8A8AA8] text-xs">Your sanctuary</p>
               </div>
             </div>
           </div>

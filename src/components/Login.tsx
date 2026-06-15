@@ -125,7 +125,10 @@ export function Login({ onLogin, onSwitchToSignup, onGuestLogin }: LoginProps) {
               type="button"
               whileTap={{ scale: 0.98 }}
               onClick={onSwitchToSignup}
-              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border-2 border-[#1A1A2E] bg-[#1A1A2E] hover:bg-[#2A2A3E] transition-all duration-300 cursor-pointer text-white"
+              className="w-full flex items-center justify-center gap-3 py-3 px-4 rounded-xl border-2 transition-all duration-300 cursor-pointer text-white"
+              style={{ backgroundColor: "#1A1A2E", borderColor: "#1A1A2E" }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#2A2A3E"; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLButtonElement).style.backgroundColor = "#1A1A2E"; }}
             >
               <AppleIcon />
               <span className="text-white">Continue with Apple</span>

@@ -145,7 +145,7 @@ export function DreamCatcher({ userName, onSaveDream }: DreamCatcherProps) {
                 background: "linear-gradient(135deg, rgba(197, 169, 255, 0.15), rgba(169, 199, 255, 0.15))",
               }}
             >
-              <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="flex flex-col items-center gap-3 mb-4 text-center">
                 <div
                   className="w-12 h-12 rounded-full flex items-center justify-center"
                   style={{
@@ -155,7 +155,7 @@ export function DreamCatcher({ userName, onSaveDream }: DreamCatcherProps) {
                 >
                   <Plus className="w-6 h-6 text-white" />
                 </div>
-                <div className="flex-1 text-left">
+                <div>
                   <h3 className="text-[#4A4A6A] mb-1">Create New Dream</h3>
                   <p className="text-xs text-[#8A8AA8]">Capture a thought, feeling, or moment</p>
                 </div>
