@@ -200,22 +200,38 @@ export function Profile({
     >
       <div className="px-6 pt-8 max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-start mb-8">
+        <div className="flex justify-between items-start mb-6">
           <div className="flex items-center gap-4">
-            <Avatar className="w-16 h-16 border-2" style={{ borderColor: dominantMood.color + "60" }}>
-              <AvatarFallback
-                className="text-md"
-                style={{
-                  backgroundColor: dominantMood.color + "30",
-                  color: "#4A4A6A",
-                }}
-              >
-                {displayName ? displayName.charAt(0).toUpperCase() : userName.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
+            {/* Avatar — shows real photo if set, otherwise styled initial */}
+            <div
+              className="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center flex-shrink-0 border-2"
+              style={{
+                borderColor: dominantMood.color + "60",
+                background: avatarUrl ? undefined : `linear-gradient(135deg, ${dominantMood.color}50, ${moodStats[1].color}30)`,
+                boxShadow: `0 0 16px ${dominantMood.color}40`,
+              }}
+            >
+              {avatarUrl ? (
+                <img src={avatarUrl} alt={displayName || userName} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-xl font-semibold" style={{ color: dominantMood.color }}>
+                  {(displayName || userName || "?").charAt(0).toUpperCase()}
+                </span>
+              )}
+            </div>
             <div>
               <h2 className="text-[#4A4A6A] text-xl md:text-3xl font-bold">{displayName}'s Aura</h2>
               <p className="text-[#8A8AA8] mt-1 text-sm">{bio}</p>
+              <div className="flex gap-5 mt-2">
+                <div className="text-center">
+                  <span className="text-sm font-semibold text-[#4A4A6A]">{newUserMode ? 0 : (followingListProp ?? followingList).length}</span>
+                  <span className="text-xs text-[#8A8AA8] ml-1">following</span>
+                </div>
+                <div className="text-center">
+                  <span className="text-sm font-semibold text-[#4A4A6A]">{newUserMode ? 0 : followersCountProp ?? 0}</span>
+                  <span className="text-xs text-[#8A8AA8] ml-1">followers</span>
+                </div>
+              </div>
             </div>
           </div>
           <motion.button
@@ -223,99 +239,83 @@ export function Profile({
             whileTap={{ scale: 0.9 }}
             transition={{ duration: 0.3 }}
             onClick={onSettingsClick}
-            className="p-3 rounded-full bg-white/80 backdrop-blur-sm cursor-pointer"
-            style={{
-              boxShadow: `0 0 20px ${dominantMood.color}20`,
-            }}
+            className="p-3 rounded-full bg-white/80 backdrop-blur-sm cursor-pointer flex-shrink-0"
+            style={{ boxShadow: `0 0 20px ${dominantMood.color}20` }}
           >
             <Settings className="w-5 h-5 text-[#8A8AA8]" />
           </motion.button>
         </div>
 
-        {/* Profile avatar + follower counts */}
-        <div className="flex flex-col items-center mb-8">
-          <div
-            className="w-24 h-24 rounded-full flex items-center justify-center mb-5 text-3xl font-semibold text-[#4A4A6A]"
-            style={{
-              background: `linear-gradient(135deg, ${moodStats[0].color}35, ${moodStats[1].color}20)`,
-              boxShadow: `0 0 0 3px white, 0 0 0 6px ${moodStats[0].color}70, 0 8px 28px ${moodStats[0].color}30`,
-            }}
-          >
-            {(displayName || userName || "?").charAt(0).toUpperCase()}
-          </div>
-
-          <div className="flex gap-6">
-            <div className="text-center">
-              <div className="text-lg text-[#4A4A6A]">{newUserMode ? 0 : (followingListProp ?? followingList).length}</div>
-              <div className="text-xs text-[#8A8AA8]">following</div>
-            </div>
-            <div className="w-px bg-[#E0E8F5]" />
-            <div className="text-center">
-              <div className="text-lg text-[#4A4A6A]">{newUserMode ? 0 : followersCountProp ?? 0}</div>
-              <div className="text-xs text-[#8A8AA8]">followers</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Dream Orbs */}
+        {/* Dream Orbs — soft atmospheric glow background, gentle pulse */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-[#C5A9FF]" />
             <h4 className="text-[#4A4A6A] font-semibold">My Dream Orbs</h4>
           </div>
-          <Card className="p-5 rounded-3xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm">
-            {savedDreamObjects.length === 0 ? (
-              <p className="text-sm text-[#8A8AA8] italic text-center py-2">You haven't saved any dreams yet.</p>
-            ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {savedDreamObjects.map((dream, index) => (
-                  <motion.div key={dream.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06 }}>
-                    <div
-                      className="p-4 rounded-2xl border-2 flex items-center gap-3"
-                      style={{ borderColor: dream.moodColor + "30", backgroundColor: dream.moodColor + "10" }}
-                    >
+          <div className="relative rounded-3xl overflow-hidden">
+            {/* Atmospheric glow — pulses gently, no rotation */}
+            <motion.div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `radial-gradient(ellipse at 50% 40%, ${moodStats[0].color}30 0%, ${moodStats[1].color}18 50%, transparent 80%)`,
+              }}
+              animate={{ opacity: [0.7, 1, 0.7], scale: [1, 1.04, 1] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <Card className="relative p-5 rounded-3xl border-2 bg-white/70 backdrop-blur-sm" style={{ borderColor: moodStats[0].color + "30" }}>
+              {savedDreamObjects.length === 0 ? (
+                <p className="text-sm text-[#8A8AA8] italic text-center py-2">You haven't saved any dreams yet.</p>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {savedDreamObjects.map((dream, index) => (
+                    <motion.div key={dream.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.06 }}>
                       <div
-                        className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center"
-                        style={{ background: `radial-gradient(circle, ${dream.moodColor}FF, ${dream.moodColor}60)` }}
+                        className="p-4 rounded-2xl border-2 flex items-center gap-3"
+                        style={{ borderColor: dream.moodColor + "30", backgroundColor: dream.moodColor + "10" }}
                       >
-                        <span className="text-white text-sm font-semibold">{dream.mood.charAt(0)}</span>
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm text-[#4A4A6A] line-clamp-2">{dream.text}</div>
-                        <div className="text-xs text-[#8A8AA8] mt-1">{dream.timestamp}</div>
-                      </div>
-                      <div className="flex flex-col items-end gap-1.5">
-                        <button
-                          onClick={() => {
-                            try {
-                              const raw = localStorage.getItem("vibeloop_saved_dreams");
-                              if (!raw) return;
-                              const parsed = JSON.parse(raw) as number[];
-                              const next = parsed.filter((id) => id !== dream.id);
-                              localStorage.setItem("vibeloop_saved_dreams", JSON.stringify(next));
-                              window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
-                            } catch (e) {}
-                          }}
-                          className="text-xs text-[#C5A9FF] hover:text-[#A990EE] transition-colors cursor-pointer"
+                        <div
+                          className="w-10 h-10 rounded-full flex-shrink-0 flex items-center justify-center"
+                          style={{ background: `radial-gradient(circle, ${dream.moodColor}FF, ${dream.moodColor}60)` }}
                         >
-                          Remove
-                        </button>
-                        <button
-                          onClick={() => {
-                            if (setCurrentScreen) setCurrentScreen("feed");
-                            else try { window.dispatchEvent(new CustomEvent("vibeloop:open_feed")); } catch (e) {}
-                          }}
-                          className="text-xs text-[#6A6A88] hover:text-[#4A4A6A] transition-colors cursor-pointer"
-                        >
-                          View
-                        </button>
+                          <span className="text-white text-sm font-semibold">{dream.mood.charAt(0)}</span>
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm text-[#4A4A6A] line-clamp-2">{dream.text}</div>
+                          <div className="text-xs text-[#8A8AA8] mt-1">{dream.timestamp}</div>
+                        </div>
+                        <div className="flex flex-col items-end gap-1.5">
+                          <button
+                            onClick={() => {
+                              try {
+                                const raw = localStorage.getItem("vibeloop_saved_dreams");
+                                if (!raw) return;
+                                const parsed = JSON.parse(raw) as number[];
+                                const next = parsed.filter((id) => id !== dream.id);
+                                localStorage.setItem("vibeloop_saved_dreams", JSON.stringify(next));
+                                window.dispatchEvent(new CustomEvent("vibeloop:data_changed"));
+                              } catch (e) {}
+                            }}
+                            className="text-xs text-[#C5A9FF] hover:text-[#A990EE] transition-colors cursor-pointer"
+                          >
+                            Remove
+                          </button>
+                          <button
+                            onClick={() => {
+                              if (setCurrentScreen) setCurrentScreen("feed");
+                              else try { window.dispatchEvent(new CustomEvent("vibeloop:open_feed")); } catch (e) {}
+                            }}
+                            className="text-xs text-[#6A6A88] hover:text-[#4A4A6A] transition-colors cursor-pointer"
+                          >
+                            View
+                          </button>
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
-              </div>
-            )}
-          </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </Card>
+          </div>
         </div>
 
         {/* Mood Distribution */}
