@@ -274,9 +274,11 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
 
             {/* Recent Members */}
             <div>
-              <div className="flex items-center justify-between">
-                <h3 className="text-[#4A4A6A] mb-3">Recent members</h3>
-                <div className="text-sm text-[#8A8AA8]">{recentMembersState.length}</div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[#4A4A6A]">Recent members</h3>
+                {recentMembersState.length > 0 && (
+                  <span className="text-sm text-[#8A8AA8]">{recentMembersState.length}</span>
+                )}
               </div>
               <div className="space-y-2">
                 {recentMembersState.length === 0 && <div className="text-sm text-[#8A8AA8] italic">No recent members yet.</div>}
@@ -301,26 +303,20 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           <div className="text-xs text-[#B8B8CC]">Feeling {member.mood}</div>
                         </div>
                         <div className="flex-shrink-0">
-                          {following.includes(member.id) ? (
-                            <Button
-                              variant="outline"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                unfollowMember(member.id);
-                              }}
-                            >
-                              Following
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                followMember(member.id);
-                              }}
-                            >
-                              Follow
-                            </Button>
-                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
+                            }}
+                            className="px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
+                            style={
+                              following.includes(member.id)
+                                ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
+                                : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 8px ${loop.color}40` }
+                            }
+                          >
+                            {following.includes(member.id) ? "Following ✓" : "Follow"}
+                          </button>
                         </div>
                       </Card>
                     </motion.div>
@@ -330,9 +326,11 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
 
             {/* Upcoming Events */}
             <div>
-              <div className="flex items-center justify-between">
-                <h3 className="text-[#4A4A6A] mb-3">Upcoming gatherings</h3>
-                <div className="text-sm text-[#8A8AA8]">{upcomingEventsState.length}</div>
+              <div className="flex items-center justify-between mb-3">
+                <h3 className="text-[#4A4A6A]">Upcoming gatherings</h3>
+                {upcomingEventsState.length > 0 && (
+                  <span className="text-sm text-[#8A8AA8]">{upcomingEventsState.length}</span>
+                )}
               </div>
               <div className="space-y-3">
                 {upcomingEventsState.length === 0 && <div className="text-sm text-[#8A8AA8] italic">No upcoming gatherings.</div>}
@@ -363,26 +361,20 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           <span>{event.date}</span>
                         </div>
                         <div className="mt-3 flex justify-end">
-                          {rsvpedEvents.includes(event.id) ? (
-                            <Button
-                              variant="outline"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleRsvp(event.id);
-                              }}
-                            >
-                              Joined
-                            </Button>
-                          ) : (
-                            <Button
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                toggleRsvp(event.id);
-                              }}
-                            >
-                              RSVP
-                            </Button>
-                          )}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              toggleRsvp(event.id);
+                            }}
+                            className="px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85 hover:scale-[1.03]"
+                            style={
+                              rsvpedEvents.includes(event.id)
+                                ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
+                                : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 8px ${loop.color}40` }
+                            }
+                          >
+                            {rsvpedEvents.includes(event.id) ? "Going ✓" : "RSVP"}
+                          </button>
                         </div>
                       </Card>
                     </motion.div>
@@ -406,7 +398,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
               >
                 <MessageCircle className="w-5 h-5" />
               </Button>
-              <Button
+              <button
                 onClick={() => {
                   if (hasJoined) {
                     leaveLoopLocal(loop.id);
@@ -416,14 +408,15 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                     setHasJoined(true);
                   }
                 }}
-                className="flex-1 rounded-full py-6 border-0 transition-all duration-300 hover:shadow-lg"
-                style={{
-                  background: hasJoined ? "linear-gradient(135deg, #E0E0EA, #D0D0E0)" : `linear-gradient(135deg, ${loop.color}EE, ${loop.color}AA)`,
-                  color: hasJoined ? "#6A6A88" : "#FFFFFF",
-                }}
+                className="flex-1 rounded-full py-3.5 font-medium text-sm cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-[1.01]"
+                style={
+                  hasJoined
+                    ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}60` }
+                    : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 4px 16px ${loop.color}50` }
+                }
               >
                 {hasJoined ? "Joined ✓" : "Join Loop"}
-              </Button>
+              </button>
             </div>
           </div>
         </motion.div>
