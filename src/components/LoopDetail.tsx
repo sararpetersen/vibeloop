@@ -242,7 +242,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:top-5 [&>button]:right-5 [&>button]:rounded-full [&>button]:p-2.5 [&>button]:opacity-100 [&>button]:bg-white/60 [&>button]:hover:bg-white/90 [&>button]:backdrop-blur-sm [&>button]:w-10 [&>button]:h-10 [&>button]:flex [&>button]:items-center [&>button]:justify-center"
+        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:!top-6 [&>button]:!right-6 [&>button]:!rounded-full [&>button]:!p-0 [&>button]:!opacity-100 [&>button]:!bg-white/70 [&>button]:hover:!bg-white [&>button]:!w-10 [&>button]:!h-10 [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-sm"
       >
         <VisuallyHidden>
           <SheetTitle>{loop.name}</SheetTitle>
@@ -361,18 +361,20 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             <div className="text-xs font-medium text-[#6A6A88] truncate">{member.name}</div>
                             <div className="text-[10px] text-[#B8B8CC]">Feeling {member.mood}</div>
                           </div>
-                          <div className="flex justify-center">
+                          <div style={{ textAlign: "center" }}>
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
                                 following.includes(member.id) ? unfollowMember(member.id) : followMember(member.id);
                               }}
-                              className="px-5 py-1 rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
-                              style={
-                                following.includes(member.id)
+                              className="rounded-full text-[11px] font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
+                              style={{
+                                display: "inline-block",
+                                padding: "4px 20px",
+                                ...(following.includes(member.id)
                                   ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
-                                  : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 6px ${loop.color}30` }
-                              }
+                                  : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 6px ${loop.color}30` }),
+                              }}
                             >
                               {following.includes(member.id) ? "Following ✓" : "Follow"}
                             </button>
