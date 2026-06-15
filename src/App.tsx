@@ -570,7 +570,7 @@ export default function App() {
       )}
 
       {/* Screen Content */}
-      <div className="h-full relative md:ml-64">
+      <div className={`h-full relative ${showSettings ? "" : "md:ml-64"}`}>
         <AnimatePresence mode="wait">
           {showSettings ? (
             <Settings

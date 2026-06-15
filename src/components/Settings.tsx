@@ -57,6 +57,7 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
   const [privateProfile, setPrivateProfile] = useState(false);
   const [language, setLanguage] = useState("en");
   const [currentScreen, setCurrentScreen] = useState<SettingsScreen>("main");
+  const [openedViaEvent, setOpenedViaEvent] = useState(false);
   const [displayName, setDisplayName] = useState(userName);
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [userHandle, setUserHandle] = useState<string>("@dreamweaver");
@@ -175,7 +176,10 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
 
   // Listen for global open mood prefs event (from feed empty-state)
   useEffect(() => {
-    const h = () => setCurrentScreen("moodPreferences");
+    const h = () => {
+      setOpenedViaEvent(true);
+      setCurrentScreen("moodPreferences");
+    };
     window.addEventListener("vibeloop:open_mood_prefs", h as EventListener);
     return () => window.removeEventListener("vibeloop:open_mood_prefs", h as EventListener);
   }, []);
@@ -219,7 +223,19 @@ export function Settings({ userName, onClose, ...rest }: SettingsPropsExtended) 
     return <BlockedUsers onBack={() => setCurrentScreen("main")} userName={userName} />;
   }
   if (currentScreen === "moodPreferences") {
-    return <MoodPreferences onBack={() => setCurrentScreen("main")} userName={userName} />;
+    return (
+      <MoodPreferences
+        onBack={() => {
+          if (openedViaEvent) {
+            setOpenedViaEvent(false);
+            onClose?.();
+          } else {
+            setCurrentScreen("main");
+          }
+        }}
+        userName={userName}
+      />
+    );
   }
   if (currentScreen === "security") {
     return <SecuritySettings onBack={() => setCurrentScreen("main")} userName={userName} />;
