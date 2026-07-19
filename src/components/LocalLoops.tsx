@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -20,6 +20,7 @@ const getCommunitySize = (members: number): string => {
 
 // Use all 15 moods for filters
 const vibeFilters = ["All", ...MOODS.map((m) => m.name)];
+const VISIBLE_VIBE_COUNT = 6;
 
 type Loop = {
   id: number;
@@ -245,9 +246,21 @@ export function LocalLoops({
   const [selectedLoop, setSelectedLoop] = useState<Loop | null>(null);
   const [eventDetailOpen, setEventDetailOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<EventItem | null>(null);
+  const [vibesExpanded, setVibesExpanded] = useState(false);
 
   // events state
   const [eventsData, setEventsData] = useState<EventItem[]>(initialEvents);
+
+  // isJoined() below reads localStorage directly rather than React state, so joining/leaving
+  // via the *Local fallback helpers wrote to storage but never re-rendered this component —
+  // the Join button's label silently never flipped to "Joined ✓". Force a re-render whenever
+  // that storage changes.
+  const [, forceJoinedRefresh] = useState(0);
+  useEffect(() => {
+    const handler = () => forceJoinedRefresh((n) => n + 1);
+    window.addEventListener("vibeloop:joined_loops_changed", handler);
+    return () => window.removeEventListener("vibeloop:joined_loops_changed", handler);
+  }, []);
 
   const filteredLoops = loopsData.filter((loop) => {
     const matchesVibe = selectedVibe === "All" || loop.vibe === selectedVibe;
@@ -322,8 +335,10 @@ export function LocalLoops({
       transition={{ duration: 0.6 }}
       className="h-full overflow-auto pb-24 md:pb-8"
     >
-      {/* Header */}
+      {/* Header — inner content shares the same max-width as the cards below so the two
+          don't drift apart on wide screens; the sticky/blur band itself stays full-bleed */}
       <div className="sticky top-0 bg-[#F6F8FB]/80 backdrop-blur-md z-10 px-6 pt-8 pb-4">
+        <div className="max-w-3xl mx-auto">
         <h2 className="mb-2 text-[#4A4A6A] text-xl md:text-3xl font-bold">Local Loops</h2>
         <p className="text-sm text-[#8A8AA8] mb-4">Nearby communities and vibe-based gatherings</p>
 
@@ -340,8 +355,8 @@ export function LocalLoops({
         </div>
 
         {/* Vibe Filters */}
-        <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar mb-4">
-          {vibeFilters.map((vibe) => {
+        <div className={`flex gap-2 mb-4 ${vibesExpanded ? "flex-wrap" : "overflow-x-auto pb-2 no-scrollbar"}`}>
+          {(vibesExpanded ? vibeFilters : vibeFilters.slice(0, VISIBLE_VIBE_COUNT)).map((vibe) => {
             const moodColor = vibe === "All" ? "#C5A9FF" : getMoodColor(vibe);
             return (
               <motion.div
@@ -368,6 +383,18 @@ export function LocalLoops({
               </motion.div>
             );
           })}
+          {vibeFilters.length > VISIBLE_VIBE_COUNT && (
+            <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Badge
+                onClick={() => setVibesExpanded((v) => !v)}
+                className="cursor-pointer px-4 py-2 rounded-full transition-all duration-300 border-2 border-dashed whitespace-nowrap bg-white/60"
+                style={{ borderColor: "#B8B8CC", color: "#6A6A88" }}
+                aria-expanded={vibesExpanded}
+              >
+                {vibesExpanded ? "Less" : `More (${vibeFilters.length - VISIBLE_VIBE_COUNT})`}
+              </Badge>
+            </motion.div>
+          )}
         </div>
 
         {/* Tabs */}
@@ -387,10 +414,11 @@ export function LocalLoops({
             </TabsTrigger>
           </TabsList>
         </Tabs>
+        </div>
       </div>
 
       {/* Content */}
-      <div className="px-6 mt-4">
+      <div className="px-6 mt-4 max-w-3xl mx-auto">
         <Tabs value={activeTab} className="w-full">
           {/* Communities Tab */}
           <TabsContent value="communities" className="mt-0 space-y-4">
@@ -407,14 +435,30 @@ export function LocalLoops({
                   }}
                 >
                   <Card
-                    onClick={() => {
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View details for ${loop.name}`}
+                    onClick={(e) => {
+                      // Belt-and-suspenders: the Join button's own onClick already calls
+                      // stopPropagation, but bail here too if the click's real origin was
+                      // the Join button, so the card can never open "instead of" joining.
+                      if ((e.target as HTMLElement).closest("[data-join-button]")) return;
                       setSelectedLoop(loop);
                       setLoopDetailOpen(true);
                     }}
-                    className="p-5 rounded-3xl border-2 relative overflow-hidden backdrop-blur-sm cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+                    onKeyDown={(e) => {
+                      if (e.target !== e.currentTarget) return;
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedLoop(loop);
+                        setLoopDetailOpen(true);
+                      }
+                    }}
+                    className="p-5 rounded-3xl border-2 relative overflow-hidden backdrop-blur-sm cursor-pointer hover:scale-[1.02] transition-transform duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                     style={{
                       borderColor: loop.color + "40",
                       backgroundColor: "rgba(255,255,255,0.8)",
+                      ["--tw-ring-color" as any]: loop.color,
                     }}
                   >
                     {/* Gradient overlay */}
@@ -439,20 +483,20 @@ export function LocalLoops({
 
                       {/* Content */}
                       <div className="flex-1 min-w-0">
-                        <h3 className="mb-1 text-[#4A4A6A]">{loop.name}</h3>
-                        <p className="text-sm text-[#8A8AA8] mb-2 line-clamp-2">{loop.description}</p>
-                        <div className="flex items-center gap-2 text-sm text-[#8A8AA8] mb-4">
+                        <h3 className="mb-1 text-[#4A4A6A] font-bold">{loop.name}</h3>
+                        <p className="text-sm text-[#8A8AA8] mb-4 line-clamp-2">{loop.description}</p>
+                        <div className="flex items-center gap-2 text-sm text-[#8A8AA8] mb-1">
                           <MapPin className="w-3.5 h-3.5 text-[#B8B8CC]" />
                           <span>{loop.location}</span>
                         </div>
-                        <div className="flex items-center gap-3 text-sm mb-3">
+                        <div className="flex items-center gap-3 text-sm mb-4">
                           <span className="text-[#B8B8CC] italic">{getCommunitySize(loop.members)}</span>
                           <span className="text-[#E0E0EA]">•</span>
                           <span className="text-[#B8B8CC] text-xs">{loop.activeMembersToday} active today</span>
                         </div>
 
                         {/* Activities */}
-                        <div className="flex flex-wrap gap-1.5 mb-4">
+                        <div className="flex flex-wrap gap-1.5 mb-5">
                           {loop.activities.map((activity, idx) => (
                             <Badge
                               key={idx}
@@ -482,10 +526,12 @@ export function LocalLoops({
                             </Badge>
                           </div>
 
-                          <button
+                          <motion.button
                             type="button"
+                            data-join-button="true"
                             aria-pressed={isJoined(loop.id)}
                             aria-label={isJoined(loop.id) ? `Leave ${loop.name}` : `Join ${loop.name}`}
+                            onPointerDown={(e) => e.stopPropagation()}
                             onClick={(e) => {
                               e.stopPropagation();
                               if (isJoined(loop.id)) {
@@ -496,7 +542,8 @@ export function LocalLoops({
                                 else joinLoopLocal(loop);
                               }
                             }}
-                            className="relative z-20 flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85 hover:scale-[1.04]"
+                            whileTap={{ scale: 0.92 }}
+                            className="relative z-20 flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
                             style={
                               isJoined(loop.id)
                                 ? { backgroundColor: loop.color + "25", color: loop.color, border: `1.5px solid ${loop.color}60` }
@@ -504,7 +551,7 @@ export function LocalLoops({
                             }
                           >
                             {isJoined(loop.id) ? "Joined ✓" : "Join"}
-                          </button>
+                          </motion.button>
                         </div>
                       </div>
                     </div>
@@ -574,14 +621,27 @@ export function LocalLoops({
                   }}
                 >
                   <Card
-                    onClick={() => {
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`View details for ${event.name}`}
+                    onClick={(e) => {
+                      if ((e.target as HTMLElement).closest("[data-join-button]")) return;
                       setSelectedEvent(event);
                       setEventDetailOpen(true);
                     }}
-                    className="p-5 rounded-3xl border-2 relative overflow-hidden backdrop-blur-sm cursor-pointer hover:scale-[1.02] transition-transform duration-300"
+                    onKeyDown={(e) => {
+                      if (e.target !== e.currentTarget) return;
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        setSelectedEvent(event);
+                        setEventDetailOpen(true);
+                      }
+                    }}
+                    className="p-5 rounded-3xl border-2 relative overflow-hidden backdrop-blur-sm cursor-pointer hover:scale-[1.02] transition-transform duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2"
                     style={{
                       borderColor: eventColor + "40",
                       backgroundColor: "rgba(255,255,255,0.8)",
+                      ["--tw-ring-color" as any]: eventColor,
                     }}
                   >
                     {/* Gradient overlay */}
@@ -596,7 +656,7 @@ export function LocalLoops({
                       {/* Header */}
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex-1">
-                          <h3 className="mb-1 text-[#4A4A6A]">{event.name}</h3>
+                          <h3 className="mb-1 text-[#4A4A6A] font-bold">{event.name}</h3>
                           <p className="text-sm text-[#8A8AA8] mb-3">{event.description}</p>
                         </div>
                         <Badge
@@ -611,14 +671,14 @@ export function LocalLoops({
                       </div>
 
                       {/* Event Details */}
-                      <div className="space-y-2 mb-4">
+                      <div className="space-y-2 mb-5">
                         <div className="flex items-center gap-2 text-sm text-[#6A6A88]">
                           <Calendar className="w-4 h-4 text-[#B8B8CC]" />
                           <span>{event.date}</span>
                           <span className="text-[#D0D0E0]">•</span>
                           <span className="text-[#B8B8CC]">{event.duration}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-sm text-[#6A6A88]">
+                        <div className="flex items-center gap-2 text-sm text-[#6A6A88] mb-4">
                           <MapPin className="w-4 h-4 text-[#B8B8CC]" />
                           <span>{event.location}</span>
                           <span className="text-[#D0D0E0]">•</span>
@@ -628,7 +688,7 @@ export function LocalLoops({
                       </div>
 
                       {/* What to Bring */}
-                      <div className="mb-4">
+                      <div className="mb-6">
                         <p className="text-xs text-[#8A8AA8] mb-2">What to bring:</p>
                         <div className="flex flex-wrap gap-1.5">
                           {event.whatToBring.map((item, idx) => (
@@ -647,7 +707,7 @@ export function LocalLoops({
                       </div>
 
                       {/* Attendance - Subtle and Poetic */}
-                      <div className="mb-3">
+                      <div className="mb-4">
                         <div className="flex items-center gap-1.5 text-sm text-[#8A8AA8] mb-3">
                           <UsersIcon className="w-4 h-4 text-[#B8B8CC]" />
                           <span className="italic">
@@ -687,16 +747,24 @@ export function LocalLoops({
                       {/* Footer: hint + join */}
                       <div className="flex items-center justify-between pt-2">
                         <span className="text-xs text-[#B8B8CC] italic">Tap to see details</span>
-                        <button
+                        <motion.button
                           type="button"
+                          data-join-button="true"
                           aria-pressed={isJoined(event.id)}
                           aria-label={isJoined(event.id) ? `Leave ${event.name}` : `Join ${event.name}`}
+                          onPointerDown={(e) => e.stopPropagation()}
                           onClick={(e) => {
                             e.stopPropagation();
-                            if (isJoined(event.id)) leaveLoopLocal(event.id);
-                            else joinLoopLocal({ id: event.id, name: event.name, color: eventColor });
+                            if (isJoined(event.id)) {
+                              if (leaveLoop) leaveLoop(event.id);
+                              else leaveLoopLocal(event.id);
+                            } else {
+                              if (joinLoop) joinLoop({ id: event.id, name: event.name, color: eventColor });
+                              else joinLoopLocal({ id: event.id, name: event.name, color: eventColor });
+                            }
                           }}
-                          className="relative z-20 flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85 hover:scale-[1.04]"
+                          whileTap={{ scale: 0.92 }}
+                          className="relative z-20 flex-shrink-0 px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer transition-all duration-200 hover:opacity-85"
                           style={
                             isJoined(event.id)
                               ? { backgroundColor: eventColor + "25", color: eventColor, border: `1.5px solid ${eventColor}60` }
@@ -704,7 +772,7 @@ export function LocalLoops({
                           }
                         >
                           {isJoined(event.id) ? "Joined ✓" : "Join"}
-                        </button>
+                        </motion.button>
                       </div>
                     </div>
                   </Card>

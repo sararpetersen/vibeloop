@@ -139,6 +139,13 @@ export default function App() {
         }
         console.warn("Cleared invalid onboarding data", e);
       }
+    } else if (localStorage.getItem("vibeloop_guest_session") === "true") {
+      // Guest sessions carry no credentials, but a lightweight local flag lets a reload
+      // resume the same guest session instead of bouncing back to the login screen.
+      setUserName("Guest");
+      setHasOnboarded(true);
+      setNewUserMode(true);
+      setAuthState("authenticated");
     }
 
     // Also try to load a saved profile (display name, bio) if present
@@ -319,11 +326,21 @@ export default function App() {
   };
 
   const handleGuestLogin = () => {
-    // Enter as a guest: clean slate, no credentials, nothing persisted
+    // Enter as a guest: clean slate, no credentials. joinedLoops/followingList are seeded
+    // from localStorage on first render (from a previous session on this browser) — reset
+    // them here so a guest actually starts fresh. A lightweight flag (no personal data) is
+    // saved so reloading the page resumes this guest session instead of returning to login.
     setUserName("Guest");
     setHasOnboarded(true);
     setNewUserMode(true);
+    setJoinedLoops([]);
+    setFollowingList([]);
     setAuthState("authenticated");
+    try {
+      localStorage.setItem("vibeloop_guest_session", "true");
+    } catch (e) {
+      // ignore
+    }
   };
 
   const handleOnboardingComplete = (userData: {
@@ -449,8 +466,9 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] relative">
-      {/* Desktop Sidebar Navigation */}
-      {!showSettings && (
+      {/* Desktop Sidebar Navigation — held back for new/guest users until they've onboarded,
+          same as the rest of the app's newUserMode-gated content */}
+      {!showSettings && !newUserMode && (
         <div className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-white/80 dark:bg-[#1A1A2E]/90 backdrop-blur-xl border-r-2 border-[#E0E8F5] dark:border-[#2A2A4E] z-50 flex-col">
           {/* Logo/Header */}
           <div className="p-6 border-b-2 border-[#E0E8F5]">
@@ -566,7 +584,7 @@ export default function App() {
       )}
 
       {/* Screen Content */}
-      <div className={`h-full relative ${showSettings ? "" : "md:ml-64"}`}>
+      <div className={`h-full relative ${showSettings || newUserMode ? "" : "md:ml-64"}`}>
         <AnimatePresence mode="wait">
           {showSettings ? (
             <Settings
@@ -597,7 +615,14 @@ export default function App() {
                 />
               )}
               {currentScreen === "waves" && (
-                <VibeWaves key="waves" toggleFollow={toggleFollow} joinLoop={joinLoop} leaveLoop={leaveLoop} joinedLoopsProp={joinedLoops} />
+                <VibeWaves
+                  key="waves"
+                  toggleFollow={toggleFollow}
+                  joinLoop={joinLoop}
+                  leaveLoop={leaveLoop}
+                  joinedLoopsProp={joinedLoops}
+                  newUserMode={newUserMode}
+                />
               )}
               {currentScreen === "dreamcatcher" && <DreamCatcher key="dreamcatcher" userName={userName} onSaveDream={handleSaveDream} />}
               {currentScreen === "constellation" && <Constellation key="constellation" />}
@@ -607,8 +632,11 @@ export default function App() {
                   setCurrentScreen={(s: string) => setCurrentScreen(s as Screen)}
                   joinLoop={joinLoop}
                   leaveLoop={leaveLoop}
-                  // show empty joined loops visually for new users until they interact
-                  joinedLoopsProp={newUserMode ? [] : joinedLoops}
+                  // Always reflect real join state here — the Join button needs to update
+                  // the moment someone taps it, in the same session. newUserMode's [] override
+                  // (used elsewhere to show a clean onboarding placeholder) never gets released
+                  // once the user starts interacting, so it can't gate this.
+                  joinedLoopsProp={joinedLoops}
                 />
               )}
               {currentScreen === "profile" && (
@@ -624,7 +652,9 @@ export default function App() {
                 />
               )}
               {!showSettings && (
-                <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t-2 border-[#E0E8F5] z-50">
+                <div
+                  className={`${newUserMode ? "" : "md:hidden"} fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t-2 border-[#E0E8F5] z-50`}
+                >
                   <div className="flex items-center justify-around px-2 py-3">
                     {navItems.map((item) => {
                       const Icon = item.icon;

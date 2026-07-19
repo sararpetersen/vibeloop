@@ -248,9 +248,9 @@ export function Profile({
 
         {/* Dream Orbs — soft atmospheric glow background, gentle pulse */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-3">
+          <div className="flex items-center gap-2 mb-2">
             <Sparkles className="w-5 h-5 text-[#C5A9FF]" />
-            <h4 className="text-[#4A4A6A] font-semibold">My Dream Orbs</h4>
+            <h4 className="text-[#4A4A6A] font-semibold italic">My Dream Orbs</h4>
           </div>
           <div className="relative rounded-3xl overflow-hidden">
             {/* Atmospheric glow — pulses gently, no rotation */}
@@ -323,7 +323,7 @@ export function Profile({
 
         {/* Mood Distribution */}
         <Card className="p-6 rounded-3xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm mb-6">
-          <h4 className="mb-4 text-[#4A4A6A] font-semibold">Your Emotional Palette</h4>
+          <h4 className="mb-4 text-[#4A4A6A] font-semibold italic">Your Emotional Palette</h4>
 
           <div className="space-y-4">
             {moodStats.map((stat) => (
@@ -352,8 +352,8 @@ export function Profile({
         {/* (removed duplicate Dream Orbs block - primary saved-orb UI shown above) */}
 
         {/* Joined Loops */}
-        <div className="mb-6">
-          <h4 className="mb-4 text-[#4A4A6A] font-semibold">Joined Loops</h4>
+        <div className="mb-3">
+          <h4 className="text-[#4A4A6A] font-semibold italic">Joined Loops</h4>
           <div className="space-y-3">
             {(newUserMode ? [] : joinedLoopsState).map((loop, index) => (
               <motion.div
@@ -397,9 +397,9 @@ export function Profile({
 
         {/* Saved Dreams Section */}
         <div className="mb-6">
-          <div className="flex items-center gap-2 mb-4">
+          <div className="flex items-center gap-2 mb-3">
             <Sparkles className="w-5 h-5 text-[#C5A9FF]" />
-            <h4 className="text-[#4A4A6A] font-semibold">Saved Dreams</h4>
+            <h4 className="text-[#4A4A6A] font-semibold italic">Saved Dreams</h4>
           </div>
 
           <Card className="p-6 rounded-3xl border-2 border-[#C5A9FF]/30 bg-white/80 backdrop-blur-sm">

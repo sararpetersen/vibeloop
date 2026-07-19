@@ -55,7 +55,7 @@ const trendingPosts: TrendingPost[] = [
   {
     id: 1,
     author: "Ravi Kumar",
-    content: "sometimes the best therapy is just... existing. no fixing, no forcing. just being.",
+    content: "Sometimes the best therapy is just... existing. no fixing, no forcing. just being.",
     mood: "Calm",
     color: "#A9C7FF",
     resonance: 847,
@@ -64,7 +64,7 @@ const trendingPosts: TrendingPost[] = [
   {
     id: 2,
     author: "Sofia Lund",
-    content: "made art out of my anxiety today. turned the chaos into something beautiful 🎨",
+    content: "made art out of my anxiety today. turned the chaos into something beautiful🎨",
     mood: "Creative",
     color: "#D4A9FF",
     resonance: 623,
@@ -82,7 +82,7 @@ const trendingPosts: TrendingPost[] = [
   {
     id: 4,
     author: "Mei Chen",
-    content: "today i chose myself. small decision, big shift.",
+    content: "Today I chose myself. Small decision, big shift.",
     mood: "Hopeful",
     color: "#FFD4A9",
     resonance: 521,
@@ -149,11 +149,13 @@ export function VibeWaves({
   joinedLoopsProp,
   joinLoop,
   leaveLoop,
+  newUserMode,
 }: {
   toggleFollow?: (name: string) => void;
   joinedLoopsProp?: { id: number; name: string; color: string }[];
   joinLoop?: (loop: { id: number; name: string; color: string }) => void;
   leaveLoop?: (id: number) => void;
+  newUserMode?: boolean;
 }) {
   const [activeTab, setActiveTab] = useState("weather");
   const [isPlaying, setIsPlaying] = useState(true);
@@ -234,10 +236,15 @@ export function VibeWaves({
 
   return (
     <div className="h-screen pb-24 md:pb-8 overflow-y-auto" style={{ backgroundColor: "#F6F8FB" }}>
-      {/* Header */}
+      {/* Header — same max-width as the Tabs section below so they stay aligned on wide screens */}
       <div className="px-6 pt-8 pb-6">
-        <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <h1 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-xl md:text-3xl font-bold">Vibe Waves</h1>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="max-w-3xl mx-auto"
+        >
+          <h1 className="text-[#4A4A6A] mb-1 text-xl md:text-3xl font-bold">Vibe Waves</h1>
           <p className="text-sm text-[#8A8AA8]">feel the pulse of the collective mood</p>
           <div className="mt-3">
             <button onClick={() => setIsPlaying((p) => !p)} className="px-3 py-2 rounded-full bg-white/80 border">
@@ -248,7 +255,7 @@ export function VibeWaves({
       </div>
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="px-6">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="px-6 max-w-3xl mx-auto">
         <TabsList className="w-full mb-6 p-1 rounded-full" style={{ backgroundColor: "#FFFFFF" }}>
           <TabsTrigger
             value="weather"
@@ -275,7 +282,7 @@ export function VibeWaves({
           {/* Emotional Weather Map */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
             <Card className="p-6 rounded-3xl border-0" style={{ backgroundColor: "#FFFFFF" }}>
-              <h3 className="text-[#4A4A6A] mb-4 flex items-center gap-2">
+              <h3 className="text-[#4A4A6A] mb-2 font-bold italic flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" style={{ color: "#C5A9FF" }} />
                 Live Mood Forecast
               </h3>
@@ -333,10 +340,10 @@ export function VibeWaves({
                   <Flame className="w-5 h-5" style={{ color: "#C5A9FF" }} />
                 </div>
                 <div className="flex-1">
-                  <h4 className="text-[#4A4A6A] mb-1">Weekly Insight</h4>
+                  <h4 className="text-[#4A4A6A] font-semibold mb-1">Weekly Insight</h4>
                   <p className="text-sm text-[#6A6A88] leading-relaxed">
-                    Calm vibes are up 12% this week. The collective is finding its center. Creative energy is rising - perfect time for new beginnings
-                    ✨
+                    Calm vibes are up 12% this week. The collective is finding its center. Creative energy is rising – perfect time for new
+                    beginnings✨
                   </p>
                 </div>
               </div>
@@ -348,7 +355,7 @@ export function VibeWaves({
         <TabsContent value="trending" className="space-y-6 mt-0">
           {/* Trending Posts */}
           <div>
-            <h3 className="text-[#6A6A88] mb-4 flex items-center gap-2">
+            <h3 className="text-[#6A6A88] mb-3 flex items-center font-bold italic gap-2">
               <Flame className="w-4 h-4" style={{ color: "#FFA9D4" }} />
               Resonating Right Now
             </h3>
@@ -380,7 +387,7 @@ export function VibeWaves({
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2 mb-1">
-                          <span className="text-sm text-[#6A6A88]">{post.author}</span>
+                          <span className="text-sm text-[#6A6A88] font-semibold">{post.author}</span>
                           <Badge
                             className="px-2 py-0.5 text-xs rounded-full border-0"
                             style={{
@@ -391,7 +398,7 @@ export function VibeWaves({
                             {post.mood}
                           </Badge>
                         </div>
-                        <p className="text-sm text-[#4A4A6A] leading-relaxed mb-3">{post.content}</p>
+                        <p className="text-sm text-[#4A4A6A] leading-relaxed mb-5">{post.content}</p>
                         <div className="flex items-center gap-4 text-xs text-[#B8B8CC]">
                           <div className="flex items-center gap-1">
                             <Heart className="w-3 h-3" />
@@ -409,7 +416,7 @@ export function VibeWaves({
 
           {/* Rising Loops */}
           <div>
-            <h3 className="text-[#6A6A88] mb-4 flex items-center gap-2">
+            <h3 className="text-[#6A6A88] mb-3 flex items-center gap-2 font-bold italic">
               <TrendingUp className="w-4 h-4" style={{ color: "#A9C7FF" }} />
               Rising Communities
             </h3>
@@ -433,7 +440,7 @@ export function VibeWaves({
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between gap-4">
                           <div className="min-w-0">
-                            <h4 className="text-[#4A4A6A] mb-1 truncate">{loop.name}</h4>
+                            <h4 className="text-[#4A4A6A] mb-3 font-semibold truncate">{loop.name}</h4>
                             <p className="text-sm text-[#8A8AA8] line-clamp-2">{loop.activity}</p>
                             <div className="flex items-center gap-2 text-xs text-[#B8B8CC] mt-1">
                               <MapPin className="w-3.5 h-3.5 text-[#B8B8CC]" />
@@ -481,100 +488,106 @@ export function VibeWaves({
         <TabsContent value="twins" className="space-y-6 mt-0">
           <div>
             <div className="mb-4">
-              <h3 className="text-[#6A6A88] mb-2 flex items-center gap-2">
+              <h3 className="text-[#6A6A88] mb-2 font-bold italic flex items-center gap-2">
                 <Users className="w-4 h-4" style={{ color: "#C5A9FF" }} />
                 Your Emotional Resonance
               </h3>
               <p className="text-xs text-[#8A8AA8] italic">souls who feel the same frequencies as you</p>
             </div>
 
-            <div className="space-y-4">
-              {moodTwins.map((twin, index) => (
-                <motion.div key={twin.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
-                  <Card
-                    className="p-5 rounded-3xl border-2 hover:scale-[1.01] transition-transform cursor-pointer relative overflow-hidden"
-                    style={{
-                      borderColor: twin.color + "40",
-                      backgroundColor: "#FFFFFF",
-                    }}
-                  >
-                    {/* Gradient overlay */}
-                    <div
-                      className="absolute top-0 left-0 right-0 h-1 opacity-60"
+            {newUserMode ? (
+              <div className="p-6 rounded-3xl border-2 border-dashed text-center" style={{ borderColor: "#C5A9FF40" }}>
+                <p className="text-sm text-[#8A8AA8] italic">Log a few moods and we'll start finding people who feel the same way you do.</p>
+              </div>
+            ) : (
+              <div className="space-y-4">
+                {moodTwins.map((twin, index) => (
+                  <motion.div key={twin.id} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.1 }}>
+                    <Card
+                      className="p-5 rounded-3xl border-2 hover:scale-[1.01] transition-transform cursor-pointer relative overflow-hidden"
                       style={{
-                        background: `linear-gradient(90deg, ${twin.color}00, ${twin.color}, ${twin.color}00)`,
-                      }}
-                    />
-
-                    <div className="flex items-center gap-4">
-                      <div
-                        className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0"
-                        style={{
-                          backgroundColor: twin.color + "40",
-                          boxShadow: `0 0 20px ${twin.color}30`,
-                        }}
-                      >
-                        <div
-                          className="w-12 h-12 rounded-full flex items-center justify-center"
-                          style={{
-                            backgroundColor: twin.color,
-                          }}
-                        >
-                          <span className="text-white" style={{ fontWeight: 600 }}>
-                            {twin.name.charAt(0)}
-                          </span>
-                        </div>
-                      </div>
-
-                      <div className="flex-1">
-                        <h4 className="text-[#4A4A6A] mb-2">{twin.name}</h4>
-                        <div className="flex flex-wrap gap-1.5 mb-3">
-                          {twin.sharedMoods.map((mood, idx) => (
-                            <Badge
-                              key={idx}
-                              className="px-2 py-0.5 text-xs rounded-full border-0"
-                              style={{
-                                backgroundColor: twin.color + "20",
-                                color: "#6A6A88",
-                              }}
-                            >
-                              {mood}
-                            </Badge>
-                          ))}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <div className="flex-1 h-1.5 bg-[#F6F8FB] rounded-full overflow-hidden">
-                            <div
-                              className="h-full rounded-full"
-                              style={{
-                                width: `${twin.compatibility}%`,
-                                backgroundColor: twin.color,
-                                boxShadow: `0 0 8px ${twin.color}40`,
-                              }}
-                            />
-                          </div>
-                          <span className="text-xs text-[#B8B8CC]">{twin.compatibility}%</span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <Button
-                      className="w-full mt-4 py-2 rounded-full border-0"
-                      style={{
-                        background: `linear-gradient(135deg, ${twin.color}40, ${twin.color}20)`,
-                        color: "#6A6A88",
-                      }}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        toggleFollowLocal(twin.name);
+                        borderColor: twin.color + "40",
+                        backgroundColor: "#FFFFFF",
                       }}
                     >
-                      {getFollowing().includes(twin.name) ? "Connected" : "Connect"}
-                    </Button>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
+                      {/* Gradient overlay */}
+                      <div
+                        className="absolute top-0 left-0 right-0 h-1 opacity-60"
+                        style={{
+                          background: `linear-gradient(90deg, ${twin.color}00, ${twin.color}, ${twin.color}00)`,
+                        }}
+                      />
+
+                      <div className="flex items-center gap-4">
+                        <div
+                          className="w-16 h-16 rounded-full flex items-center justify-center flex-shrink-0"
+                          style={{
+                            backgroundColor: twin.color + "40",
+                            boxShadow: `0 0 20px ${twin.color}30`,
+                          }}
+                        >
+                          <div
+                            className="w-12 h-12 rounded-full flex items-center justify-center"
+                            style={{
+                              backgroundColor: twin.color,
+                            }}
+                          >
+                            <span className="text-white" style={{ fontWeight: 600 }}>
+                              {twin.name.charAt(0)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex-1">
+                          <h4 className="text-[#4A4A6A] mb-2">{twin.name}</h4>
+                          <div className="flex flex-wrap gap-1.5 mb-3">
+                            {twin.sharedMoods.map((mood, idx) => (
+                              <Badge
+                                key={idx}
+                                className="px-2 py-0.5 text-xs rounded-full border-0"
+                                style={{
+                                  backgroundColor: twin.color + "20",
+                                  color: "#6A6A88",
+                                }}
+                              >
+                                {mood}
+                              </Badge>
+                            ))}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <div className="flex-1 h-1.5 bg-[#F6F8FB] rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full"
+                                style={{
+                                  width: `${twin.compatibility}%`,
+                                  backgroundColor: twin.color,
+                                  boxShadow: `0 0 8px ${twin.color}40`,
+                                }}
+                              />
+                            </div>
+                            <span className="text-xs text-[#B8B8CC]">{twin.compatibility}%</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <Button
+                        className="w-full mt-4 py-2 rounded-full border-0"
+                        style={{
+                          background: `linear-gradient(135deg, ${twin.color}40, ${twin.color}20)`,
+                          color: "#6A6A88",
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleFollowLocal(twin.name);
+                        }}
+                      >
+                        {getFollowing().includes(twin.name) ? "Connected" : "Connect"}
+                      </Button>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </div>
         </TabsContent>
       </Tabs>

@@ -156,7 +156,7 @@ export function DreamCatcher({ userName, onSaveDream }: DreamCatcherProps) {
                   <Plus className="w-6 h-6 text-white" />
                 </div>
                 <div>
-                  <h3 className="text-[#4A4A6A] mb-1">Create New Dream</h3>
+                  <h3 className="text-[#4A4A6A] mb-1 italic">Create New Dream</h3>
                   <p className="text-xs text-[#8A8AA8]">Capture a thought, feeling, or moment</p>
                 </div>
               </div>
@@ -166,7 +166,7 @@ export function DreamCatcher({ userName, onSaveDream }: DreamCatcherProps) {
 
         {/* Mood Selection */}
         <div className="mb-6">
-          <label className="block mb-3 text-[#6A6A88]">Choose your vibe</label>
+          <label className="block mb-3 text-[#6A6A88] font-semibold italic">Choose your vibe</label>
           <div className="flex flex-wrap gap-2">
             {MOODS.map((mood) => (
               <Badge

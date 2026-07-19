@@ -1,11 +1,14 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "./ui/sheet";
+import { PopupClose } from "./ui/popup-close";
+import { PopupHeader } from "./ui/popup-header";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
 import { Send, Smile } from "lucide-react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { tint } from "./color-tint";
 
 interface Message {
   id: number;
@@ -27,17 +30,27 @@ interface LoopChatProps {
 // Chat message variations for different loops/events
 const chatMessageSets = {
   "The Creative Collective": [
-    { author: "Ines", text: "Finished something. Staring at it. No idea if it works or if I just need sleep 🎨", timestamp: "4h ago", color: "#D4A9FF" },
+    {
+      author: "Ines",
+      text: "Finished something. Staring at it. No idea if it works or if I just need sleep 🎨",
+      timestamp: "4h ago",
+      color: "#D4A9FF",
+    },
     { author: "Malik", text: "what were you going for?", timestamp: "3h ago", color: "#C5A9FF" },
     { author: "Ines", text: "Honestly no clue. Started as anger and somehow became a landscape.", timestamp: "3h ago", color: "#D4A9FF" },
     {
       author: "Yara",
-      text: "That's the most interesting kind of work — the kind that surprises you mid-process. I've been chasing that feeling with this poem for three weeks.",
+      text: "That's the most interesting kind of work, the kind that surprises you mid-process. I've been chasing that feeling with this poem for three weeks.",
       timestamp: "2h ago",
       color: "#A9C7FF",
     },
     { author: "Jun", text: "yo Yara open mic next time?? please??", timestamp: "1h ago", color: "#FFD4A9" },
-    { author: "Leila", text: "seconded. also just want to say this group keeps me from spiraling. that's all 💜", timestamp: "45m ago", color: "#E0C9D9" },
+    {
+      author: "Leila",
+      text: "seconded. also just want to say this group keeps me from spiraling. that's all 💜",
+      timestamp: "45m ago",
+      color: "#E0C9D9",
+    },
   ],
   "Late Night Walks": [
     { author: "Theo", text: "sky tonight", timestamp: "3h ago", color: "#A9C7FF" },
@@ -54,19 +67,34 @@ const chatMessageSets = {
   ],
   "Dream Journal Club": [
     { author: "Hana", text: "Swimming. Through clouds. Physically swimming. That was my whole night.", timestamp: "5h ago", color: "#C5A9FF" },
-    { author: "Liam", text: "DUUUDE ok so mine: reading a book but every time i looked away the words changed into different words. not bad words just. different", timestamp: "4h ago", color: "#A9C7FF" },
+    {
+      author: "Liam",
+      text: "DUUUDE ok so mine: reading a book but every time i looked away the words changed into different words. not bad words just. different",
+      timestamp: "4h ago",
+      color: "#A9C7FF",
+    },
     {
       author: "Safiya",
       text: "Hana — swimming typically maps to emotional navigation in most frameworks. Moving through something that should be intangible. What were you feeling before sleep?",
       timestamp: "3h ago",
       color: "#D4A9FF",
     },
-    { author: "Anders", text: "I appreciate that we can say 'swimming through clouds' and nobody here laughs.", timestamp: "1h ago", color: "#FFD4A9" },
+    {
+      author: "Anders",
+      text: "I appreciate that we can say 'swimming through clouds' and nobody here laughs.",
+      timestamp: "1h ago",
+      color: "#FFD4A9",
+    },
     { author: "Chiara", text: "cheaper than therapy. more interesting than therapy. fight me", timestamp: "40m ago", color: "#E0C9D9" },
   ],
   "Book & Coffee Meetups": [
     { author: "Jade", text: "Quiet cafe recs? My usual has started playing music and I genuinely cannot.", timestamp: "4h ago", color: "#E0C9D9" },
-    { author: "Dmitri", text: "Jægersborggade — the one with the green sign. Silent hours 1–5, non-negotiable rule. It's perfect.", timestamp: "3h ago", color: "#C5A9FF" },
+    {
+      author: "Dmitri",
+      text: "Jægersborggade, the one with the green sign. Silent hours 1-5, non-negotiable rule. It's perfect.",
+      timestamp: "3h ago",
+      color: "#C5A9FF",
+    },
     {
       author: "Amina",
       text: "currently reading something about slow living and having a full moment about how fast I normally move. we don't talk about that enough",
@@ -74,24 +102,34 @@ const chatMessageSets = {
       color: "#D4A9FF",
     },
     { author: "Felix", text: "title?", timestamp: "1h ago", color: "#A9C7FF" },
-    { author: "Amina", text: "Will send after I finish. Don't want to oversell it before I know how it ends.", timestamp: "55m ago", color: "#D4A9FF" },
+    {
+      author: "Amina",
+      text: "Will send after I finish. Don't want to oversell it before I know how it ends.",
+      timestamp: "55m ago",
+      color: "#D4A9FF",
+    },
     { author: "Suki", text: "next silent session i'm bringing the chamomile situation ☕ see you all there", timestamp: "45m ago", color: "#FFD4A9" },
   ],
   "Astronomy Club": [
     { author: "Tariq", text: "black hole documentary. couldn't sleep. infinity is genuinely too much", timestamp: "4h ago", color: "#C5A9FF" },
     {
       author: "Mira",
-      text: "Infinity is the only concept that actually frightens me — not in a bad way, more like standing at the edge of something. We are stardust, we will return to stardust. That's not nothing.",
+      text: "Infinity is the only concept that actually frightens me – not in a bad way, more like standing at the edge of something. We are stardust, we will return to stardust. That's not nothing.",
       timestamp: "3h ago",
       color: "#A9C7FF",
     },
     { author: "Oskar", text: "existentialism but make it 10pm and cozy. that's this group", timestamp: "2h ago", color: "#D4A9FF" },
-    { author: "Nia", text: "We manage to be genuinely into the science and not annoying about it, and I think that's actually rare.", timestamp: "1h ago", color: "#E0C9D9" },
-    { author: "Kenji", text: "friday. telescope. saturn. be there 🪐", timestamp: "30m ago", color: "#FFD4A9" },
+    {
+      author: "Nia",
+      text: "We manage to be genuinely into the science and not annoying about it, and I think that's actually rare.",
+      timestamp: "1h ago",
+      color: "#E0C9D9",
+    },
+    { author: "Kenji", text: "friday. telescope. saturn. be there🪐", timestamp: "30m ago", color: "#FFD4A9" },
   ],
   "The Support Circle": [
     { author: "Kiera", text: "Rough day. Not looking for solutions. Just needed somewhere to put it.", timestamp: "3h ago", color: "#E0C9D9" },
-    { author: "Hassan", text: "It's here. You're allowed 💛", timestamp: "2h ago", color: "#C5A9FF" },
+    { author: "Hassan", text: "It's here. You're allowed💛", timestamp: "2h ago", color: "#C5A9FF" },
     {
       author: "Luna",
       text: "Healing isn't a straight line and I think we all know that intellectually but it still catches me off guard when I have a bad day after several good ones.",
@@ -99,7 +137,12 @@ const chatMessageSets = {
       color: "#D4A9FF",
     },
     { author: "Elias", text: "Yes. That. Exactly that.", timestamp: "50m ago", color: "#A9C7FF" },
-    { author: "Zainab", text: "Art therapy tomorrow if anyone wants to process through making things rather than words — both are valid.", timestamp: "25m ago", color: "#FFD4A9" },
+    {
+      author: "Zainab",
+      text: "Art therapy tomorrow if anyone wants to process through making things rather than words — both are valid.",
+      timestamp: "25m ago",
+      color: "#FFD4A9",
+    },
   ],
   "Quiet Tea Night": [
     { author: "Rowan", text: "First time tonight. What do I actually... do?", timestamp: "2h ago", color: "#A9C7FF" },
@@ -114,45 +157,80 @@ const chatMessageSets = {
     { author: "Mateo", text: "8pm ☕ see u there", timestamp: "30m ago", color: "#D4A9FF" },
   ],
   "Art & Coffee Session": [
-    { author: "Tala", text: "NEVER painted before. Terrified. Coming anyway 🫠", timestamp: "3h ago", color: "#D4A9FF" },
-    { author: "Noah", text: "Zero experience required, open mind sufficient ✨ You'll be fine.", timestamp: "2h ago", color: "#C5A9FF" },
-    { author: "Kaia", text: "last time i painted what i thought was a sunset. it looked like a fire in a parking lot. 10/10 would do again", timestamp: "1h ago", color: "#FFD4A9" },
-    { author: "Silas", text: "Bringing speaker + ambient playlist. Open to requests as long as the request is 'yes that's fine'.", timestamp: "45m ago", color: "#A9C7FF" },
+    { author: "Tala", text: "NEVER painted before. Terrified. Coming anyway🫠", timestamp: "3h ago", color: "#D4A9FF" },
+    { author: "Noah", text: "Zero experience required, open mind sufficient✨ You'll be fine.", timestamp: "2h ago", color: "#C5A9FF" },
+    {
+      author: "Kaia",
+      text: "last time i painted what i thought was a sunset. it looked like a fire in a parking lot. 10/10 would do again",
+      timestamp: "1h ago",
+      color: "#FFD4A9",
+    },
+    {
+      author: "Silas",
+      text: "Bringing speaker + ambient playlist. Open to requests as long as the request is 'yes that's fine'.",
+      timestamp: "45m ago",
+      color: "#A9C7FF",
+    },
   ],
   "Midnight Walk": [
     { author: "Aria", text: "Friday midnight walk. Already counting down.", timestamp: "4h ago", color: "#C5A9FF" },
-    { author: "Javier", text: "Routing through the quiet side streets, probably stopping at the 24h place for something warm. Thoughts?", timestamp: "3h ago", color: "#A9C7FF" },
+    {
+      author: "Javier",
+      text: "Routing through the quiet side streets, probably stopping at the 24h place for something warm. Thoughts?",
+      timestamp: "3h ago",
+      color: "#A9C7FF",
+    },
     {
       author: "Mei",
       text: "Bring your journals. Last time the conversations under the streetlights were genuinely the best part of my week and I still think about it.",
       timestamp: "2h ago",
       color: "#D4A9FF",
     },
-    { author: "Finn", text: "Night walks do something to the brain. Everything gets quieter and somehow more true.", timestamp: "1h ago", color: "#E0C9D9" },
+    {
+      author: "Finn",
+      text: "Night walks do something to the brain. Everything gets quieter and somehow more true.",
+      timestamp: "1h ago",
+      color: "#E0C9D9",
+    },
   ],
   "Sunrise Movement": [
-    { author: "Zara", text: "6am saturday. voluntarily. who are we 🌅", timestamp: "3h ago", color: "#FFD4A9" },
-    { author: "Akira", text: "WORTHWHILE EVERY TIME. The energy afterwards carries me literally all day. I've tried to explain it to non-morning people and cannot.", timestamp: "2h ago", color: "#D4A9FF" },
-    { author: "Layla", text: "Bringing spare mats — just say if you need one.", timestamp: "1h ago", color: "#A9C7FF" },
+    { author: "Zara", text: "6am saturday. voluntarily. who are we🌅", timestamp: "3h ago", color: "#FFD4A9" },
+    {
+      author: "Akira",
+      text: "WORTHWHILE EVERY TIME. The energy afterwards carries me literally all day. I've tried to explain it to non-morning people and cannot.",
+      timestamp: "2h ago",
+      color: "#D4A9FF",
+    },
+    { author: "Layla", text: "Bringing spare mats. Just say if you need one!", timestamp: "1h ago", color: "#A9C7FF" },
     { author: "Omar", text: "Sets the tone for the whole week, honestly. See you all out there.", timestamp: "45m ago", color: "#C5A9FF" },
   ],
   "Journaling Session": [
-    { author: "Yasmin", text: "Been writing every day this week. Have a lot. Maybe too much. See you tomorrow.", timestamp: "4h ago", color: "#E0C9D9" },
-    { author: "Luca", text: "No pressure to share any of it — just write what comes, that's enough.", timestamp: "3h ago", color: "#C5A9FF" },
+    {
+      author: "Yasmin",
+      text: "Been writing every day this week. Have a lot. Maybe too much. See you tomorrow.",
+      timestamp: "4h ago",
+      color: "#E0C9D9",
+    },
+    { author: "Luca", text: "No pressure to share any of it. Just write what comes, that's enough.", timestamp: "3h ago", color: "#C5A9FF" },
     {
       author: "Priya",
       text: "Writing has genuinely taught me things about myself that years of thinking hadn't. There's something about having to form a complete sentence.",
       timestamp: "2h ago",
       color: "#D4A9FF",
     },
-    { author: "Anton", text: "tea situation handled. cozy levels: maximum. see you all there", timestamp: "1h ago", color: "#A9C7FF" },
+    { author: "Anton", text: "tea situation handled. cozy levels: maximum. see ya all there", timestamp: "1h ago", color: "#A9C7FF" },
   ],
   "Stargazing Night": [
-    { author: "Nisha", text: "Checked. Wednesday is clear. We're on 🌌", timestamp: "5h ago", color: "#C5A9FF" },
-    { author: "Diego", text: "Bringing the star map app so we can actually name what we're looking at instead of just pointing.", timestamp: "4h ago", color: "#A9C7FF" },
+    { author: "Nisha", text: "Checked. Wednesday is clear. We're on🌌", timestamp: "5h ago", color: "#C5A9FF" },
+    {
+      author: "Diego",
+      text: "Bringing the star map app so we can actually name what we're looking at instead of just pointing.",
+      timestamp: "4h ago",
+      color: "#A9C7FF",
+    },
     {
       author: "Aaliyah",
-      text: "Last time a shooting star went right across our field of view and everyone just went quiet. Hoping for that again ✨",
+      text: "Last time a shooting star went right across our field of view and everyone just went quiet. Hoping for that again✨",
       timestamp: "2h ago",
       color: "#D4A9FF",
     },
@@ -174,14 +252,14 @@ const generateMockMessages = (loopName: string, type: "community" | "event"): Me
   const fallbackMessages =
     type === "event"
       ? [
-          { author: "Nora", text: "first time here 🦋 a little nervous but mostly excited", timestamp: "2h ago", color: "#A9C7FF" },
-          { author: "Felix", text: "you'll be fine — just come as you are", timestamp: "1h ago", color: "#C5A9FF" },
-          { author: "Sofia", text: "see everyone there!", timestamp: "30m ago", color: "#E0C9D9" },
+          { author: "Nora", text: "first time here🦋 a little nervous but mostly excited", timestamp: "2h ago", color: "#A9C7FF" },
+          { author: "Felix", text: "You'll be fine, just come as you are", timestamp: "1h ago", color: "#C5A9FF" },
+          { author: "Sofia", text: "See everyone there!", timestamp: "30m ago", color: "#E0C9D9" },
         ]
       : [
           { author: "Hana", text: "needed this today", timestamp: "3h ago", color: "#C5A9FF" },
           { author: "Liam", text: "same. something about knowing other people feel things too", timestamp: "2h ago", color: "#A9C7FF" },
-          { author: "Amara", text: "that's exactly it 💫", timestamp: "1h ago", color: "#E0C9D9" },
+          { author: "Amara", text: "That's exactly it💫", timestamp: "1h ago", color: "#E0C9D9" },
         ];
 
   return fallbackMessages.map((msg, index) => ({ id: index + 1, ...msg }));
@@ -214,7 +292,7 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
     }
   }, [messages]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSend();
@@ -225,33 +303,36 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[85vh] rounded-t-3xl border-0 p-0 overflow-hidden"
-        style={{ background: "linear-gradient(to bottom, #F6F8FB, #FAFBFD)" }}
+        showClose={false}
+        className="h-[85vh] rounded-t-3xl border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5]"
       >
-        {/* Inner flex column — owns the layout independently of SheetContent's built-in styles */}
-        <div className="flex flex-col h-full">
-          {/* Header */}
-          <div
-            className="flex-shrink-0 px-6 pt-6 pb-4 border-b border-[#E0E8F5]"
-            style={{ background: "linear-gradient(to bottom, #F6F8FBEE, #FAFBFDEE)", backdropFilter: "blur(12px)" }}
-          >
-            <div className="flex items-center gap-3">
+        <VisuallyHidden>
+          <SheetTitle>{loopName}</SheetTitle>
+          <SheetDescription>{type === "community" ? "Community chat" : "Event chat"}</SheetDescription>
+        </VisuallyHidden>
+        <PopupClose onClose={onClose} />
+
+        {/* Inner flex column — clips the header's background to the sheet's rounded corners; PopupClose stays outside this so it can float above the edge */}
+        <div className="flex flex-col h-full rounded-t-3xl overflow-hidden">
+          <PopupHeader
+            leading={
               <div
-                className="w-10 h-10 rounded-2xl flex items-center justify-center"
-                style={{ background: `linear-gradient(135deg, ${loopColor}40, ${loopColor}20)`, boxShadow: `0 0 20px ${loopColor}30` }}
+                className="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0"
+                style={{
+                  background: `linear-gradient(135deg, ${tint(loopColor, "border")}, ${tint(loopColor, "subtle")})`,
+                  boxShadow: `0 0 20px ${tint(loopColor, "medium")}`,
+                }}
               >
                 <div className="w-3 h-3 rounded-full" style={{ backgroundColor: loopColor }} />
               </div>
-              <div className="flex-1">
-                <SheetTitle className="text-[#4A4A6A] text-left">{loopName}</SheetTitle>
-                <SheetDescription className="text-sm text-[#8A8AA8] mt-0.5">{type === "community" ? "Community chat" : "Event chat"}</SheetDescription>
-              </div>
-            </div>
-          </div>
+            }
+            title={loopName}
+            subtitle={type === "community" ? "Community chat" : "Event chat"}
+          />
 
           {/* Messages — fills remaining space */}
-          <ScrollArea className="flex-1 min-h-0 px-6 py-4">
-            <div ref={messagesRef} className="space-y-4 pb-2">
+          <ScrollArea className="flex-1 px-6 py-4" style={{ minHeight: 0 }}>
+            <div ref={messagesRef} className="space-y-4 pb-2" role="log" aria-live="polite" aria-label={`${loopName} chat messages`}>
               {messages.map((message, index) => (
                 <motion.div
                   key={message.id}
@@ -261,18 +342,18 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
                   className={`flex ${message.isOwn ? "justify-end" : "justify-start"}`}
                 >
                   <div className={`max-w-[80%] ${message.isOwn ? "items-end" : "items-start"} flex flex-col gap-1`}>
-                    {!message.isOwn && <span className="text-xs text-[#B8B8CC] px-3">{message.author}</span>}
+                    {!message.isOwn && <span className="text-xs text-[#6A6A88] px-3">{message.author}</span>}
                     <div
                       className="px-4 py-3 rounded-3xl backdrop-blur-sm"
                       style={{
-                        backgroundColor: message.isOwn ? `${loopColor}30` : "rgba(255,255,255,0.8)",
-                        border: message.isOwn ? `1px solid ${loopColor}40` : "1px solid #E0E8F5",
-                        boxShadow: message.isOwn ? `0 4px 16px ${loopColor}20` : "0 2px 8px rgba(0,0,0,0.04)",
+                        backgroundColor: message.isOwn ? tint(loopColor, "strong") : "rgba(255,255,255,0.95)",
+                        border: message.isOwn ? `1px solid ${tint(loopColor, "borderStrong")}` : "1px solid #E0E8F5",
+                        boxShadow: message.isOwn ? `0 4px 16px ${tint(loopColor, "soft")}` : "0 2px 8px rgba(0,0,0,0.06)",
                       }}
                     >
-                      <p className="text-[#4A4A6A] leading-relaxed">{message.text}</p>
+                      <p className="text-[#3A3A56] leading-relaxed">{message.text}</p>
                     </div>
-                    <span className="text-xs text-[#D0D0E0] px-3">{message.timestamp}</span>
+                    <span className="text-xs text-[#8A8AA8] px-3">{message.timestamp}</span>
                   </div>
                 </motion.div>
               ))}
@@ -286,34 +367,40 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
           >
             <div className="flex gap-2 items-end">
               <div className="flex-1 relative">
+                <VisuallyHidden>
+                  <label htmlFor="loop-chat-message-input">Message {loopName}</label>
+                </VisuallyHidden>
                 <Input
+                  id="loop-chat-message-input"
                   value={newMessage}
                   onChange={(e) => setNewMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
+                  onKeyDown={handleKeyDown}
                   placeholder="Share what's on your mind..."
-                  className="pr-12 py-6 rounded-full bg-white/80 border-2 text-[#4A4A6A] placeholder:text-[#B8B8CC] resize-none"
-                  style={{ borderColor: `${loopColor}30` }}
+                  className="pr-12 py-6 rounded-full bg-white/80 border-2 text-[#4A4A6A] placeholder:text-[#8A8AA8] resize-none"
+                  style={{ borderColor: tint(loopColor, "medium") }}
                 />
                 <button
+                  type="button"
                   className="absolute right-4 top-1/2 -translate-y-1/2 opacity-60 hover:opacity-100 transition-opacity cursor-pointer"
                   onClick={() => setNewMessage((prev) => `${prev} 😊`)}
                   aria-label="Add emoji"
                 >
-                  <Smile className="w-5 h-5 text-[#B8B8CC]" />
+                  <Smile className="w-5 h-5 text-[#6A6A88]" aria-hidden="true" />
                 </button>
               </div>
               <Button
                 onClick={handleSend}
                 disabled={!newMessage.trim()}
+                aria-label="Send message"
                 className="h-12 w-12 rounded-full p-0 border-0 transition-all duration-300 disabled:opacity-40 cursor-pointer"
                 style={{
                   background: newMessage.trim()
                     ? `linear-gradient(135deg, ${loopColor}EE, ${loopColor}AA)`
                     : "linear-gradient(135deg, #E0E0EA, #D0D0E0)",
-                  boxShadow: newMessage.trim() ? `0 4px 16px ${loopColor}40` : "none",
+                  boxShadow: newMessage.trim() ? `0 4px 16px ${tint(loopColor, "border")}` : "none",
                 }}
               >
-                <Send className="w-5 h-5 text-white" />
+                <Send className="w-5 h-5 text-white" aria-hidden="true" />
               </Button>
             </div>
             <p className="text-xs text-[#B8B8CC] mt-3 text-center italic">This is a safe space. Be gentle with yourself and others.</p>

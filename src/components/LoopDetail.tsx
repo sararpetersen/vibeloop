@@ -1,11 +1,14 @@
 import { motion } from "motion/react";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "./ui/sheet";
+import { PopupClose } from "./ui/popup-close";
+import { PopupHeader } from "./ui/popup-header";
 import { Badge } from "./ui/badge";
 import { Card } from "./ui/card";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import { X, MapPin, Users as UsersIcon, MessageCircle, Calendar, Sparkles, TrendingUp } from "lucide-react";
+import { MapPin, Users as UsersIcon, MessageCircle, Calendar, TrendingUp } from "lucide-react";
 import { useState, useEffect } from "react";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { tint } from "./color-tint";
 
 interface LoopDetailProps {
   isOpen: boolean;
@@ -325,49 +328,48 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent
         side="bottom"
-        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] [&>button]:!top-5 [&>button]:!right-5 [&>button]:!rounded-full [&>button]:!p-0 [&>button]:!opacity-100 [&>button]:!bg-white [&>button]:hover:!bg-[#F0ECFA] [&>button]:hover:!scale-110 [&>button]:!w-12 [&>button]:!h-12 [&>button]:!flex [&>button]:!items-center [&>button]:!justify-center [&>button]:!shadow-md [&>button]:!transition-all [&>button]:!duration-200 [&>button]:!cursor-pointer [&>button_svg]:!w-5 [&>button_svg]:!h-5"
+        showClose={false}
+        className="h-[90vh] rounded-t-[2rem] border-0 p-0 bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5]"
       >
         <VisuallyHidden>
           <SheetTitle>{loop.name}</SheetTitle>
           <SheetDescription>{loop.description}</SheetDescription>
         </VisuallyHidden>
+        <PopupClose onClose={onClose} />
 
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
-          className="h-full overflow-auto"
+          className="h-full overflow-auto rounded-t-[2rem]"
         >
-          {/* Header — scrolls with content, no floating box */}
-          <div className="px-6 pt-6 pb-4 pr-14">
-            <div className="flex items-center gap-3">
+          <PopupHeader
+            leading={
               <div
                 className="w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0"
                 style={{
-                  backgroundColor: loop.color + "30",
-                  boxShadow: `0 0 20px ${loop.color}20`,
+                  backgroundColor: tint(loop.color, "medium"),
+                  boxShadow: `0 0 20px ${tint(loop.color, "subtle")}`,
                 }}
               >
                 <IconComponent className="w-6 h-6" style={{ color: loop.color }} />
               </div>
-              <div>
-                <h2 className="text-[#4A4A6A]">{loop.name}</h2>
-                <p className="text-sm text-[#8A8AA8]">{loop.location}</p>
-              </div>
-            </div>
-          </div>
+            }
+            title={loop.name}
+            subtitle={loop.location}
+          />
 
           {/* Content */}
           <div className="px-6 pb-6 space-y-6">
             {/* Description */}
             <div>
-              <p className="text-[#6A6A88] leading-relaxed mb-4">{loop.description}</p>
+              <p className="text-[#6A6A88] leading-relaxed mt-4 mb-6">{loop.description}</p>
               <div className="flex flex-wrap gap-2">
                 <Badge
                   className="px-3 py-1 rounded-full border-0"
                   style={{
-                    backgroundColor: loop.color + "30",
+                    backgroundColor: tint(loop.color, "medium"),
                     color: "#6A6A88",
                   }}
                 >
@@ -397,14 +399,14 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
 
             {/* Activities */}
             <div>
-              <h3 className="text-[#4A4A6A] mb-3">What we do</h3>
+              <h3 className="text-[#4A4A6A] font-bold italic mb-3">What we do</h3>
               <div className="flex flex-wrap gap-2">
                 {loop.activities.map((activity, idx) => (
                   <Badge
                     key={idx}
                     className="px-3 py-2 rounded-full border-0"
                     style={{
-                      backgroundColor: loop.color + "20",
+                      backgroundColor: tint(loop.color, "subtle"),
                       color: "#6A6A88",
                     }}
                   >
@@ -417,7 +419,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
             {/* Recent Members */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[#4A4A6A]">Recent members</h3>
+                <h3 className="text-[#4A4A6A] font-bold italic">Recent members</h3>
                 {recentMembersState.length > 0 && <span className="text-sm text-[#8A8AA8]">{recentMembersState.length}</span>}
               </div>
               <div className={recentMembersState.length >= 2 ? "grid grid-cols-2 gap-2" : "space-y-2"}>
@@ -429,8 +431,8 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                       <Card className="p-3 rounded-2xl border-2 border-[#E0E8F5] bg-white/80 backdrop-blur-sm">
                         <div className="flex flex-col gap-2 text-center">
                           <div className="flex justify-center">
-                            <Avatar className="w-10 h-10 border-2" style={{ borderColor: member.color + "60" }}>
-                              <AvatarFallback className="text-xs" style={{ backgroundColor: member.color + "30", color: "#4A4A6A" }}>
+                            <Avatar className="w-10 h-10 border-2" style={{ borderColor: tint(member.color, "borderStrong") }}>
+                              <AvatarFallback className="text-xs" style={{ backgroundColor: tint(member.color, "medium"), color: "#4A4A6A" }}>
                                 {member.initial}
                               </AvatarFallback>
                             </Avatar>
@@ -452,8 +454,12 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                                 display: "inline-block",
                                 padding: "4px 20px",
                                 ...(following.includes(member.id)
-                                  ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
-                                  : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 6px ${loop.color}30` }),
+                                  ? {
+                                      backgroundColor: tint(loop.color, "subtle"),
+                                      color: loop.color,
+                                      border: `1.5px solid ${tint(loop.color, "glow")}`,
+                                    }
+                                  : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 6px ${tint(loop.color, "medium")}` }),
                               }}
                             >
                               {following.includes(member.id) ? "Following ✓" : "Follow"}
@@ -469,7 +475,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
             {/* Upcoming Events */}
             <div>
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-[#4A4A6A]">Upcoming gatherings</h3>
+                <h3 className="text-[#4A4A6A] font-bold italic">Upcoming gatherings</h3>
                 {upcomingEventsState.length > 0 && <span className="text-sm text-[#8A8AA8]">{upcomingEventsState.length}</span>}
               </div>
               <div className="space-y-3">
@@ -481,19 +487,19 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                       <Card
                         className="p-4 rounded-2xl border-2 bg-white/80 backdrop-blur-sm"
                         style={{
-                          borderColor: loop.color + "30",
+                          borderColor: tint(loop.color, "medium"),
                         }}
                       >
-                        <div className="flex items-start justify-between mb-1.5">
-                          <div className="text-sm font-medium text-[#4A4A6A] flex-1 pr-2">{event.name}</div>
+                        <div className="flex items-start">
+                          <div className="text-base font-medium text-[#4A4A6A] flex-1 pr-2 mb-1">{event.name}</div>
                           <Badge
                             className="px-2 py-0.5 text-xs rounded-full border-0 flex-shrink-0"
-                            style={{ backgroundColor: loop.color + "20", color: "#6A6A88" }}
+                            style={{ backgroundColor: tint(loop.color, "subtle"), color: "#6A6A88" }}
                           >
                             {event.attendees} going
                           </Badge>
                         </div>
-                        {event.description && <p className="text-xs text-[#8A8AA8] mb-1.5 leading-snug">{event.description}</p>}
+                        {event.description && <p className="text-xs text-[#8A8AA8] mb-4 leading-snug">{event.description}</p>}
                         {event.location && (
                           <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC] mb-1.5">
                             <MapPin className="w-3 h-3 flex-shrink-0" />
@@ -501,7 +507,7 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                           </div>
                         )}
                         {/* Date + RSVP always in the same row */}
-                        <div className="flex items-center justify-between mt-0.5">
+                        <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1.5 text-xs text-[#B8B8CC]">
                             <Calendar className="w-3.5 h-3.5 flex-shrink-0" />
                             <span>{event.date}</span>
@@ -516,8 +522,12 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                             className="px-4 py-1.5 rounded-full text-xs font-medium cursor-pointer"
                             style={
                               rsvpedEvents.includes(event.id)
-                                ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}50` }
-                                : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 8px ${loop.color}40` }
+                                ? {
+                                    backgroundColor: tint(loop.color, "subtle"),
+                                    color: loop.color,
+                                    border: `1.5px solid ${tint(loop.color, "glow")}`,
+                                  }
+                                : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 2px 8px ${tint(loop.color, "border")}` }
                             }
                           >
                             {rsvpedEvents.includes(event.id) ? "Going ✓" : "RSVP"}
@@ -535,11 +545,11 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
             <div className="flex gap-3">
               <motion.button
                 onClick={onOpenChat}
-                whileHover={{ scale: 1.08, boxShadow: `0 4px 18px ${loop.color}50` }}
+                whileHover={{ scale: 1.08, boxShadow: `0 4px 18px ${tint(loop.color, "glow")}` }}
                 whileTap={{ scale: 0.95 }}
                 className="flex-shrink-0 w-14 h-14 rounded-full flex items-center justify-center cursor-pointer transition-colors duration-300"
                 style={{
-                  background: `linear-gradient(135deg, ${loop.color}50, ${loop.color}25)`,
+                  background: `linear-gradient(135deg, ${tint(loop.color, "glow")}, ${tint(loop.color, "soft")})`,
                   color: loop.color,
                 }}
               >
@@ -558,8 +568,8 @@ export function LoopDetail({ isOpen, onClose, loop, onOpenChat }: LoopDetailProp
                 className="flex-1 rounded-full py-3.5 font-medium text-sm cursor-pointer transition-all duration-300 hover:opacity-90 hover:scale-[1.01]"
                 style={
                   hasJoined
-                    ? { backgroundColor: loop.color + "20", color: loop.color, border: `1.5px solid ${loop.color}60` }
-                    : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 4px 16px ${loop.color}50` }
+                    ? { backgroundColor: tint(loop.color, "subtle"), color: loop.color, border: `1.5px solid ${tint(loop.color, "borderStrong")}` }
+                    : { backgroundColor: loop.color, color: "#fff", boxShadow: `0 4px 16px ${tint(loop.color, "glow")}` }
                 }
               >
                 {hasJoined ? "Joined ✓" : "Join Loop"}

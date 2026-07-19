@@ -17,7 +17,6 @@ interface ScreenProps {
 }
 
 // Edit Profile Screen
-// Edit Profile Screen
 export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
   const [name, setName] = useState(userName);
   const [username, setUsername] = useState("@dreamweaver");
@@ -75,7 +74,7 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
         name,
         username,
         bio,
-      })
+      }),
     );
 
     // Save avatar if set
@@ -134,7 +133,7 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Edit Profile</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Edit Profile</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">Update your information</p>
 
         {/* Profile Picture */}
@@ -157,7 +156,7 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
             </button>
 
             <div className="flex-1">
-              <h3 className="text-[#4A4A6A]">Profile Photo</h3>
+              <h3 className="text-[16px] text-[#4A4A6A] font-bold italic">Profile Photo</h3>
               <p className="text-[#8A8AA8] text-sm">Click to change</p>
             </div>
           </div>
@@ -169,12 +168,12 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
         {/* Form Fields */}
         <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
           <div>
-            <label className="text-[#6A6A88] mb-2 block">Display Name</label>
+            <label className="text-[15px] text-[#6A6A88] mb-1 block font-semibold">Display Name</label>
             <Input value={name} onChange={(e) => setName(e.target.value)} className="bg-white/80 border-2 border-white/60 focus:border-[#C5A9FF]" />
           </div>
 
           <div>
-            <label className="text-[#6A6A88] mb-2 block">Username</label>
+            <label className="text-[15px] text-[#6A6A88] mb-1 block font-semibold">Username</label>
             <Input
               value={username}
               onChange={(e) => setUsername(e.target.value)}
@@ -183,7 +182,7 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
           </div>
 
           <div>
-            <label className="text-[#6A6A88] mb-2 block">Bio</label>
+            <label className="text-[15px] text-[#6A6A88] mb-1 block font-semibold">Bio</label>
             <Textarea
               value={bio}
               onChange={(e) => setBio(e.target.value)}
@@ -229,13 +228,13 @@ export function PrivacySettings({ onBack }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Privacy</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Privacy</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">Control who sees your vibes</p>
 
-        <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
+        <Card className="p-6 mb-8 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Show Activity Status</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Show Activity Status</h3>
               <p className="text-[#8A8AA8] text-sm">Let others see when you're online</p>
             </div>
             <Switch checked={showActivity} onCheckedChange={setShowActivity} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -245,14 +244,14 @@ export function PrivacySettings({ onBack }: ScreenProps) {
 
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Allow Messages</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Allow Messages</h3>
               <p className="text-[#8A8AA8] text-sm">Let others send you direct messages</p>
             </div>
             <Switch checked={allowMessages} onCheckedChange={setAllowMessages} className="data-[state=checked]:bg-[#C5A9FF]" />
           </div>
         </Card>
 
-        <h3 className="text-[#6A6A88] mb-3">Profile Visibility</h3>
+        <h3 className="text-[#6A6A88] mb-3 font-bold italic">Profile Visibility</h3>
         <Card className="p-4 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
           {["public", "followers", "private"].map((option) => (
             <div key={option}>
@@ -261,7 +260,7 @@ export function PrivacySettings({ onBack }: ScreenProps) {
                 className="w-full p-4 flex items-center justify-between hover:bg-white/30 transition-colors rounded-lg"
               >
                 <div className="text-left">
-                  <h3 className="text-[#4A4A6A] capitalize">{option}</h3>
+                  <h3 className="text-[#4A4A6A] capitalize font-semibold">{option}</h3>
                   <p className="text-[#8A8AA8] text-sm">
                     {option === "public" && "Everyone can see your profile"}
                     {option === "followers" && "Only followers can see your profile"}
@@ -305,7 +304,7 @@ export function BlockedUsers({ onBack }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Blocked Users</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Blocked Users</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">
           {blockedUsers.length} user{blockedUsers.length !== 1 && "s"} blocked
         </p>
@@ -320,7 +319,7 @@ export function BlockedUsers({ onBack }: ScreenProps) {
               <div key={user.id}>
                 <div className="p-4 flex items-center justify-between">
                   <div>
-                    <h3 className="text-[#4A4A6A]">{user.name}</h3>
+                    <h3 className="text-[#4A4A6A] font-semibold">{user.name}</h3>
                     <p className="text-[#8A8AA8] text-sm">{user.username}</p>
                   </div>
                   <Button variant="outline" className="border-2 border-red-200 text-red-400 hover:bg-red-50">
@@ -414,7 +413,7 @@ export function MoodPreferences({ onBack }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Mood Preferences</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Mood Preferences</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">Select your favorite moods</p>
 
         <div className="grid grid-cols-2 gap-4 mb-6">
@@ -434,7 +433,7 @@ export function MoodPreferences({ onBack }: ScreenProps) {
                 aria-pressed={isSelected}
               >
                 <div className="text-4xl mb-2">{mood.emoji}</div>
-                <h3 className="text-[#4A4A6A]">{mood.name}</h3>
+                <h3 className="text-[#4A4A6A] font-semibold">{mood.name}</h3>
               </motion.button>
             );
           })}
@@ -470,7 +469,7 @@ export function GenericSettingsScreen({ onBack, title, description }: { onBack: 
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">{title}</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">{title}</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">{description}</p>
 
         <Card className="p-8 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl text-center">
@@ -503,15 +502,15 @@ export function SecuritySettings({ onBack }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Security</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Security</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">Keep your account safe</p>
 
         {/* Authentication Settings */}
-        <h3 className="text-[#6A6A88] mb-3">Authentication</h3>
-        <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
+        <h3 className="text-[#6A6A88] mb-3 font-bold italic">Authentication</h3>
+        <Card className="p-6 mb-8 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Two-Factor Authentication</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Two-Factor Authentication</h3>
               <p className="text-[#8A8AA8] text-sm">Extra security for your account</p>
             </div>
             <Switch checked={twoFactorEnabled} onCheckedChange={setTwoFactorEnabled} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -521,7 +520,7 @@ export function SecuritySettings({ onBack }: ScreenProps) {
 
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Biometric Login</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Biometric Login</h3>
               <p className="text-[#8A8AA8] text-sm">Use fingerprint or face ID</p>
             </div>
             <Switch checked={biometricEnabled} onCheckedChange={setBiometricEnabled} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -531,7 +530,7 @@ export function SecuritySettings({ onBack }: ScreenProps) {
 
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Login Alerts</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Login Alerts</h3>
               <p className="text-[#8A8AA8] text-sm">Get notified of new logins</p>
             </div>
             <Switch checked={loginAlerts} onCheckedChange={setLoginAlerts} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -539,10 +538,10 @@ export function SecuritySettings({ onBack }: ScreenProps) {
         </Card>
 
         {/* Change Password */}
-        <h3 className="text-[#6A6A88] mb-3">Change Password</h3>
-        <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
+        <h3 className="text-[#6A6A88] mb-3 font-bold italic">Change Password</h3>
+        <Card className="p-6 mb-8 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
           <div>
-            <label className="text-[#6A6A88] mb-2 block">Current Password</label>
+            <label className="text-[#6A6A88] mb-2 block font-semibold">Current Password</label>
             <Input
               type="password"
               value={currentPassword}
@@ -553,7 +552,7 @@ export function SecuritySettings({ onBack }: ScreenProps) {
           </div>
 
           <div>
-            <label className="text-[#6A6A88] mb-2 block">New Password</label>
+            <label className="text-[#6A6A88] mb-2 block font-semibold">New Password</label>
             <Input
               type="password"
               value={newPassword}
@@ -564,7 +563,7 @@ export function SecuritySettings({ onBack }: ScreenProps) {
           </div>
 
           <div>
-            <label className="text-[#6A6A88] mb-2 block">Confirm New Password</label>
+            <label className="text-[#6A6A88] mb-2 block font-semibold">Confirm New Password</label>
             <Input
               type="password"
               value={confirmPassword}
@@ -586,20 +585,21 @@ export function SecuritySettings({ onBack }: ScreenProps) {
         </Card>
 
         {/* Active Sessions */}
-        <h3 className="text-[#6A6A88] mb-3">Active Sessions</h3>
-        <Card className="p-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
+        <h3 className="text-[#6A6A88] mb-3 font-bold italic">Active Sessions</h3>
+        <Card className="p-8 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-[#4A4A6A]">iPhone 13 (Current)</h3>
+                <h3 className="text-[#4A4A6A] font-semibold">MacBook Air 15" (Current)</h3>
                 <p className="text-[#8A8AA8] text-sm">Copenhagen, Denmark • Now</p>
               </div>
               <Badge className="bg-[#B4E7CE]/30 text-[#4A4A6A] border-0">Active</Badge>
             </div>
             <Separator className="bg-white/40" />
+
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-[#4A4A6A]">MacBook Pro</h3>
+                <h3 className="text-[#4A4A6A] font-semibold">iPhone 14</h3>
                 <p className="text-[#8A8AA8] text-sm">Copenhagen, Denmark • 2 days ago</p>
               </div>
               <Button variant="outline" size="sm" className="border-red-200 text-red-400">
@@ -632,14 +632,14 @@ export function DataPrivacySettings({ onBack }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Data & Privacy</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Data & Privacy</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">Control how we use your data</p>
 
         {/* Data Collection */}
         <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Data Collection</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Data Collection</h3>
               <p className="text-[#8A8AA8] text-sm">Allow us to improve your experience</p>
             </div>
             <Switch checked={dataCollection} onCheckedChange={setDataCollection} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -649,7 +649,7 @@ export function DataPrivacySettings({ onBack }: ScreenProps) {
 
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Personalization</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Personalisation</h3>
               <p className="text-[#8A8AA8] text-sm">Customize content based on your vibes</p>
             </div>
             <Switch checked={personalization} onCheckedChange={setPersonalization} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -659,7 +659,7 @@ export function DataPrivacySettings({ onBack }: ScreenProps) {
 
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Analytics</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Analytics</h3>
               <p className="text-[#8A8AA8] text-sm">Help us understand usage patterns</p>
             </div>
             <Switch checked={analytics} onCheckedChange={setAnalytics} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -667,7 +667,7 @@ export function DataPrivacySettings({ onBack }: ScreenProps) {
         </Card>
 
         {/* Download Your Data */}
-        <h3 className="text-[#6A6A88] mb-3">Your Data</h3>
+        <h3 className="text-[#6A6A88] font-bold italic mb-3">Your Data</h3>
         <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-3">
           <Button variant="outline" className="w-full py-4 border-2 border-[#C5A9FF]/30 text-[#6A6A88] hover:bg-white/60">
             Download Your Data
@@ -676,10 +676,10 @@ export function DataPrivacySettings({ onBack }: ScreenProps) {
         </Card>
 
         {/* Delete Account */}
-        <h3 className="text-[#6A6A88] mb-3">Danger Zone</h3>
+        <h3 className="text-[#6A6A88] mb-3 font-bold italic">Danger Zone</h3>
         <Card className="p-6 bg-white/60 backdrop-blur-xl border-2 border-red-200 shadow-xl">
           <div className="text-center">
-            <h3 className="text-[#4A4A6A] mb-2">Delete Account</h3>
+            <h3 className="text-[#4A4A6A] mb-2 font-semibold">Delete Account</h3>
             <p className="text-[#8A8AA8] text-sm mb-4">Permanently remove your account and all data. This action cannot be undone.</p>
             <Button variant="outline" className="border-2 border-red-300 text-red-500 hover:bg-red-50">
               Delete My Account
@@ -710,7 +710,7 @@ export function LoopRadiusSettings({ onBack }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Local Loop Radius</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Local Loop Radius</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">Set your discovery range</p>
 
         {/* Current Radius Display */}
@@ -732,7 +732,7 @@ export function LoopRadiusSettings({ onBack }: ScreenProps) {
 
         {/* Radius Slider */}
         <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
-          <label className="text-[#6A6A88] mb-4 block">Discovery Distance</label>
+          <label className="text-[#6A6A88] mb-4 block font-bold italic">Discovery Distance</label>
           <input
             type="range"
             min="1"
@@ -754,7 +754,7 @@ export function LoopRadiusSettings({ onBack }: ScreenProps) {
         <Card className="p-6 mb-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Auto-Expand Range</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Auto-Expand Range</h3>
               <p className="text-[#8A8AA8] text-sm">Expand when few loops are found</p>
             </div>
             <Switch checked={autoExpand} onCheckedChange={setAutoExpand} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -764,7 +764,7 @@ export function LoopRadiusSettings({ onBack }: ScreenProps) {
 
           <div className="flex items-center justify-between">
             <div>
-              <h3 className="text-[#4A4A6A]">Show Distances</h3>
+              <h3 className="text-[#4A4A6A] font-semibold">Show Distances</h3>
               <p className="text-[#8A8AA8] text-sm">Display how far loops are</p>
             </div>
             <Switch checked={showDistance} onCheckedChange={setShowDistance} className="data-[state=checked]:bg-[#C5A9FF]" />
@@ -849,7 +849,7 @@ export function HelpFAQs({ onBack }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Help & FAQs</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Help & FAQs</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">Find answers to common questions</p>
 
         <div className="space-y-3">
@@ -859,7 +859,7 @@ export function HelpFAQs({ onBack }: ScreenProps) {
                 onClick={() => toggleFAQ(index)}
                 className="w-full p-4 flex items-center justify-between text-left hover:bg-white/30 transition-colors"
               >
-                <h3 className="text-[#4A4A6A] pr-4">{faq.question}</h3>
+                <h3 className="text-[#4A4A6A] pr-4 font-bold italic">{faq.question}</h3>
                 {expandedFAQ === index ? (
                   <ChevronUp className="w-5 h-5 text-[#C5A9FF] flex-shrink-0" />
                 ) : (
@@ -887,7 +887,7 @@ export function HelpFAQs({ onBack }: ScreenProps) {
 
         {/* Contact Support */}
         <Card className="mt-6 p-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl text-center">
-          <p className="text-[#6A6A88] mb-4">Still need help?</p>
+          <p className="text-[#6A6A88] mb-4 font-semibold">Still need help?</p>
           <Button
             onClick={() => {
               const email = "support@vibeloop.app";
@@ -952,7 +952,7 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
             >
               <Check className="w-10 h-10 text-white" />
             </motion.div>
-            <h2 className="text-[#4A4A6A] mb-2">Thank you!</h2>
+            <h2 className="text-[#4A4A6A] mb-2 font-bold">Thank you!</h2>
             <p className="text-[#8A8AA8]">Your feedback helps us make VibeLoop better</p>
           </Card>
         </div>
@@ -973,13 +973,13 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
           <span>Back</span>
         </button>
 
-        <h2 className="text-[#4A4A6A] mb-1 text-3xl font-boldtext-2xl font-bold">Send Feedback</h2>
+        <h2 className="text-[#4A4A6A] mb-1 text-2xl font-bold">Send Feedback</h2>
         <p className="text-[#8A8AA8] mb-6 text-sm">Help us improve your experience</p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Rating */}
           <Card className="p-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
-            <label className="text-[#6A6A88] mb-3 block">How would you rate your experience?</label>
+            <label className="text-[#6A6A88] mb-3 block font-bold italic">How would you rate your experience?</label>
             <div className="flex gap-2 justify-center">
               {[1, 2, 3, 4, 5].map((star) => (
                 <motion.button key={star} type="button" onClick={() => setRating(star)} whileTap={{ scale: 0.9 }} className="transition-all">
@@ -991,7 +991,7 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
 
           {/* Feedback Type */}
           <Card className="p-4 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
-            <label className="text-[#6A6A88] mb-3 block">What type of feedback?</label>
+            <label className="text-[#6A6A88] mb-3 block font-bold italic">What type of feedback?</label>
             <div className="space-y-2">
               {[
                 { value: "bug", label: "Bug Report", emoji: "🐛" },
@@ -1025,7 +1025,7 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
 
           {/* Title */}
           <Card className="p-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
-            <label className="text-[#6A6A88] mb-3 block">Title</label>
+            <label className="text-[#6A6A88] mb-3 block font-bold italic">Title</label>
             <Input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
@@ -1037,7 +1037,7 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
 
           {/* Message */}
           <Card className="p-6 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl">
-            <label className="text-[#6A6A88] mb-3 block">Details</label>
+            <label className="text-[#6A6A88] mb-3 block font-bold italic">Details</label>
             <Textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}

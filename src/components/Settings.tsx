@@ -57,9 +57,7 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
   const [showMoodHistory, setShowMoodHistory] = useState(true);
   const [privateProfile, setPrivateProfile] = useState(false);
   const [language, setLanguage] = useState("en");
-  const [currentScreen, setCurrentScreen] = useState<SettingsScreen>(
-    (initialScreen as SettingsScreen) || "main"
-  );
+  const [currentScreen, setCurrentScreen] = useState<SettingsScreen>((initialScreen as SettingsScreen) || "main");
   // true when opened directly to a sub-screen (e.g. from Feed) — Back should close Settings entirely
   const [openedDirectly] = useState(!!initialScreen);
   const [displayName, setDisplayName] = useState(userName);
@@ -177,7 +175,6 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
       window.removeEventListener("vibeloop:data_changed", handler as EventListener);
     };
   }, []);
-
 
   // Persist settings whenever they change
   useEffect(() => {
@@ -343,7 +340,7 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
         <div className="flex justify-between items-center mb-8">
           <div>
             <h2 className="text-[#4A4A6A] text-xl md:text-3xl font-bold">Settings</h2>
-            <p className="text-[#8A8AA8] mt-1 text-sm">Personalize your sanctuary</p>
+            <p className="text-[#8A8AA8] mt-1 text-sm">Personalise your sanctuary</p>
           </div>
           {onClose && (
             <motion.button
@@ -359,7 +356,7 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
 
         {/* User Info Card */}
         <motion.div initial={{ y: 20, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.1 }}>
-          <Card className="mb-6 p-4 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl overflow-hidden relative">
+          <Card className="mb-8 p-4 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl overflow-hidden relative">
             {/* Ambient glow */}
             <div
               className="absolute -top-10 -right-10 w-32 h-32 rounded-full blur-3xl opacity-30"
@@ -381,13 +378,13 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
                 )}
               </div>
               <div className="flex-1">
-                <h3 className="text-[#4A4A6A]">{displayName}</h3>
+                <h3 className="text-[#4A4A6A] font-bold italic">{displayName}</h3>
                 <p className="text-[#8A8AA8]">{userHandle}</p>
               </div>
               <div className="flex flex-col items-end gap-2">
                 <button
                   onClick={() => setCurrentScreen("editProfile")}
-                  className="text-sm text-[#6A6A88] px-3 py-1 rounded-md bg-white/30 hover:bg-white/50 transition-colors cursor-pointer"
+                  className="text-sm underline text-[#6A6A88] px-3 py-1 rounded-md bg-white/30 hover:bg-white/50 transition-colors cursor-pointer"
                 >
                   Edit Profile
                 </button>
@@ -416,9 +413,9 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.15 + sectionIndex * 0.05 }}
-            className="mb-6"
+            className="mb-8"
           >
-            <h3 className="text-[#6A6A88] mb-3 px-2">{section.title}</h3>
+            <h3 className="text-[#6A6A88] mb-3 px-2 font-bold italic">{section.title}</h3>
             <Card className="bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl overflow-hidden">
               {section.items.map((item, itemIndex) => {
                 const Icon = item.icon;
@@ -443,7 +440,7 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
                               }}
                             />
                           </div>
-                          <span className="text-[#4A4A6A]">{item.label}</span>
+                          <span className="text-[#4A4A6A] font-semibold">{item.label}</span>
                         </div>
 
                         {item.onChange && (
@@ -469,7 +466,7 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
                               }}
                             />
                           </div>
-                          <span className="text-[#4A4A6A]">{item.label}</span>
+                          <span className="text-[#4A4A6A] font-semibold">{item.label}</span>
                         </div>
 
                         <Select value={language} onValueChange={setLanguage}>
@@ -505,7 +502,7 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
                               }}
                             />
                           </div>
-                          <span className="text-[#4A4A6A]">{item.label}</span>
+                          <span className="text-[#4A4A6A] font-semibold">{item.label}</span>
                         </div>
 
                         {item.action && (
@@ -530,12 +527,13 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
               onClick={() => {
                 try {
                   localStorage.removeItem("vibeloop_onboarded");
+                  localStorage.removeItem("vibeloop_guest_session");
                   localStorage.removeItem("vibeloop_profile");
                   localStorage.removeItem("vibeloop_profile_avatar");
                   localStorage.removeItem("vibeloop_user");
                   try {
                     window.dispatchEvent(
-                      new CustomEvent("vibeloop:profile_updated", { detail: { name: null, username: null, bio: null, avatarUrl: null } })
+                      new CustomEvent("vibeloop:profile_updated", { detail: { name: null, username: null, bio: null, avatarUrl: null } }),
                     );
                   } catch (e) {
                     // ignore

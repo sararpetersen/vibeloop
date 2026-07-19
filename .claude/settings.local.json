@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(unzip -o \"/Users/sararingkow/Downloads/Portfolio/Tilgængelighedsdesign-principper.zip\" -d \"/private/tmp/claude-501/-Users-sararingkow-Desktop-School-Other-projects-Continued-projects-VibeLoop---The-Mood-Based-Social-App-VS-Code-vibeloop/0f0ea949-51b0-4ca3-9562-026e0278def8/scratchpad/portfolio-zip\")"
+    ]
+  }
+}
