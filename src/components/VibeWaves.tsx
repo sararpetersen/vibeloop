@@ -4,7 +4,7 @@ import { Card } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { TrendingUp, Flame, Users, Heart, MapPin, Calendar } from "lucide-react";
+import { TrendingUp, Flame, Users, Heart, MapPin, Calendar, Play, Pause } from "lucide-react";
 
 interface MoodStat {
   mood: string;
@@ -235,7 +235,7 @@ export function VibeWaves({
   };
 
   return (
-    <div className="h-screen pb-24 md:pb-8 overflow-y-auto" style={{ backgroundColor: "#F6F8FB" }}>
+    <div className="h-screen pb-24 lg:pb-8 overflow-y-auto" style={{ backgroundColor: "#F6F8FB" }}>
       {/* Header — same max-width as the Tabs section below so they stay aligned on wide screens */}
       <div className="px-6 pt-8 pb-6">
         <motion.div
@@ -244,11 +244,29 @@ export function VibeWaves({
           transition={{ duration: 0.6 }}
           className="max-w-3xl mx-auto"
         >
-          <h1 className="text-[#4A4A6A] mb-1 text-xl md:text-3xl font-bold">Vibe Waves</h1>
+          <h1 className="text-[#4A4A6A] mb-1 text-xl lg:text-3xl font-bold">Vibe Waves</h1>
           <p className="text-sm text-[#8A8AA8]">feel the pulse of the collective mood</p>
           <div className="mt-3">
-            <button onClick={() => setIsPlaying((p) => !p)} className="px-3 py-2 rounded-full bg-white/80 border">
-              {isPlaying ? "Pause" : "Play"}
+            <button
+              onClick={() => setIsPlaying((p) => !p)}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full cursor-pointer transition-all duration-300 hover:scale-[1.02]"
+              style={{
+                backgroundColor: "#C5A9FF20",
+                border: "1.5px solid #C5A9FF40",
+                color: "#6A6A88",
+              }}
+            >
+              {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+              <span className="text-sm">{isPlaying ? "Live" : "Paused"}</span>
+              {isPlaying && (
+                <span className="relative flex h-2 w-2">
+                  <span
+                    className="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75"
+                    style={{ backgroundColor: "#C5A9FF" }}
+                  />
+                  <span className="relative inline-flex rounded-full h-2 w-2" style={{ backgroundColor: "#C5A9FF" }} />
+                </span>
+              )}
             </button>
           </div>
         </motion.div>
@@ -467,7 +485,7 @@ export function VibeWaves({
                           <div>
                             <button
                               onClick={() => (isJoined(loop.id) ? leaveLoopLocal(loop.id) : joinLoopLocal(loop))}
-                              className={`px-3 py-2 rounded-full text-sm ${
+                              className={`px-3 py-2 rounded-full text-sm cursor-pointer transition-opacity hover:opacity-80 ${
                                 isJoined(loop.id) ? "bg-red-50 text-red-500" : "bg-[#C5A9FF20] text-[#6A6A88]"
                               }`}
                             >
@@ -571,7 +589,7 @@ export function VibeWaves({
                       </div>
 
                       <Button
-                        className="w-full mt-4 py-2 rounded-full border-0"
+                        className="w-full mt-4 py-2 rounded-full border-0 transition-opacity hover:opacity-80"
                         style={{
                           background: `linear-gradient(135deg, ${twin.color}40, ${twin.color}20)`,
                           color: "#6A6A88",

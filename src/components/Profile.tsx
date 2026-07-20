@@ -196,7 +196,7 @@ export function Profile({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
-      className="h-full overflow-auto pb-24 md:pb-8"
+      className="h-full overflow-auto pb-24 lg:pb-8"
     >
       <div className="px-6 pt-8 max-w-4xl mx-auto">
         {/* Header */}
@@ -220,7 +220,7 @@ export function Profile({
               )}
             </div>
             <div>
-              <h2 className="text-[#4A4A6A] text-xl md:text-3xl font-bold">{displayName}'s Aura</h2>
+              <h2 className="text-[#4A4A6A] text-xl lg:text-3xl font-bold">{displayName}'s Aura</h2>
               <p className="text-[#8A8AA8] mt-1 text-sm">{bio}</p>
               <div className="flex gap-5 mt-2">
                 <div className="text-center mr-2">

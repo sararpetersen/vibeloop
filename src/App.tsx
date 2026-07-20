@@ -466,10 +466,14 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#F6F8FB] via-[#E8E4F3] to-[#F0E8F5] relative">
-      {/* Desktop Sidebar Navigation — held back for new/guest users until they've onboarded,
-          same as the rest of the app's newUserMode-gated content */}
-      {!showSettings && !newUserMode && (
-        <div className="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-white/80 dark:bg-[#1A1A2E]/90 backdrop-blur-xl border-r-2 border-[#E0E8F5] dark:border-[#2A2A4E] z-50 flex-col">
+      {/* Desktop Sidebar Navigation — purely responsive (lg: 1024px+); tablet and mobile both
+          get the bottom bar instead, regardless of onboarding state.
+          z-[60]: sheets/dialogs are z-50, so without this the sidebar gets painted over by any
+          open sheet (they're portalled to the end of <body>, so DOM order alone would put them
+          on top at equal z-index) — the persistent nav needs to stay reachable even while a
+          modal is open elsewhere on screen. */}
+      {!showSettings && (
+        <div className="hidden lg:flex fixed left-0 top-0 bottom-0 w-64 bg-white/80 dark:bg-[#1A1A2E]/90 backdrop-blur-xl border-r-2 border-[#E0E8F5] dark:border-[#2A2A4E] z-[60] flex-col">
           {/* Logo/Header */}
           <div className="p-6 border-b-2 border-[#E0E8F5]">
             <div className="flex items-center gap-3">
@@ -584,7 +588,7 @@ export default function App() {
       )}
 
       {/* Screen Content */}
-      <div className={`h-full relative ${showSettings || newUserMode ? "" : "md:ml-64"}`}>
+      <div className={`h-full relative ${showSettings ? "" : "lg:ml-64"}`}>
         <AnimatePresence mode="wait">
           {showSettings ? (
             <Settings
@@ -637,6 +641,9 @@ export default function App() {
                   // (used elsewhere to show a clean onboarding placeholder) never gets released
                   // once the user starts interacting, so it can't gate this.
                   joinedLoopsProp={joinedLoops}
+                  // Popups need this to know whether the desktop sidebar is showing, so they can
+                  // offset themselves instead of spanning under it and blocking its nav items.
+                  sidebarVisible={!newUserMode}
                 />
               )}
               {currentScreen === "profile" && (
@@ -653,7 +660,7 @@ export default function App() {
               )}
               {!showSettings && (
                 <div
-                  className={`${newUserMode ? "" : "md:hidden"} fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t-2 border-[#E0E8F5] z-50`}
+                  className="lg:hidden fixed bottom-0 left-0 right-0 bg-white/90 backdrop-blur-xl border-t-2 border-[#E0E8F5] z-50"
                 >
                   <div className="flex items-center justify-around px-2 py-3">
                     {navItems.map((item) => {

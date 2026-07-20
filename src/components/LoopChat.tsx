@@ -392,7 +392,7 @@ export function LoopChat({ isOpen, onClose, loopName, loopColor, type }: LoopCha
                 onClick={handleSend}
                 disabled={!newMessage.trim()}
                 aria-label="Send message"
-                className="h-12 w-12 rounded-full p-0 border-0 transition-all duration-300 disabled:opacity-40 cursor-pointer"
+                className="h-12 w-12 rounded-full p-0 border-0 transition-all duration-300 disabled:opacity-40 cursor-pointer hover:opacity-85"
                 style={{
                   background: newMessage.trim()
                     ? `linear-gradient(135deg, ${loopColor}EE, ${loopColor}AA)`

@@ -121,11 +121,11 @@ export function DreamCatcher({ userName, onSaveDream }: DreamCatcherProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
-      className="h-full overflow-auto pb-24 md:pb-8 px-6"
+      className="h-full overflow-auto pb-24 lg:pb-8 px-6"
     >
       <div className="pt-8 max-w-md mx-auto">
         <div className="text-center mb-8">
-          <h2 className="mb-2 text-[#4A4A6A] text-xl md:text-3xl font-bold">DreamCatcher</h2>
+          <h2 className="mb-2 text-[#4A4A6A] text-xl lg:text-3xl font-bold">DreamCatcher</h2>
           <p className="text-sm text-[#8A8AA8]">Transform your thoughts into glowing moments</p>
         </div>
 
@@ -262,7 +262,7 @@ export function DreamCatcher({ userName, onSaveDream }: DreamCatcherProps) {
         <Button
           onClick={handleGenerate}
           disabled={!thought.trim() || showOrb}
-          className="w-full rounded-full py-6 relative overflow-hidden transition-all duration-300 border-0"
+          className="w-full rounded-full py-6 relative overflow-hidden transition-all duration-300 border-0 hover:opacity-90"
           style={{
             background: `linear-gradient(135deg, ${currentMoodColor}DD, ${currentMoodColor}99)`,
             boxShadow: `0 8px 24px ${currentMoodColor}40`,
@@ -353,7 +353,7 @@ export function DreamCatcher({ userName, onSaveDream }: DreamCatcherProps) {
               <Button
                 onClick={handleSaveDream}
                 disabled={isSaved}
-                className="w-full rounded-full py-6 relative overflow-hidden transition-all duration-300 border-0 mt-6"
+                className="w-full rounded-full py-6 relative overflow-hidden transition-all duration-300 border-0 mt-6 hover:opacity-90"
                 style={{
                   background: `linear-gradient(135deg, ${currentMoodColor}DD, ${currentMoodColor}99)`,
                   boxShadow: `0 8px 24px ${currentMoodColor}40`,

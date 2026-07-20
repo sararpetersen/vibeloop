@@ -226,11 +226,13 @@ export function LocalLoops({
   joinLoop,
   leaveLoop,
   joinedLoopsProp,
+  sidebarVisible,
 }: {
   setCurrentScreen?: (s: string) => void;
   joinLoop?: (loop: { id: number; name: string; color: string }) => void;
   leaveLoop?: (id: number) => void;
   joinedLoopsProp?: { id: number; name: string; color: string }[];
+  sidebarVisible?: boolean;
 }) {
   const [loopsData, setLoopsData] = useState<Loop[]>(initialLoops);
   const [selectedVibe, setSelectedVibe] = useState("All");
@@ -333,13 +335,13 @@ export function LocalLoops({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
-      className="h-full overflow-auto pb-24 md:pb-8"
+      className="h-full overflow-auto pb-24 lg:pb-8"
     >
       {/* Header — inner content shares the same max-width as the cards below so the two
           don't drift apart on wide screens; the sticky/blur band itself stays full-bleed */}
       <div className="sticky top-0 bg-[#F6F8FB]/80 backdrop-blur-md z-10 px-6 pt-8 pb-4">
         <div className="max-w-3xl mx-auto">
-        <h2 className="mb-2 text-[#4A4A6A] text-xl md:text-3xl font-bold">Local Loops</h2>
+        <h2 className="mb-2 text-[#4A4A6A] text-xl lg:text-3xl font-bold">Local Loops</h2>
         <p className="text-sm text-[#8A8AA8] mb-4">Nearby communities and vibe-based gatherings</p>
 
         {/* Search Bar */}

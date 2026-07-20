@@ -64,7 +64,7 @@ export function Constellation() {
 
   return (
     <div
-      className="h-screen pb-24 md:pb-8 relative overflow-y-auto"
+      className="h-screen pb-24 lg:pb-8 relative overflow-y-auto"
       style={{
         background: "radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%)",
       }}
@@ -95,7 +95,7 @@ export function Constellation() {
       {/* Header */}
       <div className="relative px-6 pt-8 pb-6">
         <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-          <h1 className="text-white mb-2 text-xl md:text-3xl font-bold">Your Constellation</h1>
+          <h1 className="text-white mb-2 text-xl lg:text-3xl font-bold">Your Constellation</h1>
           <p className="text-sm" style={{ color: "#B8B8CC" }}>
             souls connected across the cosmos
           </p>
@@ -126,7 +126,7 @@ export function Constellation() {
                   transition={{ duration: 1.5, delay: 0.5 }}
                 />
               );
-            })
+            }),
           )}
           {/* Gradient for lines */}
           <defs>
@@ -221,7 +221,7 @@ export function Constellation() {
           <div className="flex items-center gap-3">
             <Sparkles className="w-5 h-5" style={{ color: "#C5A9FF" }} />
             <div>
-              <p className="text-sm" style={{ color: "#E0E0EA" }}>
+              <p className="text-sm font-bold italic" style={{ color: "#E0E0EA" }}>
                 Soul Resonance Active
               </p>
               <p className="text-xs mt-1" style={{ color: "#B8B8CC" }}>
@@ -315,7 +315,7 @@ export function Constellation() {
               {/* Actions */}
               <div className="flex gap-3 pt-4">
                 <Button
-                  className="flex-1 py-6 rounded-full border-0"
+                  className="flex-1 py-6 rounded-full border-0 transition-opacity hover:opacity-80"
                   style={{
                     background: `linear-gradient(135deg, ${selectedFriend.moodColor}40, ${selectedFriend.moodColor}20)`,
                     color: "#6A6A88",
@@ -326,7 +326,7 @@ export function Constellation() {
                   {friendsState.find((f) => f.id === selectedFriend.id) ? "Connected" : "Connect"}
                 </Button>
                 <Button
-                  className="flex-1 py-6 rounded-full border-0"
+                  className="flex-1 py-6 rounded-full border-0 transition-opacity hover:opacity-80"
                   style={{
                     background: `linear-gradient(135deg, ${selectedFriend.moodColor}EE, ${selectedFriend.moodColor}AA)`,
                     color: "#FFFFFF",

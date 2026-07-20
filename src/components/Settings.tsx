@@ -333,13 +333,13 @@ export function Settings({ userName, onClose, initialScreen, ...rest }: Settings
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
-            <h2 className="text-[#4A4A6A] text-xl md:text-3xl font-bold">Settings</h2>
+            <h2 className="text-[#4A4A6A] text-xl lg:text-3xl font-bold">Settings</h2>
             <p className="text-[#8A8AA8] mt-1 text-sm">Personalise your sanctuary</p>
           </div>
           {onClose && (

@@ -125,7 +125,7 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -192,7 +192,7 @@ export function EditProfile({ onBack, userName, onProfileSave }: ScreenProps) {
         </Card>
 
         <Button
-          className="w-full py-6 text-white mb-2"
+          className="w-full py-6 text-white mb-2 hover:opacity-90"
           style={{
             background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
             boxShadow: "0 0 20px #C5A9FF50",
@@ -220,7 +220,7 @@ export function PrivacySettings({ onBack }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -296,7 +296,7 @@ export function BlockedUsers({ onBack }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -405,7 +405,7 @@ export function MoodPreferences({ onBack }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -441,7 +441,7 @@ export function MoodPreferences({ onBack }: ScreenProps) {
 
         <Button
           onClick={handleSave}
-          className="w-full py-6 text-white"
+          className="w-full py-6 text-white hover:opacity-90"
           style={{
             background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
             boxShadow: "0 0 20px #C5A9FF50",
@@ -461,7 +461,7 @@ export function GenericSettingsScreen({ onBack, title, description }: { onBack: 
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -494,7 +494,7 @@ export function SecuritySettings({ onBack }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -574,7 +574,7 @@ export function SecuritySettings({ onBack }: ScreenProps) {
           </div>
 
           <Button
-            className="w-full py-4 text-white"
+            className="w-full py-4 text-white hover:opacity-90"
             style={{
               background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
               boxShadow: "0 0 20px #C5A9FF50",
@@ -624,7 +624,7 @@ export function DataPrivacySettings({ onBack }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -702,7 +702,7 @@ export function LoopRadiusSettings({ onBack }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -772,7 +772,7 @@ export function LoopRadiusSettings({ onBack }: ScreenProps) {
         </Card>
 
         <Button
-          className="w-full py-6 text-white"
+          className="w-full py-6 text-white hover:opacity-90"
           style={{
             background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
             boxShadow: "0 0 20px #C5A9FF50",
@@ -841,7 +841,7 @@ export function HelpFAQs({ onBack }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -936,7 +936,7 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
         initial={{ x: 300, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: 300, opacity: 0 }}
-        className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+        className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
       >
         <div className="px-6 pt-8 h-full flex items-center justify-center max-w-3xl mx-auto">
           <Card className="p-8 bg-white/60 backdrop-blur-xl border-2 border-white/40 shadow-xl text-center">
@@ -965,7 +965,7 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
       initial={{ x: 300, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: 300, opacity: 0 }}
-      className="h-full overflow-auto pb-24 md:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
+      className="h-full overflow-auto pb-24 lg:pb-8 bg-gradient-to-b from-[#F6F8FB] via-[#F0E8F5] to-[#E8E4F3]"
     >
       <div className="px-6 pt-8 max-w-3xl mx-auto">
         <button onClick={onBack} className="flex items-center gap-2 text-[#8A8AA8] mb-6 hover:text-[#C5A9FF] transition-colors cursor-pointer">
@@ -1050,7 +1050,7 @@ export function SendFeedback({ onBack, userName }: ScreenProps) {
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full py-6 text-white flex items-center justify-center gap-2"
+            className="w-full py-6 text-white flex items-center justify-center gap-2 hover:opacity-90"
             style={{
               background: "linear-gradient(135deg, #C5A9FF, #A9C7FF)",
               boxShadow: "0 0 20px #C5A9FF50",

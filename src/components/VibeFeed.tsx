@@ -136,12 +136,12 @@ export default function VibeFeed({ selectedMood, setSelectedMood, userDreams, se
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.6 }}
-      className="h-full overflow-auto pb-24 md:pb-8"
+      className="h-full overflow-auto pb-24 lg:pb-8"
     >
       {/* Header — inner content shares the feed's max-w-3xl so the two stay aligned on wide screens */}
       <div className="sticky top-0 bg-[#F6F8FB]/80 backdrop-blur-md z-10 px-6 pt-8 pb-4">
         <div className="max-w-3xl mx-auto">
-        <h2 className="mb-1 text-[#4A4A6A] text-xl md:text-3xl font-bold">How do you feel today?</h2>
+        <h2 className="mb-1 text-[#4A4A6A] text-xl lg:text-3xl font-bold">How do you feel today?</h2>
         <p className="text-sm text-[#8A8AA8] mb-4">Vibes from people you follow</p>
 
         {/* Mood Selector */}
